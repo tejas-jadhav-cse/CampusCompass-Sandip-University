@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Campus Navigation | Sandip University</title>
+
+    <!-- PWA: manifest + icons -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.png" type="image/png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <!-- Theme color: matches the header gradient's start color so the
+         status bar / splash background doesn't clash or flash white. -->
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- iOS-specific PWA meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CampusCompass">
+    <!-- Apply saved theme and language before first paint to avoid a flash
+         of the wrong theme / wrong-language font stack. -->
+    <script>
+        (function () {
+            try {
+                const saved = localStorage.getItem("cc-theme");
+                const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+                const isDark = saved ? saved === "dark" : prefersDark;
+                if (isDark) document.documentElement.classList.add("dark");
+            } catch (e) { /* localStorage unavailable, default to light */ }
+
+            try {
+                const prefsRaw = localStorage.getItem("cc-preferences");
+                const prefs = prefsRaw ? JSON.parse(prefsRaw) : {};
+                if (prefs.language === "hi" || prefs.language === "mr") {
+                    document.documentElement.setAttribute("lang", prefs.language);
+                }
+            } catch (e) { /* localStorage unavailable, default to English */ }
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: "class" };
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Devanagari-capable webfont for Hindi/Marathi UI text. Loaded via CDN
+         link (not @import) so it degrades gracefully offline to the system
+         font stack below, which also covers Devanagari on most platforms. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        html[lang="hi"] body,
+        html[lang="mr"] body {
+            font-family: "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", Roboto, "Nirmala UI", "Noto Sans", sans-serif;
+            line-height: 1.65;
+        }
+
+        html[lang="hi"] h1, html[lang="hi"] h2, html[lang="hi"] p, html[lang="hi"] span, html[lang="hi"] button, html[lang="hi"] input,
+        html[lang="mr"] h1, html[lang="mr"] h2, html[lang="mr"] p, html[lang="mr"] span, html[lang="mr"] button, html[lang="mr"] input {
+            letter-spacing: normal;
+        }
+
+        .sun-theme {
+            background: linear-gradient(135deg, #0f172a 0%, #9f1239 100%);
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .modal-overlay {
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(2px);
+        }
+
+        .chip {
+            display: inline-block;
+        }
+
+        /* ---------- Navigate to Location button ---------- */
+        .navigate-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: 0.01em;
+            color: #ffffff;
+            background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
+            background-size: 150% 150%;
+            background-position: 0% 50%;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background-position 0.4s ease;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+        }
+
+        .navigate-btn:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.38);
+            background-position: 100% 50%;
+        }
+
+        .navigate-btn:active:not(:disabled) {
+            transform: translateY(0) scale(0.97);
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+
+        .navigate-btn:disabled {
+            background: #cbd5e1;
+            color: #64748b;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .navigate-btn-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .navigate-btn-small {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            color: #ffffff;
+            background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.28);
+            white-space: nowrap;
+        }
+
+        .navigate-btn-small:hover:not(:disabled) {
+            transform: translateY(-1px) scale(1.04);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+
+        .navigate-btn-small:active:not(:disabled) {
+            transform: translateY(0) scale(0.96);
+        }
+
+        .navigate-btn-small:disabled {
+            background: #cbd5e1;
+            color: #64748b;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        @media (max-width: 380px) {
+            .navigate-btn {
+                font-size: 13px;
+                padding: 12px 16px;
+            }
+
+            .navigate-btn-small {
+                font-size: 10px;
+                padding: 7px 11px;
+            }
+        }
+
+        /* ---------- Dark mode base ---------- */
+        html.dark body {
+            background-color: #0b1120;
+            color: #e2e8f0;
+        }
+
+        html.dark .glass-nav {
+            background: rgba(15, 23, 42, 0.92);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        html.dark #searchInput {
+            background-color: #1e293b;
+            color: #e2e8f0;
+        }
+
+        html.dark #searchInput::placeholder {
+            color: #64748b;
+        }
+
+        html.dark .card,
+        html.dark .modal-panel {
+            background-color: #131c2f;
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+
+        html.dark .modal-overlay {
+            background: rgba(0, 0, 0, 0.65);
+        }
+
+        html.dark .filter-chip-inactive {
+            background-color: #131c2f;
+            color: #94a3b8;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        html.dark .text-slate-800,
+        html.dark .text-slate-900 {
+            color: #e2e8f0 !important;
+        }
+
+        html.dark .text-slate-700 {
+            color: #cbd5e1 !important;
+        }
+
+        html.dark .text-slate-600 {
+            color: #b7c2d0 !important;
+        }
+
+        html.dark .text-slate-500 {
+            color: #a3b0c2 !important;
+        }
+
+        html.dark .text-slate-400 {
+            color: #8b98ab !important;
+        }
+
+        html.dark .bg-slate-100 {
+            background-color: #1e293b !important;
+        }
+
+        html.dark .bg-rose-50 {
+            background-color: rgba(159, 18, 57, 0.25) !important;
+        }
+
+        html.dark .text-rose-700 {
+            color: #fda4af !important;
+        }
+
+        html.dark .text-rose-600 {
+            color: #fb7185 !important;
+        }
+
+        html.dark .chip {
+            background-color: #1e293b;
+        }
+
+        html.dark .empty-illustration path,
+        html.dark .empty-illustration circle {
+            stroke: #64748b;
+        }
+
+        /* ---------- Theme toggle button ---------- */
+        .theme-toggle-btn {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .theme-toggle-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* ---------- Language toggle button ---------- */
+        .lang-toggle-btn {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .lang-toggle-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* ---------- Language picker overlay ---------- */
+        #langPickerOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0f172a 0%, #9f1239 100%);
+            overflow-y: auto;
+            opacity: 0;
+            transition: opacity 0.28s ease;
+        }
+
+        #langPickerOverlay.picker-shown {
+            display: flex;
+        }
+
+        #langPickerOverlay.picker-visible {
+            opacity: 1;
+        }
+
+        .lang-picker-inner {
+            margin: auto;
+            width: 100%;
+            max-width: 420px;
+            padding: 2rem 1.5rem calc(2rem + env(safe-area-inset-bottom));
+            padding-top: calc(2rem + env(safe-area-inset-top));
+        }
+
+        .lang-card {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 20px 24px;
+            min-height: 44px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #fff;
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.15s ease, background 0.2s ease;
+        }
+
+        .lang-card:active {
+            transform: scale(0.97);
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        .lang-card + .lang-card {
+            margin-top: 14px;
+        }
+
+        .lang-card-native {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .lang-card-sub {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.65);
+            margin-top: 2px;
+        }
+
+        /* ---------- Skeleton loaders ---------- */
+        .skeleton-card {
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            background: #fff;
+            border: 1px solid #f1f5f9;
+        }
+
+        html.dark .skeleton-card {
+            background: #131c2f;
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+
+        .skeleton-line {
+            border-radius: 8px;
+            background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 37%, #e2e8f0 63%);
+            background-size: 400% 100%;
+            animation: skeleton-shimmer 1.4s ease infinite;
+        }
+
+        html.dark .skeleton-line {
+            background: linear-gradient(90deg, #1e293b 25%, #263349 37%, #1e293b 63%);
+            background-size: 400% 100%;
+        }
+
+        @keyframes skeleton-shimmer {
+            0% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* ---------- Modal open/close animation ---------- */
+        .modal-panel {
+            background-color: #fff;
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.22s ease, transform 0.22s ease;
+        }
+
+        #detailModal.modal-visible .modal-panel {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal-overlay {
+            opacity: 0;
+            transition: opacity 0.22s ease;
+        }
+
+        #detailModal.modal-visible.modal-overlay-active {
+            opacity: 1;
+        }
+
+        /* ---------- Tappable active states ---------- */
+        .tap-shrink {
+            transition: transform 0.15s ease;
+        }
+
+        .tap-shrink:active {
+            transform: scale(0.96);
+        }
+
+        /* ---------- Reduced motion ---------- */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* ---------- Empty state illustration ---------- */
+        .empty-illustration path,
+        .empty-illustration circle {
+            stroke: #cbd5e1;
+        }
+
+        /* ---------- Breadcrumb ---------- */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        /* ---------- Toast ---------- */
+        #toast {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%) translateY(16px);
+            background: #0f172a;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 10px 18px;
+            border-radius: 999px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        #toast.toast-visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ---------- Sticky modal footer ---------- */
+        .modal-scroll-body {
+            max-height: calc(85vh - 84px);
+            overflow-y: auto;
+        }
+
+        .modal-footer-sticky {
+            position: sticky;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding-top: 12px;
+            background: linear-gradient(to top, #fff 60%, rgba(255, 255, 255, 0));
+        }
+
+        html.dark .modal-footer-sticky {
+            background: linear-gradient(to top, #131c2f 60%, rgba(19, 28, 47, 0));
+        }
+
+        .copy-link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px 20px;
+            margin-top: 10px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 13px;
+            color: #334155;
+            background: #f1f5f9;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        html.dark .copy-link-btn {
+            background: #1e293b;
+            color: #cbd5e1;
+        }
+
+        .copy-link-btn:active:not(:disabled) {
+            transform: scale(0.97);
+        }
+
+        .copy-link-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ---------- Safe-area support (notched phones, standalone PWA) ---------- */
+        header.sun-theme {
+            padding-top: calc(2.5rem + env(safe-area-inset-top));
+            padding-left: calc(1.5rem + env(safe-area-inset-left));
+            padding-right: calc(1.5rem + env(safe-area-inset-right));
+        }
+
+        .sticky-search-wrap {
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+
+        .modal-footer-sticky {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        #toast {
+            bottom: calc(24px + env(safe-area-inset-bottom));
+        }
+
+        body {
+            padding-bottom: calc(2.5rem + env(safe-area-inset-bottom));
+        }
+
+        /* ---------- Offline banner ---------- */
+        #offlineBanner {
+            position: fixed;
+            top: calc(12px + env(safe-area-inset-top));
+            left: 50%;
+            transform: translateX(-50%) translateY(-16px);
+            z-index: 90;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #1e293b;
+            color: #fef2f2;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 10px 16px;
+            border-radius: 999px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            max-width: calc(100% - 32px);
+        }
+
+        #offlineBanner.banner-visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ---------- Install banner ---------- */
+        #installBanner,
+        #iosInstallTip {
+            position: fixed;
+            left: 12px;
+            right: 12px;
+            bottom: calc(12px + env(safe-area-inset-bottom));
+            z-index: 95;
+            background: #fff;
+            color: #0f172a;
+            border-radius: 20px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+            padding: 14px 16px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            transform: translateY(120%);
+            transition: transform 0.25s ease;
+        }
+
+        html.dark #installBanner,
+        html.dark #iosInstallTip {
+            background: #131c2f;
+            color: #e2e8f0;
+        }
+
+        #installBanner.banner-shown,
+        #iosInstallTip.banner-shown {
+            display: flex;
+            transform: translateY(0);
+        }
+
+        .install-cta-btn {
+            background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
+            color: #fff;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 10px 16px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            min-height: 44px;
+        }
+
+        .install-dismiss-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 pb-10">
+
+    <header class="sun-theme text-white py-10 px-6 text-center rounded-b-[40px] shadow-xl relative">
+        <div class="absolute top-4 right-4 flex items-center gap-2">
+            <button id="langToggleBtn" onclick="openLangPicker(true)" aria-label="Change language"
+                class="lang-toggle-btn">
+                <span style="font-size:18px;line-height:1;">🌐</span>
+            </button>
+            <button id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle dark mode"
+                class="theme-toggle-btn">
+                <i data-lucide="sun" class="w-5 h-5" id="themeIconSun"></i>
+                <i data-lucide="moon" class="w-5 h-5 hidden" id="themeIconMoon"></i>
+            </button>
+        </div>
+        <h1 class="text-2xl font-black tracking-tight italic" id="appTitle">SANDIP UNIVERSITY</h1>
+        <p class="text-rose-200 text-xs font-bold tracking-[0.2em] mt-1" id="appSubtitle">CAMPUS NAVIGATION</p>
+    </header>
+
+    <!-- Full-screen language picker (first launch, and re-openable via the globe toggle) -->
+    <div id="langPickerOverlay" role="dialog" aria-modal="true" aria-label="Choose your language">
+        <div class="lang-picker-inner">
+            <div class="text-center mb-8">
+                <p style="font-size:36px;line-height:1;" class="mb-3">🌐</p>
+                <h2 class="text-xl font-black text-white" id="langPickerTitle">Choose your language</h2>
+                <p class="text-rose-200 text-xs font-bold tracking-wide mt-1" id="langPickerSubtitle">भाषा चुनें · भाषा निवडा</p>
+            </div>
+            <button class="lang-card tap-shrink" onclick="selectLanguage('en')" aria-label="English">
+                <span>
+                    <span class="lang-card-native">English</span>
+                    <span class="lang-card-sub block">English</span>
+                </span>
+                <i data-lucide="chevron-right" class="w-5 h-5 opacity-70"></i>
+            </button>
+            <button class="lang-card tap-shrink" onclick="selectLanguage('hi')" aria-label="Hindi">
+                <span>
+                    <span class="lang-card-native">हिंदी</span>
+                    <span class="lang-card-sub block">Hindi</span>
+                </span>
+                <i data-lucide="chevron-right" class="w-5 h-5 opacity-70"></i>
+            </button>
+            <button class="lang-card tap-shrink" onclick="selectLanguage('mr')" aria-label="Marathi">
+                <span>
+                    <span class="lang-card-native">मराठी</span>
+                    <span class="lang-card-sub block">Marathi</span>
+                </span>
+                <i data-lucide="chevron-right" class="w-5 h-5 opacity-70"></i>
+            </button>
+            <p class="text-center text-[11px] font-semibold text-rose-200/70 mt-8 leading-relaxed" id="langPickerNote">
+                Place names stay in English. You can change this anytime from the 🌐 icon.
+            </p>
+        </div>
+    </div>
+
+    <div class="sticky top-0 z-40 px-4 -mt-6 sticky-search-wrap">
+        <div class="max-w-md mx-auto glass-nav rounded-2xl shadow-lg border border-white/50 p-4 space-y-3">
+            <div class="relative">
+                <i data-lucide="search" class="absolute left-3 top-3.5 w-5 h-5 text-slate-400"></i>
+                <input type="text" id="searchInput"
+                    placeholder="Search building, department, hostel..."
+                    class="w-full pl-10 pr-4 py-3.5 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-rose-500 outline-none text-sm font-medium">
+            </div>
+            <div class="flex gap-2 overflow-x-auto no-scrollbar" id="filterContainer"></div>
+        </div>
+    </div>
+
+    <main class="max-w-md mx-auto p-4 mt-2">
+        <div id="loader" class="grid gap-4" aria-hidden="true">
+            <div class="skeleton-card" aria-hidden="true">
+                <div class="skeleton-line h-4 w-2/3 mb-3"></div>
+                <div class="skeleton-line h-3 w-1/3 mb-4"></div>
+                <div class="skeleton-line h-3 w-full mb-2"></div>
+                <div class="skeleton-line h-3 w-4/5 mb-4"></div>
+                <div class="flex justify-between">
+                    <div class="skeleton-line h-3 w-1/4"></div>
+                    <div class="skeleton-line h-6 w-20 rounded-full"></div>
+                </div>
+            </div>
+            <div class="skeleton-card" aria-hidden="true">
+                <div class="skeleton-line h-4 w-1/2 mb-3"></div>
+                <div class="skeleton-line h-3 w-1/3 mb-4"></div>
+                <div class="skeleton-line h-3 w-full mb-2"></div>
+                <div class="skeleton-line h-3 w-3/4 mb-4"></div>
+                <div class="flex justify-between">
+                    <div class="skeleton-line h-3 w-1/4"></div>
+                    <div class="skeleton-line h-6 w-20 rounded-full"></div>
+                </div>
+            </div>
+            <div class="skeleton-card" aria-hidden="true">
+                <div class="skeleton-line h-4 w-3/4 mb-3"></div>
+                <div class="skeleton-line h-3 w-1/4 mb-4"></div>
+                <div class="skeleton-line h-3 w-full mb-2"></div>
+                <div class="skeleton-line h-3 w-5/6 mb-4"></div>
+                <div class="flex justify-between">
+                    <div class="skeleton-line h-3 w-1/4"></div>
+                    <div class="skeleton-line h-6 w-20 rounded-full"></div>
+                </div>
+            </div>
+            <div class="skeleton-card" aria-hidden="true">
+                <div class="skeleton-line h-4 w-2/5 mb-3"></div>
+                <div class="skeleton-line h-3 w-1/3 mb-4"></div>
+                <div class="skeleton-line h-3 w-full mb-2"></div>
+                <div class="skeleton-line h-3 w-2/3 mb-4"></div>
+                <div class="flex justify-between">
+                    <div class="skeleton-line h-3 w-1/4"></div>
+                    <div class="skeleton-line h-6 w-20 rounded-full"></div>
+                </div>
+            </div>
+        </div>
+        <div id="emptyState" class="hidden text-center py-16 text-slate-400">
+            <svg class="empty-illustration w-28 h-28 mx-auto mb-3" viewBox="0 0 100 100" fill="none"
+                xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M50 15 C35 15 24 26 24 40 C24 56 50 82 50 82 C50 82 76 56 76 40 C76 26 65 15 50 15 Z"
+                    stroke-width="3" stroke-linejoin="round" />
+                <circle cx="50" cy="40" r="9" stroke-width="3" />
+                <circle cx="63" cy="63" r="14" stroke-width="3" />
+                <line x1="73" y1="73" x2="85" y2="85" stroke-width="3" stroke-linecap="round" />
+            </svg>
+            <p class="text-sm font-bold" id="emptyStateText">No matching locations found</p>
+        </div>
+        <div id="locationList" class="grid gap-4"></div>
+    </main>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center modal-overlay"
+        role="dialog" aria-modal="true" aria-labelledby="modalTitleRegion"
+        onclick="if(event.target === this) closeModal();">
+        <div class="modal-panel w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl max-h-[85vh] p-6 relative shadow-2xl flex flex-col"
+            id="modalPanel">
+            <button id="modalCloseBtn" onclick="closeModal()" aria-label="Close details"
+                class="absolute top-4 right-4 bg-slate-100 rounded-full p-2 tap-shrink z-10" style="min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;">
+                <i data-lucide="x" class="w-4 h-4 text-slate-600"></i>
+            </button>
+            <div class="modal-scroll-body" id="modalScrollBody">
+                <div id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" role="status" aria-live="polite"></div>
+
+    <!-- Offline reassurance banner -->
+    <div id="offlineBanner" role="status" aria-live="polite">
+        <i data-lucide="wifi-off" class="w-3.5 h-3.5"></i>
+        <span id="offlineBannerText">You're offline — showing saved data</span>
+    </div>
+
+    <!-- Android/Chrome install banner -->
+    <div id="installBanner" role="dialog" aria-label="Install CampusCompass">
+        <i data-lucide="download" class="w-6 h-6 text-rose-600 flex-shrink-0"></i>
+        <div class="flex-1 min-w-0">
+            <p class="text-sm font-black leading-tight" id="installBannerTitle">Install CampusCompass</p>
+            <p class="text-[11px] font-medium opacity-70 leading-tight mt-0.5" id="installBannerSubtitle">Add to your home screen for quick, offline access.</p>
+        </div>
+        <button onclick="handleInstallClick()" class="install-cta-btn" id="installBannerBtn" aria-label="Install CampusCompass app">Install</button>
+        <button onclick="dismissInstallBanner()" class="install-dismiss-btn" aria-label="Dismiss install prompt">
+            <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+    </div>
+
+    <!-- iOS Safari "Add to Home Screen" tip (no beforeinstallprompt support on iOS) -->
+    <div id="iosInstallTip" role="dialog" aria-label="Add CampusCompass to Home Screen">
+        <i data-lucide="share" class="w-6 h-6 text-rose-600 flex-shrink-0"></i>
+        <div class="flex-1 min-w-0">
+            <p class="text-sm font-black leading-tight" id="iosInstallTipTitle">Install this app</p>
+            <p class="text-[11px] font-medium opacity-70 leading-tight mt-0.5" id="iosInstallTipSubtitle">Tap the Share icon, then "Add to Home Screen".</p>
+        </div>
+        <button onclick="dismissIosInstallTip()" class="install-dismiss-btn" aria-label="Dismiss install tip">
+            <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+    </div>
+
+    <script type="application/json" id="campusDataEmbedded">
+{"institution":"Sandip University","dataset":"campus_navigation","version":"1.0","total_locations":79,"locations":[{"id":"adm_001","name":"Sandip University Nashik Admission Cell","category":"admission_cell","parent":"O Building","description":"Central admission cell for Sandip University handling overall admission inquiries and processes.","keywords":["admission","enquiry","university admission"],"aliases":["Main Admission Cell","SU Admission Cell"],"coordinates":{"latitude":19.9667389,"longitude":73.6705707},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9667389,73.6705707&travelmode=walking"},{"id":"adm_002","name":"SF: SITRC Admission Cell","category":"admission_cell","parent":"SITRC","description":"Admission cell for Sandip Institute of Technology & Research Centre (SITRC).","keywords":["admission","SITRC","engineering admission"],"aliases":["Sandip Institute of Technology & Research Centre Admission Cell"],"coordinates":{"latitude":19.9660434,"longitude":73.6678583},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9660434,73.6678583&travelmode=walking"},{"id":"adm_003","name":"SF: SIEM Admission Cell","category":"admission_cell","parent":"SIEM","description":"Admission cell for Sandip Institute of Engineering & Management (SIEM).","keywords":["admission","SIEM","engineering admission"],"aliases":["Sandip Institute of Engineering & Management Admission Cell"],"coordinates":{"latitude":19.9615929,"longitude":73.6679589},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9615929,73.6679589&travelmode=walking"},{"id":"adm_004","name":"SF: SIPS Admission Cell","category":"admission_cell","parent":"SIPS","description":"Admission cell for Sandip Institute of Pharmaceutical Sciences (SIPS).","keywords":["admission","SIPS","pharmacy admission"],"aliases":["Sandip Institute of Pharmaceutical Sciences Admission Cell"],"coordinates":{"latitude":19.9631874,"longitude":73.6686355},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9631874,73.6686355&travelmode=walking"},{"id":"adm_005","name":"SF: SP Admission Cell","category":"admission_cell","parent":"Sandip Polytechnic","description":"Admission cell for Sandip Polytechnic (SP).","keywords":["admission","polytechnic admission","diploma admission"],"aliases":["Sandip Polytechnic Admission Cell"],"coordinates":{"latitude":19.9631758,"longitude":73.6671687},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9631758,73.6671687&travelmode=walking"},{"id":"gate_001","name":"Foundation Gate","category":"gate","parent":null,"description":"One of the main entrance gates to the Sandip University campus.","keywords":["entrance","gate","campus entry"],"aliases":["Foundation Entrance"],"coordinates":{"latitude":19.9672825,"longitude":73.6667492},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9672825,73.6667492&travelmode=walking"},{"id":"gate_002","name":"University Gate","category":"gate","parent":null,"description":"Main entrance gate leading into the Sandip University campus.","keywords":["entrance","gate","campus entry","main gate"],"aliases":["Main University Gate"],"coordinates":{"latitude":19.9680823,"longitude":73.670044},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9680823,73.6700440&travelmode=walking"},{"id":"bld_001","name":"SITRC Admin Block","category":"building","parent":"SITRC","description":"Administrative block of Sandip Institute of Technology & Research Centre.","keywords":["admin","SITRC","administration office"],"aliases":[],"coordinates":{"latitude":19.9657113,"longitude":73.6681165},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9657113,73.6681165&travelmode=walking"},{"id":"acc_001","name":"SITRC Accounts Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9657113,"longitude":73.6681165},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9657113,73.6681165&travelmode=walking"},{"id":"std_001","name":"SITRC Student Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9657113,"longitude":73.6681165},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9657113,73.6681165&travelmode=walking"},{"id":"bld_002","name":"SITRC Amphitheatre","category":"building","parent":"SITRC","description":"Open-air amphitheatre at SITRC used for events and gatherings.","keywords":["amphitheatre","SITRC","events"],"aliases":[],"coordinates":{"latitude":19.9650271,"longitude":73.6683022},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9650271,73.6683022&travelmode=walking"},{"id":"bld_003","name":"SITRC Building","category":"building","parent":"SITRC","description":"Main academic building of Sandip Institute of Technology & Research Centre.","keywords":["SITRC","academic building"],"aliases":[],"coordinates":{"latitude":19.9650271,"longitude":73.6683022},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9650271,73.6683022&travelmode=walking"},{"id":"fc_001","name":"SITRC Food Court","category":"food_court","parent":"SITRC","description":"Food court located within the SITRC campus premises.","keywords":["food","canteen","SITRC"],"aliases":["Food Court (SITRC)"],"coordinates":{"latitude":19.9650716,"longitude":73.6690308},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9650716,73.6690308&travelmode=walking"},{"id":"bld_004","name":"SIEM Admin Block","category":"building","parent":"SIEM","description":"Administrative block of Sandip Institute of Engineering & Management.","keywords":["admin","SIEM","administration office"],"aliases":[],"coordinates":{"latitude":19.9615929,"longitude":73.6679589},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9615929,73.6679589&travelmode=walking"},{"id":"bld_005","name":"SIEM Building","category":"building","parent":"SIEM","description":"Main academic building of Sandip Institute of Engineering & Management.","keywords":["SIEM","academic building"],"aliases":[],"coordinates":{"latitude":19.96308,"longitude":73.6678992},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9630800,73.6678992&travelmode=walking"},{"id":"acc_002","name":"SIEM Accounts Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.96308,"longitude":73.6678992},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9630800,73.6678992&travelmode=walking"},{"id":"std_002","name":"SIEM Student Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.96308,"longitude":73.6678992},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9630800,73.6678992&travelmode=walking"},{"id":"fc_002","name":"SIEM Food Court","category":"food_court","parent":"SIEM","description":"Food court located within the SIEM campus premises.","keywords":["food","canteen","SIEM"],"aliases":[],"coordinates":{"latitude":19.9631301,"longitude":73.6682268},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9631301,73.6682268&travelmode=walking"},{"id":"bld_006","name":"School of Design (SOD)","category":"building","parent":"Sandip University","description":"Academic building housing the School of Design.","keywords":["SOD","design school"],"aliases":["SOD Building"],"coordinates":{"latitude":19.9621673,"longitude":73.6673752},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9621673,73.6673752&travelmode=walking"},{"id":"bld_007","name":"O Building","category":"building","parent":"Sandip University","description":"Academic building on the Sandip University main campus.","keywords":["O Building"],"aliases":[],"coordinates":{"latitude":19.9667651,"longitude":73.67056},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9667651,73.6705600&travelmode=walking"},{"id":"bld_008","name":"Y Building","category":"building","parent":"Sandip University","description":"Academic building housing the School of Engineering & Technology and Distance Learning programs.","keywords":["Y Building","SOET","distance learning"],"aliases":["Y Building (School of Engineering & Technology / Distance Learning)"],"coordinates":{"latitude":19.9632807,"longitude":73.6661045},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9632807,73.6661045&travelmode=walking"},{"id":"bld_009","name":"School of Science (SOS)","category":"building","parent":"Sandip University","description":"Academic building housing the School of Science.","keywords":["SOS","science school"],"aliases":["SOS Building"],"coordinates":{"latitude":19.9630258,"longitude":73.6665963},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9630258,73.6665963&travelmode=walking"},{"id":"bld_010","name":"Department of Transportation","category":"building","parent":"Sandip University","description":"University department managing transport and bus services for staff and students.","keywords":["transport","bus department"],"aliases":[],"coordinates":{"latitude":19.9632731,"longitude":73.6660985},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9632731,73.6660985&travelmode=walking"},{"id":"bld_011","name":"Sandip Polytechnic Admin Block","category":"building","parent":"Sandip Polytechnic","description":"Administrative block of Sandip Polytechnic.","keywords":["admin","polytechnic","administration office"],"aliases":[],"coordinates":{"latitude":19.9632432,"longitude":73.667163},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9632432,73.6671630&travelmode=walking"},{"id":"std_003","name":"SP Student Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9632432,"longitude":73.667163},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9632432,73.6671630&travelmode=walking"},{"id":"acc_003","name":"SP Account Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9632432,"longitude":73.667163},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9632432,73.6671630&travelmode=walking"},{"id":"bld_012","name":"S Building","category":"building","parent":"Sandip University","description":"Multi-school academic building housing SOL, SOCSE, SOPS, SOCMS, and SOCSA.","keywords":["S Building","multi-school building"],"aliases":[],"coordinates":{"latitude":19.9672948,"longitude":73.6697225},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9672948,73.6697225&travelmode=walking"},{"id":"lm_001","name":"Clock Tower","category":"landmark","parent":null,"description":"Iconic clock tower landmark on campus.","keywords":["clock tower","landmark"],"aliases":[],"coordinates":{"latitude":19.9673616,"longitude":73.6699813},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9673616,73.6699813&travelmode=walking"},{"id":"lm_002","name":"Foundation Fountain","category":"landmark","parent":null,"description":"Fountain landmark near the Foundation Gate area.","keywords":["fountain","landmark"],"aliases":[],"coordinates":{"latitude":19.9664982,"longitude":73.6669853},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9664982,73.6669853&travelmode=walking"},{"id":"cnt_001","name":"Central Canteen","category":"canteen","parent":null,"description":"Main canteen serving the entire university campus.","keywords":["food","canteen","central canteen"],"aliases":[],"coordinates":{"latitude":19.9654608,"longitude":73.6692008},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9654608,73.6692008&travelmode=walking"},{"id":"sp_001","name":"Sports Ground","category":"sports","parent":null,"description":"Open sports ground used for outdoor sports and events.","keywords":["sports","ground","playground"],"aliases":[],"coordinates":{"latitude":19.9626233,"longitude":73.6698311},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9626233,73.6698311&travelmode=walking"},{"id":"sp_002","name":"Sports Complex","category":"sports","parent":null,"description":"Indoor/outdoor sports complex with multiple facilities.","keywords":["sports","complex","gymnasium"],"aliases":[],"coordinates":{"latitude":19.9629668,"longitude":73.6726846},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9629668,73.6726846&travelmode=walking"},{"id":"sp_003","name":"Cricket Turf","category":"sports","parent":null,"description":"Dedicated cricket turf/ground on campus.","keywords":["cricket","turf","sports"],"aliases":[],"coordinates":{"latitude":19.9664792,"longitude":73.6690056},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9664792,73.6690056&travelmode=walking"},{"id":"park_001","name":"Bus Parking","category":"parking","parent":null,"description":"Designated parking area for university buses.","keywords":["parking","bus"],"aliases":[],"coordinates":{"latitude":19.9641599,"longitude":73.6659251},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9641599,73.6659251&travelmode=walking"},{"id":"park_002","name":"Foundation Gate Parking","category":"parking","parent":null,"description":"Parking area located near Foundation Gate.","keywords":["parking","Foundation Gate"],"aliases":[],"coordinates":{"latitude":19.9672551,"longitude":73.6662889},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9672551,73.6662889&travelmode=walking"},{"id":"park_003","name":"University Gate Parking","category":"parking","parent":null,"description":"Parking area located near University Gate.","keywords":["parking","University Gate"],"aliases":[],"coordinates":{"latitude":19.9682918,"longitude":73.6696554},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9682918,73.6696554&travelmode=walking"},{"id":"stat_001","name":"Stationery Shop (Behind O Building)","category":"stationery","parent":"O Building","description":"Stationery shop located behind O Building.","keywords":["stationery","shop"],"aliases":[],"coordinates":{"latitude":19.966438,"longitude":73.6716339},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9664380,73.6716339&travelmode=walking"},{"id":"std_004","name":"SIPS Student Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9631937,"longitude":73.6686506},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9631937,73.6686506&travelmode=walking"},{"id":"acc_004","name":"SIPS Accounts Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9631937,"longitude":73.6686506},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9631937,73.6686506&travelmode=walking"},{"id":"stat_002","name":"SIPS Stationery","category":"stationery","parent":"SIPS","description":"Stationery shop located within the SIPS campus area.","keywords":["stationery","shop","SIPS"],"aliases":[],"coordinates":{"latitude":19.9631937,"longitude":73.6686506},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9631937,73.6686506&travelmode=walking"},{"id":"lm_003","name":"Olive","category":"landmark","parent":null,"description":"Campus landmark/eatery known as Olive.","keywords":["Olive"],"aliases":[],"coordinates":{"latitude":19.963679,"longitude":73.6681413},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9636790,73.6681413&travelmode=walking"},{"id":"lm_004","name":"Junior College","category":"landmark","parent":null,"description":"Junior College facility located within the campus premises.","keywords":["junior college"],"aliases":[],"coordinates":{"latitude":19.963575,"longitude":73.6671894},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9635750,73.6671894&travelmode=walking"},{"id":"lm_005","name":"Neelam Sagar Dam","category":"landmark","parent":null,"description":"Dam landmark located near the Sandip University campus.","keywords":["dam","Neelam Sagar Dam"],"aliases":[],"coordinates":{"latitude":19.9609106,"longitude":73.6667465},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9609106,73.6667465&travelmode=walking"},{"id":"host_b1","name":"B1 Hostel","category":"hostel","parent":null,"description":"Boys hostel block B1 on campus.","keywords":["hostel","boys hostel"],"aliases":[],"coordinates":{"latitude":19.9635375,"longitude":73.6713774},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9635375,73.6713774&travelmode=walking"},{"id":"host_b2","name":"B2 Hostel","category":"hostel","parent":null,"description":"Boys hostel block B2 on campus.","keywords":["hostel","boys hostel"],"aliases":[],"coordinates":{"latitude":19.9635375,"longitude":73.6713774},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9635375,73.6713774&travelmode=walking"},{"id":"host_b3","name":"B3 Hostel","category":"hostel","parent":null,"description":"Boys hostel block B3 on campus.","keywords":["hostel","boys hostel"],"aliases":[],"coordinates":{"latitude":19.9634786,"longitude":73.6705449},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9634786,73.6705449&travelmode=walking"},{"id":"host_b4","name":"B4 Hostel","category":"hostel","parent":null,"description":"Boys hostel block B4 on campus.","keywords":["hostel","boys hostel"],"aliases":[],"coordinates":{"latitude":19.9634786,"longitude":73.6705449},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9634786,73.6705449&travelmode=walking"},{"id":"host_g1","name":"G1 Hostel","category":"hostel","parent":null,"description":"Girls hostel block G1 on campus.","keywords":["hostel","girls hostel"],"aliases":[],"coordinates":{"latitude":19.9649455,"longitude":73.6711584},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9649455,73.6711584&travelmode=walking"},{"id":"host_g2","name":"G2 Hostel","category":"hostel","parent":null,"description":"Girls hostel block G2 on campus.","keywords":["hostel","girls hostel"],"aliases":[],"coordinates":{"latitude":19.9649455,"longitude":73.6711584},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9649455,73.6711584&travelmode=walking"},{"id":"host_g3","name":"G3 Hostel","category":"hostel","parent":null,"description":"Girls hostel block G3 on campus.","keywords":["hostel","girls hostel"],"aliases":[],"coordinates":{"latitude":19.9649455,"longitude":73.6711584},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9649455,73.6711584&travelmode=walking"},{"id":"host_g4","name":"G4 Hostel","category":"hostel","parent":null,"description":"Girls hostel block G4 on campus.","keywords":["hostel","girls hostel"],"aliases":[],"coordinates":{"latitude":19.9649455,"longitude":73.6711584},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9649455,73.6711584&travelmode=walking"},{"id":"sch_001","name":"School of Engineering & Technology (SOET)","category":"building","parent":"Y Building","description":"Academic school building/unit: School of Engineering & Technology (SOET).","keywords":["school","School of Engineering & Technology"],"aliases":[],"coordinates":{"latitude":19.9632731,"longitude":73.6660985},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9632731,73.6660985&travelmode=walking"},{"id":"sch_002","name":"School of Computer Science & Engineering (SOCSE)","category":"building","parent":"S Building","description":"Academic school building/unit: School of Computer Science & Engineering (SOCSE).","keywords":["school","School of Computer Science & Engineering"],"aliases":[],"coordinates":{"latitude":19.9668281,"longitude":73.6701164},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"},{"id":"sch_003","name":"School of Commerce & Management Studies (SOCMS)","category":"building","parent":"S Building","description":"Academic school building/unit: School of Commerce & Management Studies (SOCMS).","keywords":["school","School of Commerce & Management Studies"],"aliases":[],"coordinates":{"latitude":19.9668281,"longitude":73.6701164},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"},{"id":"sch_004","name":"School of Pharmaceutical Sciences (SOPS)","category":"building","parent":"S Building","description":"Academic school building/unit: School of Pharmaceutical Sciences (SOPS).","keywords":["school","School of Pharmaceutical Sciences"],"aliases":[],"coordinates":{"latitude":19.9668281,"longitude":73.6701164},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"},{"id":"sch_005","name":"School of Law (SOL)","category":"building","parent":"S Building","description":"Academic school building/unit: School of Law (SOL).","keywords":["school","School of Law"],"aliases":[],"coordinates":{"latitude":19.9668281,"longitude":73.6701164},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"},{"id":"sch_006","name":"School of Science (SOS)","category":"building","parent":"SOS Building","description":"Academic school building/unit: School of Science (SOS).","keywords":["school","School of Science"],"aliases":[],"coordinates":{"latitude":19.9630258,"longitude":73.6665963},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9630258,73.6665963&travelmode=walking"},{"id":"sch_007","name":"School of Design (SOD)","category":"building","parent":"School of Design (SOD)","description":"Academic school building/unit: School of Design (SOD).","keywords":["school","School of Design"],"aliases":[],"coordinates":{"latitude":19.9621673,"longitude":73.6673752},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9621673,73.6673752&travelmode=walking"},{"id":"sch_008","name":"School of Computer Science Applications (SOCSA)","category":"building","parent":"S Building","description":"Academic school building/unit: School of Computer Science Applications (SOCSA).","keywords":["school","School of Computer Science Applications"],"aliases":[],"coordinates":{"latitude":19.9668281,"longitude":73.6701164},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"},{"id":"std_005","name":"SUN Student Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9667389,"longitude":73.6705707},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9667389,73.6705707&travelmode=walking"},{"id":"acc_005","name":"SUN Account Section (Sandip University)","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9667389,"longitude":73.6705707},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9667389,73.6705707&travelmode=walking"},{"id":"dep_001","name":"Department of Computer Engineering","category":"department","parent":"School of Engineering & Technology (SOET)","school":"School of Engineering & Technology (SOET)","description":"Department of Computer Engineering, offering courses under School of Engineering & Technology (SOET).","keywords":["department","School of Engineering & Technology"],"aliases":[],"courses":["B.Tech Computer Engineering","M.Tech Computer Engineering"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_002","name":"Department of Mechanical Engineering","category":"department","parent":"School of Engineering & Technology (SOET)","school":"School of Engineering & Technology (SOET)","description":"Department of Mechanical Engineering, offering courses under School of Engineering & Technology (SOET).","keywords":["department","School of Engineering & Technology"],"aliases":[],"courses":["B.Tech Mechanical Engineering","M.Tech Mechanical Engineering"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_003","name":"Department of Civil Engineering","category":"department","parent":"School of Engineering & Technology (SOET)","school":"School of Engineering & Technology (SOET)","description":"Department of Civil Engineering, offering courses under School of Engineering & Technology (SOET).","keywords":["department","School of Engineering & Technology"],"aliases":[],"courses":["B.Tech Civil Engineering"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_004","name":"Department of Electrical Engineering","category":"department","parent":"School of Engineering & Technology (SOET)","school":"School of Engineering & Technology (SOET)","description":"Department of Electrical Engineering, offering courses under School of Engineering & Technology (SOET).","keywords":["department","School of Engineering & Technology"],"aliases":[],"courses":["B.Tech Electrical Engineering"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_005","name":"Department of Electronics & Telecommunication Engineering","category":"department","parent":"School of Engineering & Technology (SOET)","school":"School of Engineering & Technology (SOET)","description":"Department of Electronics & Telecommunication Engineering, offering courses under School of Engineering & Technology (SOET).","keywords":["department","School of Engineering & Technology"],"aliases":[],"courses":["B.Tech Electronics & Telecommunication Engineering"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_006","name":"Department of Artificial Intelligence & Data Science","category":"department","parent":"School of Computer Science & Engineering (SOCSE)","school":"School of Computer Science & Engineering (SOCSE)","description":"Department of Artificial Intelligence & Data Science, offering courses under School of Computer Science & Engineering (SOCSE).","keywords":["department","School of Computer Science & Engineering"],"aliases":[],"courses":["B.Tech AI & Data Science","M.Tech AI & Data Science"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_007","name":"Department of Computer Science & Engineering","category":"department","parent":"School of Computer Science & Engineering (SOCSE)","school":"School of Computer Science & Engineering (SOCSE)","description":"Department of Computer Science & Engineering, offering courses under School of Computer Science & Engineering (SOCSE).","keywords":["department","School of Computer Science & Engineering"],"aliases":[],"courses":["B.Tech CSE","M.Tech CSE","Ph.D CSE"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_008","name":"Department of Information Technology","category":"department","parent":"School of Computer Science & Engineering (SOCSE)","school":"School of Computer Science & Engineering (SOCSE)","description":"Department of Information Technology, offering courses under School of Computer Science & Engineering (SOCSE).","keywords":["department","School of Computer Science & Engineering"],"aliases":[],"courses":["B.Tech IT"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_009","name":"Department of Business Administration","category":"department","parent":"School of Commerce & Management Studies (SOCMS)","school":"School of Commerce & Management Studies (SOCMS)","description":"Department of Business Administration, offering courses under School of Commerce & Management Studies (SOCMS).","keywords":["department","School of Commerce & Management Studies"],"aliases":[],"courses":["BBA","MBA"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_010","name":"Department of Commerce","category":"department","parent":"School of Commerce & Management Studies (SOCMS)","school":"School of Commerce & Management Studies (SOCMS)","description":"Department of Commerce, offering courses under School of Commerce & Management Studies (SOCMS).","keywords":["department","School of Commerce & Management Studies"],"aliases":[],"courses":["B.Com","M.Com"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_011","name":"Department of Pharmacy","category":"department","parent":"School of Pharmaceutical Sciences (SOPS)","school":"School of Pharmaceutical Sciences (SOPS)","description":"Department of Pharmacy, offering courses under School of Pharmaceutical Sciences (SOPS).","keywords":["department","School of Pharmaceutical Sciences"],"aliases":[],"courses":["B.Pharm","M.Pharm","D.Pharm"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_012","name":"Department of Law","category":"department","parent":"School of Law (SOL)","school":"School of Law (SOL)","description":"Department of Law, offering courses under School of Law (SOL).","keywords":["department","School of Law"],"aliases":[],"courses":["BA LLB","LLB","LLM"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_013","name":"Department of Physics","category":"department","parent":"School of Science (SOS)","school":"School of Science (SOS)","description":"Department of Physics, offering courses under School of Science (SOS).","keywords":["department","School of Science"],"aliases":[],"courses":["B.Sc Physics","M.Sc Physics"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_014","name":"Department of Chemistry","category":"department","parent":"School of Science (SOS)","school":"School of Science (SOS)","description":"Department of Chemistry, offering courses under School of Science (SOS).","keywords":["department","School of Science"],"aliases":[],"courses":["B.Sc Chemistry","M.Sc Chemistry"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_015","name":"Department of Mathematics","category":"department","parent":"School of Science (SOS)","school":"School of Science (SOS)","description":"Department of Mathematics, offering courses under School of Science (SOS).","keywords":["department","School of Science"],"aliases":[],"courses":["B.Sc Mathematics","M.Sc Mathematics"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_016","name":"Department of Fashion Design","category":"department","parent":"School of Design (SOD)","school":"School of Design (SOD)","description":"Department of Fashion Design, offering courses under School of Design (SOD).","keywords":["department","School of Design"],"aliases":[],"courses":["B.Des Fashion Design"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_017","name":"Department of Interior Design","category":"department","parent":"School of Design (SOD)","school":"School of Design (SOD)","description":"Department of Interior Design, offering courses under School of Design (SOD).","keywords":["department","School of Design"],"aliases":[],"courses":["B.Des Interior Design"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_018","name":"Department of Computer Applications","category":"department","parent":"School of Computer Science Applications (SOCSA)","school":"School of Computer Science Applications (SOCSA)","description":"Department of Computer Applications, offering courses under School of Computer Science Applications (SOCSA).","keywords":["department","School of Computer Science Applications"],"aliases":[],"courses":["BCA","MCA"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null}]}</script>
+
+    <script>
+        const DATA_URL = "./sandip_university_campus.json";
+
+        // Icon mapping per category for quick visual identification
+        const CATEGORY_ICONS = {
+            admission_cell: "clipboard-list",
+            gate: "door-open",
+            building: "building-2",
+            department: "graduation-cap",
+            hostel: "home",
+            parking: "car",
+            food_court: "utensils",
+            canteen: "utensils",
+            stationery: "pencil",
+            sports: "dumbbell",
+            landmark: "map-pin"
+        };
+        const DEFAULT_ICON = "map-pin";
+
+        let allLocations = [];      // Raw locations from JSON (parsed once)
+        let searchIndex = [];       // Precomputed lowercase search strings, same order as allLocations
+        let categories = ["All"];   // Unique categories discovered from data
+        let currentFilter = "All";
+        let currentQuery = "";
+        let lastFocusedElement = null; // Element to restore focus to after modal closes
+
+        // ---------- i18n: Translation dictionary ----------
+        const TRANSLATIONS = {
+            en: {
+                appTitle: "SANDIP UNIVERSITY",
+                appSubtitle: "CAMPUS NAVIGATION",
+                searchPlaceholder: "Search building, department, hostel...",
+                filterAll: "All",
+                categoryLabels: {
+                    admission_cell: "Admission Cell", gate: "Gate", building: "Building",
+                    department: "Department", hostel: "Hostel", parking: "Parking",
+                    food_court: "Food Court", canteen: "Canteen", stationery: "Stationery",
+                    sports: "Sports", landmark: "Landmark", sections: "Sections",
+                    uncategorized: "Uncategorized"
+                },
+                viewDetails: "View Details",
+                navigate: "Navigate",
+                navigateToLocation: "Navigate to Location",
+                copyLink: "Copy Link",
+                linkCopied: "Link copied!",
+                copyFailed: "Couldn't copy link",
+                copyUnsupported: "Copy not supported",
+                locationNotAvailable: "Location not available",
+                coordinatesNotAvailable: "Coordinates not available",
+                noDescription: "No description available.",
+                noKeywords: "No keywords available",
+                noAliases: "No aliases available",
+                noCourses: "No courses listed",
+                fieldParent: "Parent",
+                fieldParentTopLevel: "None (Top Level)",
+                fieldDescription: "Description",
+                fieldKeywords: "Keywords",
+                fieldAliases: "Aliases",
+                fieldSchool: "School",
+                fieldParentBuilding: "Parent Building",
+                fieldCoursesOffered: "Courses Offered",
+                fieldCoordinates: "Coordinates",
+                notSpecified: "Not specified",
+                unnamedLocation: "Unnamed Location",
+                emptyStateText: "No matching locations found",
+                offlineBannerText: "You're offline — showing saved data",
+                installBannerTitle: "Install CampusCompass",
+                installBannerSubtitle: "Add to your home screen for quick, offline access.",
+                installBannerBtn: "Install",
+                iosInstallTipTitle: "Install this app",
+                iosInstallTipSubtitle: 'Tap the Share icon, then "Add to Home Screen".',
+                langPickerTitle: "Choose your language",
+                langPickerSubtitle: "भाषा चुनें · भाषा निवडा",
+                langPickerNote: "Place names stay in English. You can change this anytime from the 🌐 icon.",
+                closeDetails: "Close details"
+            },
+            hi: {
+                appTitle: "सैंडिप विश्वविद्यालय",
+                appSubtitle: "कैंपस नेविगेशन",
+                searchPlaceholder: "भवन, विभाग, छात्रावास खोजें...",
+                filterAll: "सभी",
+                categoryLabels: {
+                    admission_cell: "प्रवेश प्रकोष्ठ", gate: "प्रवेश द्वार", building: "भवन",
+                    department: "विभाग", hostel: "छात्रावास", parking: "पार्किंग",
+                    food_court: "फूड कोर्ट", canteen: "कैंटीन", stationery: "स्टेशनरी",
+                    sports: "खेल", landmark: "स्थल चिह्न", sections: "अनुभाग",
+                    uncategorized: "अवर्गीकृत"
+                },
+                viewDetails: "विवरण देखें",
+                navigate: "दिशा-निर्देश",
+                navigateToLocation: "स्थान तक नेविगेट करें",
+                copyLink: "लिंक कॉपी करें",
+                linkCopied: "लिंक कॉपी हो गया!",
+                copyFailed: "लिंक कॉपी नहीं हो सका",
+                copyUnsupported: "कॉपी समर्थित नहीं है",
+                locationNotAvailable: "स्थान उपलब्ध नहीं है",
+                coordinatesNotAvailable: "निर्देशांक उपलब्ध नहीं",
+                noDescription: "कोई विवरण उपलब्ध नहीं है।",
+                noKeywords: "कोई कीवर्ड उपलब्ध नहीं",
+                noAliases: "कोई उपनाम उपलब्ध नहीं",
+                noCourses: "कोई पाठ्यक्रम सूचीबद्ध नहीं",
+                fieldParent: "मूल",
+                fieldParentTopLevel: "कोई नहीं (शीर्ष स्तर)",
+                fieldDescription: "विवरण",
+                fieldKeywords: "कीवर्ड",
+                fieldAliases: "उपनाम",
+                fieldSchool: "स्कूल",
+                fieldParentBuilding: "मूल भवन",
+                fieldCoursesOffered: "प्रस्तावित पाठ्यक्रम",
+                fieldCoordinates: "निर्देशांक",
+                notSpecified: "निर्दिष्ट नहीं",
+                unnamedLocation: "अज्ञात स्थान",
+                emptyStateText: "कोई मिलान स्थान नहीं मिला",
+                offlineBannerText: "आप ऑफ़लाइन हैं — सहेजा गया डेटा दिखाया जा रहा है",
+                installBannerTitle: "CampusCompass इंस्टॉल करें",
+                installBannerSubtitle: "त्वरित, ऑफ़लाइन एक्सेस के लिए होम स्क्रीन पर जोड़ें।",
+                installBannerBtn: "इंस्टॉल करें",
+                iosInstallTipTitle: "यह ऐप इंस्टॉल करें",
+                iosInstallTipSubtitle: 'शेयर आइकन टैप करें, फिर "होम स्क्रीन पर जोड़ें" चुनें।',
+                langPickerTitle: "अपनी भाषा चुनें",
+                langPickerSubtitle: "Choose your language · भाषा निवडा",
+                langPickerNote: "स्थानों के नाम अंग्रेज़ी में ही रहेंगे। आप इसे 🌐 आइकन से कभी भी बदल सकते हैं।",
+                closeDetails: "विवरण बंद करें"
+            },
+            mr: {
+                appTitle: "सँडिप विद्यापीठ",
+                appSubtitle: "कॅम्पस नेव्हिगेशन",
+                searchPlaceholder: "इमारत, विभाग, वसतिगृह शोधा...",
+                filterAll: "सर्व",
+                categoryLabels: {
+                    admission_cell: "प्रवेश कक्ष", gate: "प्रवेशद्वार", building: "इमारत",
+                    department: "विभाग", hostel: "वसतिगृह", parking: "पार्किंग",
+                    food_court: "फूड कोर्ट", canteen: "कॅन्टीन", stationery: "स्टेशनरी",
+                    sports: "क्रीडा", landmark: "खूणस्थान", sections: "विभाग",
+                    uncategorized: "अवर्गीकृत"
+                },
+                viewDetails: "तपशील पहा",
+                navigate: "मार्गदर्शन",
+                navigateToLocation: "स्थानाकडे मार्गदर्शन करा",
+                copyLink: "लिंक कॉपी करा",
+                linkCopied: "लिंक कॉपी झाली!",
+                copyFailed: "लिंक कॉपी करता आली नाही",
+                copyUnsupported: "कॉपी समर्थित नाही",
+                locationNotAvailable: "स्थान उपलब्ध नाही",
+                coordinatesNotAvailable: "निर्देशांक उपलब्ध नाहीत",
+                noDescription: "कोणतेही वर्णन उपलब्ध नाही.",
+                noKeywords: "कोणतेही कीवर्ड उपलब्ध नाहीत",
+                noAliases: "कोणतीही उपनावे उपलब्ध नाहीत",
+                noCourses: "कोणतेही अभ्यासक्रम सूचीबद्ध नाहीत",
+                fieldParent: "मूळ",
+                fieldParentTopLevel: "काहीही नाही (सर्वोच्च स्तर)",
+                fieldDescription: "वर्णन",
+                fieldKeywords: "कीवर्ड",
+                fieldAliases: "उपनावे",
+                fieldSchool: "स्कूल",
+                fieldParentBuilding: "मूळ इमारत",
+                fieldCoursesOffered: "दिले जाणारे अभ्यासक्रम",
+                fieldCoordinates: "निर्देशांक",
+                notSpecified: "नमूद केलेले नाही",
+                unnamedLocation: "अनामित स्थान",
+                emptyStateText: "जुळणारी स्थाने आढळली नाहीत",
+                offlineBannerText: "तुम्ही ऑफलाइन आहात — जतन केलेला डेटा दाखवत आहे",
+                installBannerTitle: "CampusCompass इंस्टॉल करा",
+                installBannerSubtitle: "जलद, ऑफलाइन प्रवेशासाठी होम स्क्रीनवर जोडा.",
+                installBannerBtn: "इंस्टॉल करा",
+                iosInstallTipTitle: "हे अ‍ॅप इंस्टॉल करा",
+                iosInstallTipSubtitle: 'शेअर आयकॉनवर टॅप करा, नंतर "होम स्क्रीनवर जोडा" निवडा.',
+                langPickerTitle: "तुमची भाषा निवडा",
+                langPickerSubtitle: "Choose your language · भाषा चुनें",
+                langPickerNote: "स्थानांची नावे इंग्रजीतच राहतील. तुम्ही हे 🌐 आयकॉनवरून कधीही बदलू शकता.",
+                closeDetails: "तपशील बंद करा"
+            }
+        };
+
+        const SUPPORTED_LANGS = ["en", "hi", "mr"];
+        const PREFS_KEY = "cc-preferences"; // single consistent preferences object shared with dark mode
+        let currentLang = "en";
+
+        function loadPreferences() {
+            try {
+                const raw = localStorage.getItem(PREFS_KEY);
+                return raw ? JSON.parse(raw) : {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function savePreferences(patch) {
+            try {
+                const current = loadPreferences();
+                const merged = Object.assign({}, current, patch);
+                localStorage.setItem(PREFS_KEY, JSON.stringify(merged));
+            } catch (e) { /* localStorage unavailable */ }
+        }
+
+        // Looks up `key` (dot-path supported, e.g. "categoryLabels.gate") in
+        // the current language, falling back to English, then to the key
+        // itself so a missing translation never renders blank.
+        function t(key) {
+            const resolve = (lang) => {
+                const dict = TRANSLATIONS[lang];
+                if (!dict) return undefined;
+                return key.split(".").reduce((obj, part) => (obj && obj[part] !== undefined ? obj[part] : undefined), dict);
+            };
+            const viaLang = resolve(currentLang);
+            if (viaLang !== undefined) return viaLang;
+            const viaEnglish = resolve("en");
+            if (viaEnglish !== undefined) return viaEnglish;
+            return key;
+        }
+
+        // ---------- Utilities ----------
+
+        // Simple debounce helper: delays invoking fn until `wait` ms have
+        // passed since the last call.
+        function debounce(fn, wait) {
+            let timeoutId = null;
+            return function (...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => fn.apply(this, args), wait);
+            };
+        }
+
+        // Light haptic-style feedback on primary button taps. Guarded so it
+        // silently no-ops on devices/browsers without vibration support.
+        function hapticTap() {
+            if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
+                navigator.vibrate(10);
+            }
+        }
+
+        function prefersReducedMotion() {
+            return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        }
+
+        // ---------- Dark Mode ----------
+
+        function applyThemeIcons() {
+            const isDark = document.documentElement.classList.contains("dark");
+            document.getElementById("themeIconSun").classList.toggle("hidden", isDark);
+            document.getElementById("themeIconMoon").classList.toggle("hidden", !isDark);
+        }
+
+        function toggleTheme() {
+            hapticTap();
+            const html = document.documentElement;
+            const isDark = html.classList.toggle("dark");
+            try {
+                localStorage.setItem("cc-theme", isDark ? "dark" : "light");
+            } catch (e) { /* localStorage unavailable */ }
+            applyThemeIcons();
+        }
+
+        // ---------- Language (i18n) ----------
+
+        // Determines the language to use on boot: a saved preference if
+        // present, otherwise null (meaning: no preference yet, so the
+        // full-screen picker should be shown before the app renders).
+        function initLanguage() {
+            const prefs = loadPreferences();
+            const saved = prefs.language;
+            if (saved && SUPPORTED_LANGS.includes(saved)) {
+                currentLang = saved;
+                document.documentElement.setAttribute("lang", currentLang);
+                applyLanguageToStaticText();
+                return true; // preference already existed
+            }
+            currentLang = "en";
+            document.documentElement.setAttribute("lang", "en");
+            return false; // first launch, no saved preference
+        }
+
+        // Shows the full-screen language picker. `dismissible` controls
+        // whether tapping doesn't auto-close on first-launch flows (it's
+        // always closable via a language choice; this flag just governs
+        // whether we treat it as a "change language later" reopen vs the
+        // mandatory first-run picker).
+        function openLangPicker() {
+            const overlay = document.getElementById("langPickerOverlay");
+            overlay.classList.add("picker-shown");
+            requestAnimationFrame(() => overlay.classList.add("picker-visible"));
+            if (typeof lucide !== "undefined") lucide.createIcons();
+        }
+
+        function closeLangPicker() {
+            const overlay = document.getElementById("langPickerOverlay");
+            overlay.classList.remove("picker-visible");
+            const finish = () => overlay.classList.remove("picker-shown");
+            if (prefersReducedMotion()) {
+                finish();
+            } else {
+                setTimeout(finish, 280);
+            }
+        }
+
+        // Called when the user taps a language card. Saves the preference,
+        // switches the UI instantly (no reload), and closes the picker.
+        function selectLanguage(lang) {
+            hapticTap();
+            if (!SUPPORTED_LANGS.includes(lang)) lang = "en";
+            currentLang = lang;
+            document.documentElement.setAttribute("lang", lang);
+            savePreferences({ language: lang });
+            applyLanguageToStaticText();
+
+            // Re-render dynamic sections so filter chips, cards, and any
+            // open modal pick up the new language immediately.
+            if (allLocations.length > 0) {
+                renderFilters();
+                applyAll();
+            }
+            const modal = document.getElementById("detailModal");
+            if (modal && !modal.classList.contains("hidden")) {
+                closeModal();
+            }
+
+            closeLangPicker();
+        }
+
+        // Updates every static (non-data-driven) piece of chrome text in
+        // the DOM to the current language. Called on boot and on every
+        // language switch. Dynamic sections (filters/cards/modal) are
+        // re-rendered separately via their own render*() functions, which
+        // already call t() internally.
+        function applyLanguageToStaticText() {
+            const setText = (id, key) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = t(key);
+            };
+
+            setText("appTitle", "appTitle");
+            setText("appSubtitle", "appSubtitle");
+            setText("emptyStateText", "emptyStateText");
+            setText("offlineBannerText", "offlineBannerText");
+            setText("installBannerTitle", "installBannerTitle");
+            setText("installBannerSubtitle", "installBannerSubtitle");
+            setText("installBannerBtn", "installBannerBtn");
+            setText("iosInstallTipTitle", "iosInstallTipTitle");
+            setText("iosInstallTipSubtitle", "iosInstallTipSubtitle");
+            setText("langPickerTitle", "langPickerTitle");
+            setText("langPickerSubtitle", "langPickerSubtitle");
+            setText("langPickerNote", "langPickerNote");
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) searchInput.placeholder = t("searchPlaceholder");
+
+            const closeBtn = document.getElementById("modalCloseBtn");
+            if (closeBtn) closeBtn.setAttribute("aria-label", t("closeDetails"));
+
+            const langToggle = document.getElementById("langToggleBtn");
+            if (langToggle) langToggle.setAttribute("aria-label", t("langPickerTitle"));
+        }
+
+        // ---------- Toast ----------
+
+        let toastTimeoutId = null;
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.classList.add("toast-visible");
+            clearTimeout(toastTimeoutId);
+            toastTimeoutId = setTimeout(() => {
+                toast.classList.remove("toast-visible");
+            }, 1800);
+        }
+
+        // ---------- Data Loading ----------
+
+        // Loads the campus dataset. Tries the external JSON file first (works
+        // when the page is served over http/https, and lets the data be
+        // updated independently of the HTML). If that fetch fails -- which
+        // happens when the file is opened directly via file:// and the
+        // browser blocks local cross-file requests -- it falls back to the
+        // dataset embedded in the #campusDataEmbedded script tag below, so
+        // the app still works when double-clicked open with no server.
+        async function loadData() {
+            let json = null;
+
+            try {
+                const res = await fetch(DATA_URL);
+                if (!res.ok) throw new Error("Network response was not ok");
+                json = await res.json();
+            } catch (e) {
+                console.warn("External fetch of", DATA_URL, "failed, using embedded dataset instead:", e.message);
+                json = loadEmbeddedData();
+            }
+
+            allLocations = json ? (Array.isArray(json) ? json : (json.locations || [])) : [];
+
+            if (allLocations.length === 0) {
+                console.error("No campus locations could be loaded from either source.");
+            }
+
+            buildSearchIndex();
+            buildCategoryList();
+            initUI();
+            document.getElementById("loader").classList.add("hidden");
+        }
+
+        // Parses the embedded JSON dataset stored in the page itself.
+        function loadEmbeddedData() {
+            try {
+                const el = document.getElementById("campusDataEmbedded");
+                if (!el || !el.textContent.trim()) return null;
+                return JSON.parse(el.textContent);
+            } catch (e) {
+                console.error("Failed to parse embedded campus dataset:", e);
+                return null;
+            }
+        }
+
+        // Precompute a single lowercase searchable string per location so
+        // typing doesn't re-derive this on every keystroke.
+        function buildSearchIndex() {
+            searchIndex = allLocations.map(loc => {
+                const parts = [
+                    loc.name,
+                    loc.category,
+                    loc.parent,
+                    loc.school,
+                    ...(Array.isArray(loc.aliases) ? loc.aliases : []),
+                    ...(Array.isArray(loc.keywords) ? loc.keywords : []),
+                    ...(Array.isArray(loc.courses) ? loc.courses : [])
+                ].filter(Boolean);
+                return parts.join(" ").toLowerCase();
+            });
+        }
+
+        function buildCategoryList() {
+            const found = new Set();
+            allLocations.forEach(loc => {
+                if (loc.category) found.add(loc.category);
+            });
+            categories = ["All", ...Array.from(found).sort()];
+        }
+
+        function initUI() {
+            applyThemeIcons();
+            renderFilters();
+            applyAll();
+        }
+
+        // ---------- Rendering: Filters ----------
+
+        // Category labels are translated via the dictionary, with a safe
+        // fallback (title-cased raw category) for anything not covered.
+        function formatCategoryLabel(cat) {
+            if (!cat) return t("categoryLabels.uncategorized");
+            const dict = TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang].categoryLabels;
+            const dictEn = TRANSLATIONS.en.categoryLabels;
+            if (dict && dict[cat]) return dict[cat];
+            if (dictEn[cat]) return dictEn[cat];
+            return cat.split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+        }
+
+        const ALL_FILTER_ICON = "layout-grid";
+
+        function renderFilters() {
+            const container = document.getElementById("filterContainer");
+            container.innerHTML = categories.map(cat => {
+                const icon = cat === "All" ? ALL_FILTER_ICON : (CATEGORY_ICONS[cat] || DEFAULT_ICON);
+                const isActive = currentFilter === cat;
+                return `
+                <button onclick="setFilter('${cat}')" aria-pressed="${isActive}"
+                    class="filter-chip tap-shrink inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-xs font-bold border whitespace-nowrap transition-all
+                    ${isActive ? "bg-slate-900 text-white border-slate-900" : "bg-white filter-chip-inactive text-slate-500 border-slate-200"}"
+                    style="min-height:44px;">
+                    <i data-lucide="${icon}" class="w-3.5 h-3.5"></i>
+                    <span>${cat === "All" ? t("filterAll") : formatCategoryLabel(cat)}</span>
+                </button>
+            `;
+            }).join("");
+            lucide.createIcons();
+        }
+
+        function setFilter(cat) {
+            currentFilter = cat;
+            renderFilters();
+            applyAll();
+        }
+
+        // ---------- Search & Filter Logic ----------
+
+        const debouncedApplyAll = debounce(() => applyAll(), 200);
+
+        document.getElementById("searchInput").addEventListener("input", (e) => {
+            currentQuery = e.target.value.trim().toLowerCase();
+            debouncedApplyAll();
+        });
+
+        // ---------- Global keyboard handling (Esc to close, focus trap) ----------
+
+        document.addEventListener("keydown", (e) => {
+            const modal = document.getElementById("detailModal");
+            const isOpen = !modal.classList.contains("hidden");
+            if (!isOpen) return;
+
+            if (e.key === "Escape") {
+                e.preventDefault();
+                closeModal();
+                return;
+            }
+
+            if (e.key === "Tab") {
+                const panel = document.getElementById("modalPanel");
+                const focusable = panel.querySelectorAll(
+                    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                );
+                if (focusable.length === 0) return;
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+
+                if (e.shiftKey && document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        });
+
+        function applyAll() {
+            const query = currentQuery;
+            const matchingIndexes = [];
+
+            for (let i = 0; i < allLocations.length; i++) {
+                const loc = allLocations[i];
+                const matchesCategory = currentFilter === "All" || loc.category === currentFilter;
+                if (!matchesCategory) continue;
+
+                const matchesSearch = query === "" || searchIndex[i].includes(query);
+                if (matchesSearch) matchingIndexes.push(i);
+            }
+
+            renderCards(matchingIndexes.map(i => allLocations[i]));
+        }
+
+        // ---------- Navigation helpers ----------
+
+        // Resolves the best available Google Maps URL for a location.
+        // Prefers a pre-built walking-directions link from the dataset,
+        // falling back to one constructed from raw coordinates.
+        function getMapUrl(loc) {
+            if (loc && loc.google_maps_walking_link) return loc.google_maps_walking_link;
+            const c = loc && loc.coordinates;
+            if (c && c.latitude != null && c.longitude != null) {
+                return `https://www.google.com/maps/dir/?api=1&destination=${c.latitude},${c.longitude}&travelmode=walking`;
+            }
+            return null;
+        }
+
+        // Opens the given location URL in a new tab, or informs the user
+        // that no location data is available for that place.
+        function navigateToLocation(url) {
+            hapticTap();
+            if (url) {
+                window.open(url, "_blank");
+            } else {
+                alert(t("locationNotAvailable") + ".");
+            }
+        }
+
+        // Copies the resolved map URL to the clipboard and shows a brief
+        // confirmation toast. No-ops gracefully if there's no URL or the
+        // Clipboard API isn't available.
+        function copyMapLink(url) {
+            hapticTap();
+            if (!url) return;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url)
+                    .then(() => showToast(t("linkCopied")))
+                    .catch(() => showToast(t("copyFailed")));
+            } else {
+                showToast(t("copyUnsupported"));
+            }
+        }
+
+        // ---------- Rendering: Cards ----------
+
+        function renderCards(data) {
+            const list = document.getElementById("locationList");
+            const emptyState = document.getElementById("emptyState");
+
+            if (data.length === 0) {
+                list.innerHTML = "";
+                emptyState.classList.remove("hidden");
+                return;
+            }
+            emptyState.classList.add("hidden");
+
+            list.innerHTML = data.map((loc, idx) => {
+                const originalIndex = allLocations.indexOf(loc);
+                const icon = CATEGORY_ICONS[loc.category] || DEFAULT_ICON;
+                const description = loc.description && loc.description.trim() !== ""
+                    ? loc.description
+                    : t("noDescription");
+                const parentLine = loc.parent
+                    ? `<i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i> ${loc.parent}`
+                    : "";
+                const mapUrl = getMapUrl(loc);
+                const navAttr = mapUrl ? `navigateToLocation('${mapUrl}')` : `navigateToLocation(null)`;
+                const locName = loc.name || t("unnamedLocation");
+
+                return `
+            <div onclick="openModal(${originalIndex})" onkeydown="if(event.key === 'Enter'){ openModal(${originalIndex}); }"
+                tabindex="0" role="button" aria-label="${t("viewDetails")} ${locName.replace(/"/g, '&quot;')}"
+                class="card tap-shrink bg-white rounded-3xl p-6 shadow-sm border border-slate-100 relative overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-500">
+                <div class="absolute top-0 right-0 p-4">
+                    <span class="bg-rose-50 text-rose-700 text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-tighter">
+                        ${formatCategoryLabel(loc.category)}
+                    </span>
+                </div>
+
+                <div class="flex items-center gap-2 mb-1">
+                    <i data-lucide="${icon}" class="w-4 h-4 text-rose-600"></i>
+                    <h2 class="text-xl font-black text-slate-800">${locName}</h2>
+                </div>
+
+                ${parentLine ? `<p class="text-sm font-bold text-rose-600 flex items-center gap-1 mb-3">${parentLine}</p>` : `<div class="mb-3"></div>`}
+
+                <p class="text-xs font-medium text-slate-500 line-clamp-2">${description}</p>
+
+                <div class="flex items-center justify-between mt-4">
+                    <div class="flex items-center gap-1 text-slate-400">
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        <span class="text-[10px] font-bold uppercase tracking-wide">${t("viewDetails")}</span>
+                    </div>
+                    <button onclick="event.stopPropagation(); ${navAttr}" aria-label="${t("navigate")} ${locName.replace(/"/g, '&quot;')}"
+                        class="navigate-btn-small tap-shrink" style="min-height:32px;" ${mapUrl ? "" : "disabled"}>
+                        <span>📍</span> ${t("navigate")}
+                    </button>
+                </div>
+            </div>
+        `;
+            }).join("");
+
+            lucide.createIcons();
+        }
+
+        // ---------- Rendering: Detail Modal ----------
+
+        function renderChipList(items, emptyLabel) {
+            if (!Array.isArray(items) || items.length === 0) {
+                return `<p class="text-xs font-medium text-slate-400 italic">${emptyLabel}</p>`;
+            }
+            return `<div class="flex flex-wrap gap-2">
+                ${items.map(item => `<span class="chip bg-slate-100 text-slate-600 text-[11px] font-bold px-3 py-1.5 rounded-full">${item}</span>`).join("")}
+            </div>`;
+        }
+
+        function renderCoordinates(loc) {
+            const coords = loc && loc.coordinates;
+            const mapUrl = getMapUrl(loc);
+            const coordsText = (coords && coords.latitude != null && coords.longitude != null)
+                ? `${coords.latitude}, ${coords.longitude}`
+                : t("coordinatesNotAvailable");
+            const navAttr = mapUrl ? `navigateToLocation('${mapUrl}')` : `navigateToLocation(null)`;
+            const copyAttr = mapUrl ? `copyMapLink('${mapUrl}')` : "";
+
+            return `
+                <p class="text-xs font-bold text-slate-700 mb-3">${coordsText}</p>
+                <div class="modal-footer-sticky">
+                    <button onclick="${navAttr}" aria-label="${t("navigateToLocation")}" class="navigate-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
+                        <span class="navigate-btn-icon">📍</span>
+                        ${t("navigateToLocation")}
+                    </button>
+                    <button onclick="${copyAttr}" aria-label="${t("copyLink")}" class="copy-link-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
+                        <span>📋</span> ${t("copyLink")}
+                    </button>
+                    ${!mapUrl ? `<p class="text-[11px] font-semibold text-slate-400 italic mt-2 text-center">${t("locationNotAvailable")}</p>` : ""}
+                </div>
+            `;
+        }
+
+        function renderBreadcrumb(loc) {
+            const school = loc.school;
+            const parent = loc.parent;
+            const name = loc.name || t("unnamedLocation");
+            const crumbs = [school, parent, name].filter(Boolean);
+            if (crumbs.length <= 1) return "";
+
+            return `
+                <nav aria-label="Breadcrumb" class="breadcrumb text-[11px] font-bold text-slate-400 mb-2">
+                    ${crumbs.map((crumb, i) => `
+                        ${i > 0 ? '<i data-lucide="chevron-right" class="w-3 h-3"></i>' : ""}
+                        <span class="${i === crumbs.length - 1 ? "text-rose-600" : ""}">${crumb}</span>
+                    `).join("")}
+                </nav>
+            `;
+        }
+
+        function openModal(index) {
+            const loc = allLocations[index];
+            if (!loc) return;
+
+            lastFocusedElement = document.activeElement;
+
+            const icon = CATEGORY_ICONS[loc.category] || DEFAULT_ICON;
+            const isDepartment = loc.category === "department";
+
+            let departmentSection = "";
+            if (isDepartment) {
+                departmentSection = `
+                    <div class="mt-5">
+                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${t("fieldSchool")}</p>
+                        <p class="text-sm font-bold text-slate-700 mb-4">${loc.school || loc.parent || t("notSpecified")}</p>
+
+                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${t("fieldParentBuilding")}</p>
+                        <p class="text-sm font-bold text-slate-700 mb-4">${loc.parent || t("notSpecified")}</p>
+
+                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-2">${t("fieldCoursesOffered")}</p>
+                        ${renderChipList(loc.courses, t("noCourses"))}
+                    </div>
+                `;
+            }
+
+            const breadcrumb = isDepartment ? renderBreadcrumb(loc) : "";
+
+            document.getElementById("modalContent").innerHTML = `
+                ${breadcrumb}
+                <div class="flex items-center gap-2 mb-1 pr-8" id="modalTitleRegion">
+                    <i data-lucide="${icon}" class="w-5 h-5 text-rose-600"></i>
+                    <h2 class="text-xl font-black text-slate-800">${loc.name || t("unnamedLocation")}</h2>
+                </div>
+                <span class="inline-block bg-rose-50 text-rose-700 text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-tighter mb-4">
+                    ${formatCategoryLabel(loc.category)}
+                </span>
+
+                <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${t("fieldParent")}</p>
+                <p class="text-sm font-bold text-slate-700 mb-4">${loc.parent || t("fieldParentTopLevel")}</p>
+
+                <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${t("fieldDescription")}</p>
+                <p class="text-sm font-medium text-slate-600 mb-4">${loc.description && loc.description.trim() !== "" ? loc.description : t("noDescription")}</p>
+
+                <p class="text-[10px] uppercase font-bold text-slate-400 mb-2">${t("fieldKeywords")}</p>
+                <div class="mb-4">${renderChipList(loc.keywords, t("noKeywords"))}</div>
+
+                <p class="text-[10px] uppercase font-bold text-slate-400 mb-2">${t("fieldAliases")}</p>
+                <div class="mb-4">${renderChipList(loc.aliases, t("noAliases"))}</div>
+
+                ${departmentSection}
+
+                <p class="text-[10px] uppercase font-bold text-slate-400 mb-2 mt-4">${t("fieldCoordinates")}</p>
+                ${renderCoordinates(loc)}
+            `;
+
+            const modal = document.getElementById("detailModal");
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+            lucide.createIcons();
+
+            // Reset scroll position for the newly opened location
+            const scrollBody = document.getElementById("modalScrollBody");
+            if (scrollBody) scrollBody.scrollTop = 0;
+
+            // Trigger the enter transition on the next frame so the
+            // "hidden -> flex" swap has already taken effect.
+            requestAnimationFrame(() => {
+                modal.classList.add("modal-visible", "modal-overlay-active");
+            });
+
+            // Move focus into the modal for keyboard/screen-reader users.
+            const closeBtn = document.getElementById("modalCloseBtn");
+            if (closeBtn) closeBtn.focus();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("detailModal");
+            const finish = () => {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+                if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+                    lastFocusedElement.focus();
+                }
+            };
+
+            modal.classList.remove("modal-visible", "modal-overlay-active");
+
+            if (prefersReducedMotion()) {
+                finish();
+            } else {
+                setTimeout(finish, 220);
+            }
+        }
+
+        // ---------- Service Worker Registration ----------
+
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("sw.js").catch((err) => {
+                    console.warn("Service worker registration failed:", err);
+                });
+            });
+        }
+
+        // ---------- Offline Detection & Banner ----------
+
+        let offlineHideTimeoutId = null;
+
+        function updateOnlineStatus() {
+            const banner = document.getElementById("offlineBanner");
+            clearTimeout(offlineHideTimeoutId);
+
+            if (!navigator.onLine) {
+                banner.classList.add("banner-visible");
+            } else {
+                // Briefly acknowledge "back online" isn't required; just
+                // hide the offline banner once connectivity returns.
+                banner.classList.remove("banner-visible");
+            }
+        }
+
+        window.addEventListener("online", updateOnlineStatus);
+        window.addEventListener("offline", updateOnlineStatus);
+
+        // ---------- Install Prompt (Android/Chrome) ----------
+
+        let deferredInstallPrompt = null;
+        const INSTALL_DISMISSED_KEY = "cc-install-dismissed";
+        const INSTALLED_KEY = "cc-installed";
+        const IOS_TIP_DISMISSED_KEY = "cc-ios-tip-dismissed";
+
+        function isStandaloneDisplay() {
+            return window.matchMedia && window.matchMedia("(display-mode: standalone)").matches
+                || window.navigator.standalone === true; // legacy iOS flag
+        }
+
+        function isIos() {
+            return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+        }
+
+        function safeGetItem(key) {
+            try {
+                return localStorage.getItem(key);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function safeSetItem(key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch (e) { /* localStorage unavailable */ }
+        }
+
+        window.addEventListener("beforeinstallprompt", (event) => {
+            event.preventDefault();
+            deferredInstallPrompt = event;
+
+            if (isStandaloneDisplay() || safeGetItem(INSTALLED_KEY) === "true" || safeGetItem(INSTALL_DISMISSED_KEY) === "true") {
+                return;
+            }
+
+            document.getElementById("installBanner").classList.add("banner-shown");
+        });
+
+        function handleInstallClick() {
+            hapticTap();
+            const banner = document.getElementById("installBanner");
+            if (!deferredInstallPrompt) {
+                banner.classList.remove("banner-shown");
+                return;
+            }
+
+            deferredInstallPrompt.prompt();
+            deferredInstallPrompt.userChoice.finally(() => {
+                deferredInstallPrompt = null;
+                banner.classList.remove("banner-shown");
+            });
+        }
+
+        function dismissInstallBanner() {
+            hapticTap();
+            document.getElementById("installBanner").classList.remove("banner-shown");
+            safeSetItem(INSTALL_DISMISSED_KEY, "true");
+        }
+
+        window.addEventListener("appinstalled", () => {
+            safeSetItem(INSTALLED_KEY, "true");
+            document.getElementById("installBanner").classList.remove("banner-shown");
+        });
+
+        // ---------- iOS "Add to Home Screen" tip ----------
+
+        function maybeShowIosInstallTip() {
+            if (!isIos()) return;
+            if (isStandaloneDisplay()) return;
+            if (safeGetItem(IOS_TIP_DISMISSED_KEY) === "true") return;
+
+            document.getElementById("iosInstallTip").classList.add("banner-shown");
+        }
+
+        function dismissIosInstallTip() {
+            hapticTap();
+            document.getElementById("iosInstallTip").classList.remove("banner-shown");
+            safeSetItem(IOS_TIP_DISMISSED_KEY, "true");
+        }
+
+        let firstLaunchPending = false;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            firstLaunchPending = !initLanguage();
+            if (firstLaunchPending) {
+                openLangPicker();
+            }
+        });
+
+        window.onload = () => {
+            updateOnlineStatus();
+            maybeShowIosInstallTip();
+            loadData();
+        };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1448 @@
+{
+  "institution": "Sandip University",
+  "dataset": "campus_navigation",
+  "version": "1.0",
+  "total_locations": 79,
+  "locations": [
+    {
+      "id": "adm_001",
+      "name": "Sandip University Nashik Admission Cell",
+      "category": "admission_cell",
+      "parent": "O Building",
+      "description": "Central admission cell for Sandip University handling overall admission inquiries and processes.",
+      "keywords": [
+        "admission",
+        "enquiry",
+        "university admission"
+      ],
+      "aliases": [
+        "Main Admission Cell",
+        "SU Admission Cell"
+      ],
+      "coordinates": {
+        "latitude": 19.9667389,
+        "longitude": 73.6705707
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9667389,73.6705707&travelmode=walking"
+    },
+    {
+      "id": "adm_002",
+      "name": "SF: SITRC Admission Cell",
+      "category": "admission_cell",
+      "parent": "SITRC",
+      "description": "Admission cell for Sandip Institute of Technology & Research Centre (SITRC).",
+      "keywords": [
+        "admission",
+        "SITRC",
+        "engineering admission"
+      ],
+      "aliases": [
+        "Sandip Institute of Technology & Research Centre Admission Cell"
+      ],
+      "coordinates": {
+        "latitude": 19.9660434,
+        "longitude": 73.6678583
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9660434,73.6678583&travelmode=walking"
+    },
+    {
+      "id": "adm_003",
+      "name": "SF: SIEM Admission Cell",
+      "category": "admission_cell",
+      "parent": "SIEM",
+      "description": "Admission cell for Sandip Institute of Engineering & Management (SIEM).",
+      "keywords": [
+        "admission",
+        "SIEM",
+        "engineering admission"
+      ],
+      "aliases": [
+        "Sandip Institute of Engineering & Management Admission Cell"
+      ],
+      "coordinates": {
+        "latitude": 19.9615929,
+        "longitude": 73.6679589
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9615929,73.6679589&travelmode=walking"
+    },
+    {
+      "id": "adm_004",
+      "name": "SF: SIPS Admission Cell",
+      "category": "admission_cell",
+      "parent": "SIPS",
+      "description": "Admission cell for Sandip Institute of Pharmaceutical Sciences (SIPS).",
+      "keywords": [
+        "admission",
+        "SIPS",
+        "pharmacy admission"
+      ],
+      "aliases": [
+        "Sandip Institute of Pharmaceutical Sciences Admission Cell"
+      ],
+      "coordinates": {
+        "latitude": 19.9631874,
+        "longitude": 73.6686355
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9631874,73.6686355&travelmode=walking"
+    },
+    {
+      "id": "adm_005",
+      "name": "SF: SP Admission Cell",
+      "category": "admission_cell",
+      "parent": "Sandip Polytechnic",
+      "description": "Admission cell for Sandip Polytechnic (SP).",
+      "keywords": [
+        "admission",
+        "polytechnic admission",
+        "diploma admission"
+      ],
+      "aliases": [
+        "Sandip Polytechnic Admission Cell"
+      ],
+      "coordinates": {
+        "latitude": 19.9631758,
+        "longitude": 73.6671687
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9631758,73.6671687&travelmode=walking"
+    },
+    {
+      "id": "gate_001",
+      "name": "Foundation Gate",
+      "category": "gate",
+      "parent": null,
+      "description": "One of the main entrance gates to the Sandip University campus.",
+      "keywords": [
+        "entrance",
+        "gate",
+        "campus entry"
+      ],
+      "aliases": [
+        "Foundation Entrance"
+      ],
+      "coordinates": {
+        "latitude": 19.9672825,
+        "longitude": 73.6667492
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9672825,73.6667492&travelmode=walking"
+    },
+    {
+      "id": "gate_002",
+      "name": "University Gate",
+      "category": "gate",
+      "parent": null,
+      "description": "Main entrance gate leading into the Sandip University campus.",
+      "keywords": [
+        "entrance",
+        "gate",
+        "campus entry",
+        "main gate"
+      ],
+      "aliases": [
+        "Main University Gate"
+      ],
+      "coordinates": {
+        "latitude": 19.9680823,
+        "longitude": 73.670044
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9680823,73.6700440&travelmode=walking"
+    },
+    {
+      "id": "bld_001",
+      "name": "SITRC Admin Block",
+      "category": "building",
+      "parent": "SITRC",
+      "description": "Administrative block of Sandip Institute of Technology & Research Centre.",
+      "keywords": [
+        "admin",
+        "SITRC",
+        "administration office"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9657113,
+        "longitude": 73.6681165
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9657113,73.6681165&travelmode=walking"
+    },
+    {
+      "id": "acc_001",
+      "name": "SITRC Accounts Section",
+      "category": "sections",
+      "parent": null,
+      "description": null,
+      "keywords": [],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9657113,
+        "longitude": 73.6681165
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9657113,73.6681165&travelmode=walking"
+    },
+    {
+      "id": "std_001",
+      "name": "SITRC Student Section",
+      "category": "sections",
+      "parent": null,
+      "description": null,
+      "keywords": [],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9657113,
+        "longitude": 73.6681165
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9657113,73.6681165&travelmode=walking"
+    },
+    {
+      "id": "bld_002",
+      "name": "SITRC Amphitheatre",
+      "category": "building",
+      "parent": "SITRC",
+      "description": "Open-air amphitheatre at SITRC used for events and gatherings.",
+      "keywords": [
+        "amphitheatre",
+        "SITRC",
+        "events"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9650271,
+        "longitude": 73.6683022
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9650271,73.6683022&travelmode=walking"
+    },
+    {
+      "id": "bld_003",
+      "name": "SITRC Building",
+      "category": "building",
+      "parent": "SITRC",
+      "description": "Main academic building of Sandip Institute of Technology & Research Centre.",
+      "keywords": [
+        "SITRC",
+        "academic building"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9650271,
+        "longitude": 73.6683022
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9650271,73.6683022&travelmode=walking"
+    },
+    {
+      "id": "fc_001",
+      "name": "SITRC Food Court",
+      "category": "food_court",
+      "parent": "SITRC",
+      "description": "Food court located within the SITRC campus premises.",
+      "keywords": [
+        "food",
+        "canteen",
+        "SITRC"
+      ],
+      "aliases": [
+        "Food Court (SITRC)"
+      ],
+      "coordinates": {
+        "latitude": 19.9650716,
+        "longitude": 73.6690308
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9650716,73.6690308&travelmode=walking"
+    },
+    {
+      "id": "bld_004",
+      "name": "SIEM Admin Block",
+      "category": "building",
+      "parent": "SIEM",
+      "description": "Administrative block of Sandip Institute of Engineering & Management.",
+      "keywords": [
+        "admin",
+        "SIEM",
+        "administration office"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9615929,
+        "longitude": 73.6679589
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9615929,73.6679589&travelmode=walking"
+    },
+    {
+      "id": "bld_005",
+      "name": "SIEM Building",
+      "category": "building",
+      "parent": "SIEM",
+      "description": "Main academic building of Sandip Institute of Engineering & Management.",
+      "keywords": [
+        "SIEM",
+        "academic building"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.96308,
+        "longitude": 73.6678992
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9630800,73.6678992&travelmode=walking"
+    },
+    {
+      "id": "acc_002",
+      "name": "SIEM Accounts Section",
+      "category": "sections",
+      "parent": null,
+      "description": null,
+      "keywords": [],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.96308,
+        "longitude": 73.6678992
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9630800,73.6678992&travelmode=walking"
+    },
+    {
+      "id": "std_002",
+      "name": "SIEM Student Section",
+      "category": "sections",
+      "parent": null,
+      "description": null,
+      "keywords": [],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.96308,
+        "longitude": 73.6678992
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9630800,73.6678992&travelmode=walking"
+    },
+    {
+      "id": "fc_002",
+      "name": "SIEM Food Court",
+      "category": "food_court",
+      "parent": "SIEM",
+      "description": "Food court located within the SIEM campus premises.",
+      "keywords": [
+        "food",
+        "canteen",
+        "SIEM"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9631301,
+        "longitude": 73.6682268
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9631301,73.6682268&travelmode=walking"
+    },
+    {
+      "id": "bld_006",
+      "name": "School of Design (SOD)",
+      "category": "building",
+      "parent": "Sandip University",
+      "description": "Academic building housing the School of Design.",
+      "keywords": [
+        "SOD",
+        "design school"
+      ],
+      "aliases": [
+        "SOD Building"
+      ],
+      "coordinates": {
+        "latitude": 19.9621673,
+        "longitude": 73.6673752
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9621673,73.6673752&travelmode=walking"
+    },
+    {
+      "id": "bld_007",
+      "name": "O Building",
+      "category": "building",
+      "parent": "Sandip University",
+      "description": "Academic building on the Sandip University main campus.",
+      "keywords": [
+        "O Building"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9667651,
+        "longitude": 73.67056
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9667651,73.6705600&travelmode=walking"
+    },
+    {
+      "id": "bld_008",
+      "name": "Y Building",
+      "category": "building",
+      "parent": "Sandip University",
+      "description": "Academic building housing the School of Engineering & Technology and Distance Learning programs.",
+      "keywords": [
+        "Y Building",
+        "SOET",
+        "distance learning"
+      ],
+      "aliases": [
+        "Y Building (School of Engineering & Technology / Distance Learning)"
+      ],
+      "coordinates": {
+        "latitude": 19.9632807,
+        "longitude": 73.6661045
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9632807,73.6661045&travelmode=walking"
+    },
+    {
+      "id": "bld_009",
+      "name": "School of Science (SOS)",
+      "category": "building",
+      "parent": "Sandip University",
+      "description": "Academic building housing the School of Science.",
+      "keywords": [
+        "SOS",
+        "science school"
+      ],
+      "aliases": [
+        "SOS Building"
+      ],
+      "coordinates": {
+        "latitude": 19.9630258,
+        "longitude": 73.6665963
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9630258,73.6665963&travelmode=walking"
+    },
+    {
+      "id": "bld_010",
+      "name": "Department of Transportation",
+      "category": "building",
+      "parent": "Sandip University",
+      "description": "University department managing transport and bus services for staff and students.",
+      "keywords": [
+        "transport",
+        "bus department"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9632731,
+        "longitude": 73.6660985
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9632731,73.6660985&travelmode=walking"
+    },
+    {
+      "id": "bld_011",
+      "name": "Sandip Polytechnic Admin Block",
+      "category": "building",
+      "parent": "Sandip Polytechnic",
+      "description": "Administrative block of Sandip Polytechnic.",
+      "keywords": [
+        "admin",
+        "polytechnic",
+        "administration office"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9632432,
+        "longitude": 73.667163
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9632432,73.6671630&travelmode=walking"
+    },
+    {
+      "id": "std_003",
+      "name": "SP Student Section",
+      "category": "sections",
+      "parent": null,
+      "description": null,
+      "keywords": [],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9632432,
+        "longitude": 73.667163
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9632432,73.6671630&travelmode=walking"
+    },
+    {
+      "id": "acc_003",
+      "name": "SP Account Section",
+      "category": "sections",
+      "parent": null,
+      "description": null,
+      "keywords": [],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9632432,
+        "longitude": 73.667163
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9632432,73.6671630&travelmode=walking"
+    },
+    {
+      "id": "bld_012",
+      "name": "S Building",
+      "category": "building",
+      "parent": "Sandip University",
+      "description": "Multi-school academic building housing SOL, SOCSE, SOPS, SOCMS, and SOCSA.",
+      "keywords": [
+        "S Building",
+        "multi-school building"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9672948,
+        "longitude": 73.6697225
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9672948,73.6697225&travelmode=walking"
+    },
+    {
+      "id": "lm_001",
+      "name": "Clock Tower",
+      "category": "landmark",
+      "parent": null,
+      "description": "Iconic clock tower landmark on campus.",
+      "keywords": [
+        "clock tower",
+        "landmark"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9673616,
+        "longitude": 73.6699813
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9673616,73.6699813&travelmode=walking"
+    },
+    {
+      "id": "lm_002",
+      "name": "Foundation Fountain",
+      "category": "landmark",
+      "parent": null,
+      "description": "Fountain landmark near the Foundation Gate area.",
+      "keywords": [
+        "fountain",
+        "landmark"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9664982,
+        "longitude": 73.6669853
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9664982,73.6669853&travelmode=walking"
+    },
+    {
+      "id": "cnt_001",
+      "name": "Central Canteen",
+      "category": "canteen",
+      "parent": null,
+      "description": "Main canteen serving the entire university campus.",
+      "keywords": [
+        "food",
+        "canteen",
+        "central canteen"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9654608,
+        "longitude": 73.6692008
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9654608,73.6692008&travelmode=walking"
+    },
+    {
+      "id": "sp_001",
+      "name": "Sports Ground",
+      "category": "sports",
+      "parent": null,
+      "description": "Open sports ground used for outdoor sports and events.",
+      "keywords": [
+        "sports",
+        "ground",
+        "playground"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9626233,
+        "longitude": 73.6698311
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9626233,73.6698311&travelmode=walking"
+    },
+    {
+      "id": "sp_002",
+      "name": "Sports Complex",
+      "category": "sports",
+      "parent": null,
+      "description": "Indoor/outdoor sports complex with multiple facilities.",
+      "keywords": [
+        "sports",
+        "complex",
+        "gymnasium"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9629668,
+        "longitude": 73.6726846
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9629668,73.6726846&travelmode=walking"
+    },
+    {
+      "id": "sp_003",
+      "name": "Cricket Turf",
+      "category": "sports",
+      "parent": null,
+      "description": "Dedicated cricket turf/ground on campus.",
+      "keywords": [
+        "cricket",
+        "turf",
+        "sports"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9664792,
+        "longitude": 73.6690056
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9664792,73.6690056&travelmode=walking"
+    },
+    {
+      "id": "park_001",
+      "name": "Bus Parking",
+      "category": "parking",
+      "parent": null,
+      "description": "Designated parking area for university buses.",
+      "keywords": [
+        "parking",
+        "bus"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9641599,
+        "longitude": 73.6659251
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9641599,73.6659251&travelmode=walking"
+    },
+    {
+      "id": "park_002",
+      "name": "Foundation Gate Parking",
+      "category": "parking",
+      "parent": null,
+      "description": "Parking area located near Foundation Gate.",
+      "keywords": [
+        "parking",
+        "Foundation Gate"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9672551,
+        "longitude": 73.6662889
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9672551,73.6662889&travelmode=walking"
+    },
+    {
+      "id": "park_003",
+      "name": "University Gate Parking",
+      "category": "parking",
+      "parent": null,
+      "description": "Parking area located near University Gate.",
+      "keywords": [
+        "parking",
+        "University Gate"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9682918,
+        "longitude": 73.6696554
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9682918,73.6696554&travelmode=walking"
+    },
+    {
+      "id": "stat_001",
+      "name": "Stationery Shop (Behind O Building)",
+      "category": "stationery",
+      "parent": "O Building",
+      "description": "Stationery shop located behind O Building.",
+      "keywords": [
+        "stationery",
+        "shop"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.966438,
+        "longitude": 73.6716339
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9664380,73.6716339&travelmode=walking"
+    },
+    {
+      "id": "std_004",
+      "name": "SIPS Student Section",
+      "category": "sections",
+      "parent": null,
+      "description": null,
+      "keywords": [],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9631937,
+        "longitude": 73.6686506
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9631937,73.6686506&travelmode=walking"
+    },
+    {
+      "id": "acc_004",
+      "name": "SIPS Accounts Section",
+      "category": "sections",
+      "parent": null,
+      "description": null,
+      "keywords": [],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9631937,
+        "longitude": 73.6686506
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9631937,73.6686506&travelmode=walking"
+    },
+    {
+      "id": "stat_002",
+      "name": "SIPS Stationery",
+      "category": "stationery",
+      "parent": "SIPS",
+      "description": "Stationery shop located within the SIPS campus area.",
+      "keywords": [
+        "stationery",
+        "shop",
+        "SIPS"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9631937,
+        "longitude": 73.6686506
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9631937,73.6686506&travelmode=walking"
+    },
+    {
+      "id": "lm_003",
+      "name": "Olive",
+      "category": "landmark",
+      "parent": null,
+      "description": "Campus landmark/eatery known as Olive.",
+      "keywords": [
+        "Olive"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.963679,
+        "longitude": 73.6681413
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9636790,73.6681413&travelmode=walking"
+    },
+    {
+      "id": "lm_004",
+      "name": "Junior College",
+      "category": "landmark",
+      "parent": null,
+      "description": "Junior College facility located within the campus premises.",
+      "keywords": [
+        "junior college"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.963575,
+        "longitude": 73.6671894
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9635750,73.6671894&travelmode=walking"
+    },
+    {
+      "id": "lm_005",
+      "name": "Neelam Sagar Dam",
+      "category": "landmark",
+      "parent": null,
+      "description": "Dam landmark located near the Sandip University campus.",
+      "keywords": [
+        "dam",
+        "Neelam Sagar Dam"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9609106,
+        "longitude": 73.6667465
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9609106,73.6667465&travelmode=walking"
+    },
+    {
+      "id": "host_b1",
+      "name": "B1 Hostel",
+      "category": "hostel",
+      "parent": null,
+      "description": "Boys hostel block B1 on campus.",
+      "keywords": [
+        "hostel",
+        "boys hostel"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9635375,
+        "longitude": 73.6713774
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9635375,73.6713774&travelmode=walking"
+    },
+    {
+      "id": "host_b2",
+      "name": "B2 Hostel",
+      "category": "hostel",
+      "parent": null,
+      "description": "Boys hostel block B2 on campus.",
+      "keywords": [
+        "hostel",
+        "boys hostel"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9635375,
+        "longitude": 73.6713774
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9635375,73.6713774&travelmode=walking"
+    },
+    {
+      "id": "host_b3",
+      "name": "B3 Hostel",
+      "category": "hostel",
+      "parent": null,
+      "description": "Boys hostel block B3 on campus.",
+      "keywords": [
+        "hostel",
+        "boys hostel"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9634786,
+        "longitude": 73.6705449
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9634786,73.6705449&travelmode=walking"
+    },
+    {
+      "id": "host_b4",
+      "name": "B4 Hostel",
+      "category": "hostel",
+      "parent": null,
+      "description": "Boys hostel block B4 on campus.",
+      "keywords": [
+        "hostel",
+        "boys hostel"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9634786,
+        "longitude": 73.6705449
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9634786,73.6705449&travelmode=walking"
+    },
+    {
+      "id": "host_g1",
+      "name": "G1 Hostel",
+      "category": "hostel",
+      "parent": null,
+      "description": "Girls hostel block G1 on campus.",
+      "keywords": [
+        "hostel",
+        "girls hostel"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9649455,
+        "longitude": 73.6711584
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9649455,73.6711584&travelmode=walking"
+    },
+    {
+      "id": "host_g2",
+      "name": "G2 Hostel",
+      "category": "hostel",
+      "parent": null,
+      "description": "Girls hostel block G2 on campus.",
+      "keywords": [
+        "hostel",
+        "girls hostel"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9649455,
+        "longitude": 73.6711584
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9649455,73.6711584&travelmode=walking"
+    },
+    {
+      "id": "host_g3",
+      "name": "G3 Hostel",
+      "category": "hostel",
+      "parent": null,
+      "description": "Girls hostel block G3 on campus.",
+      "keywords": [
+        "hostel",
+        "girls hostel"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9649455,
+        "longitude": 73.6711584
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9649455,73.6711584&travelmode=walking"
+    },
+    {
+      "id": "host_g4",
+      "name": "G4 Hostel",
+      "category": "hostel",
+      "parent": null,
+      "description": "Girls hostel block G4 on campus.",
+      "keywords": [
+        "hostel",
+        "girls hostel"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9649455,
+        "longitude": 73.6711584
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9649455,73.6711584&travelmode=walking"
+    },
+    {
+      "id": "sch_001",
+      "name": "School of Engineering & Technology (SOET)",
+      "category": "building",
+      "parent": "Y Building",
+      "description": "Academic school building/unit: School of Engineering & Technology (SOET).",
+      "keywords": [
+        "school",
+        "School of Engineering & Technology"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9632731,
+        "longitude": 73.6660985
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9632731,73.6660985&travelmode=walking"
+    },
+    {
+      "id": "sch_002",
+      "name": "School of Computer Science & Engineering (SOCSE)",
+      "category": "building",
+      "parent": "S Building",
+      "description": "Academic school building/unit: School of Computer Science & Engineering (SOCSE).",
+      "keywords": [
+        "school",
+        "School of Computer Science & Engineering"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9668281,
+        "longitude": 73.6701164
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"
+    },
+    {
+      "id": "sch_003",
+      "name": "School of Commerce & Management Studies (SOCMS)",
+      "category": "building",
+      "parent": "S Building",
+      "description": "Academic school building/unit: School of Commerce & Management Studies (SOCMS).",
+      "keywords": [
+        "school",
+        "School of Commerce & Management Studies"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9668281,
+        "longitude": 73.6701164
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"
+    },
+    {
+      "id": "sch_004",
+      "name": "School of Pharmaceutical Sciences (SOPS)",
+      "category": "building",
+      "parent": "S Building",
+      "description": "Academic school building/unit: School of Pharmaceutical Sciences (SOPS).",
+      "keywords": [
+        "school",
+        "School of Pharmaceutical Sciences"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9668281,
+        "longitude": 73.6701164
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"
+    },
+    {
+      "id": "sch_005",
+      "name": "School of Law (SOL)",
+      "category": "building",
+      "parent": "S Building",
+      "description": "Academic school building/unit: School of Law (SOL).",
+      "keywords": [
+        "school",
+        "School of Law"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9668281,
+        "longitude": 73.6701164
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"
+    },
+    {
+      "id": "sch_006",
+      "name": "School of Science (SOS)",
+      "category": "building",
+      "parent": "SOS Building",
+      "description": "Academic school building/unit: School of Science (SOS).",
+      "keywords": [
+        "school",
+        "School of Science"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9630258,
+        "longitude": 73.6665963
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9630258,73.6665963&travelmode=walking"
+    },
+    {
+      "id": "sch_007",
+      "name": "School of Design (SOD)",
+      "category": "building",
+      "parent": "School of Design (SOD)",
+      "description": "Academic school building/unit: School of Design (SOD).",
+      "keywords": [
+        "school",
+        "School of Design"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9621673,
+        "longitude": 73.6673752
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9621673,73.6673752&travelmode=walking"
+    },
+    {
+      "id": "sch_008",
+      "name": "School of Computer Science Applications (SOCSA)",
+      "category": "building",
+      "parent": "S Building",
+      "description": "Academic school building/unit: School of Computer Science Applications (SOCSA).",
+      "keywords": [
+        "school",
+        "School of Computer Science Applications"
+      ],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9668281,
+        "longitude": 73.6701164
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"
+    },
+    {
+      "id": "std_005",
+      "name": "SUN Student Section",
+      "category": "sections",
+      "parent": null,
+      "description": null,
+      "keywords": [],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9667389,
+        "longitude": 73.6705707
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9667389,73.6705707&travelmode=walking"
+    },
+    {
+      "id": "acc_005",
+      "name": "SUN Account Section (Sandip University)",
+      "category": "sections",
+      "parent": null,
+      "description": null,
+      "keywords": [],
+      "aliases": [],
+      "coordinates": {
+        "latitude": 19.9667389,
+        "longitude": 73.6705707
+      },
+      "google_maps_walking_link": "https://www.google.com/maps/dir/?api=1&destination=19.9667389,73.6705707&travelmode=walking"
+    },
+    {
+      "id": "dep_001",
+      "name": "Department of Computer Engineering",
+      "category": "department",
+      "parent": "School of Engineering & Technology (SOET)",
+      "school": "School of Engineering & Technology (SOET)",
+      "description": "Department of Computer Engineering, offering courses under School of Engineering & Technology (SOET).",
+      "keywords": [
+        "department",
+        "School of Engineering & Technology"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Tech Computer Engineering",
+        "M.Tech Computer Engineering"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_002",
+      "name": "Department of Mechanical Engineering",
+      "category": "department",
+      "parent": "School of Engineering & Technology (SOET)",
+      "school": "School of Engineering & Technology (SOET)",
+      "description": "Department of Mechanical Engineering, offering courses under School of Engineering & Technology (SOET).",
+      "keywords": [
+        "department",
+        "School of Engineering & Technology"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Tech Mechanical Engineering",
+        "M.Tech Mechanical Engineering"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_003",
+      "name": "Department of Civil Engineering",
+      "category": "department",
+      "parent": "School of Engineering & Technology (SOET)",
+      "school": "School of Engineering & Technology (SOET)",
+      "description": "Department of Civil Engineering, offering courses under School of Engineering & Technology (SOET).",
+      "keywords": [
+        "department",
+        "School of Engineering & Technology"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Tech Civil Engineering"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_004",
+      "name": "Department of Electrical Engineering",
+      "category": "department",
+      "parent": "School of Engineering & Technology (SOET)",
+      "school": "School of Engineering & Technology (SOET)",
+      "description": "Department of Electrical Engineering, offering courses under School of Engineering & Technology (SOET).",
+      "keywords": [
+        "department",
+        "School of Engineering & Technology"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Tech Electrical Engineering"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_005",
+      "name": "Department of Electronics & Telecommunication Engineering",
+      "category": "department",
+      "parent": "School of Engineering & Technology (SOET)",
+      "school": "School of Engineering & Technology (SOET)",
+      "description": "Department of Electronics & Telecommunication Engineering, offering courses under School of Engineering & Technology (SOET).",
+      "keywords": [
+        "department",
+        "School of Engineering & Technology"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Tech Electronics & Telecommunication Engineering"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_006",
+      "name": "Department of Artificial Intelligence & Data Science",
+      "category": "department",
+      "parent": "School of Computer Science & Engineering (SOCSE)",
+      "school": "School of Computer Science & Engineering (SOCSE)",
+      "description": "Department of Artificial Intelligence & Data Science, offering courses under School of Computer Science & Engineering (SOCSE).",
+      "keywords": [
+        "department",
+        "School of Computer Science & Engineering"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Tech AI & Data Science",
+        "M.Tech AI & Data Science"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_007",
+      "name": "Department of Computer Science & Engineering",
+      "category": "department",
+      "parent": "School of Computer Science & Engineering (SOCSE)",
+      "school": "School of Computer Science & Engineering (SOCSE)",
+      "description": "Department of Computer Science & Engineering, offering courses under School of Computer Science & Engineering (SOCSE).",
+      "keywords": [
+        "department",
+        "School of Computer Science & Engineering"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Tech CSE",
+        "M.Tech CSE",
+        "Ph.D CSE"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_008",
+      "name": "Department of Information Technology",
+      "category": "department",
+      "parent": "School of Computer Science & Engineering (SOCSE)",
+      "school": "School of Computer Science & Engineering (SOCSE)",
+      "description": "Department of Information Technology, offering courses under School of Computer Science & Engineering (SOCSE).",
+      "keywords": [
+        "department",
+        "School of Computer Science & Engineering"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Tech IT"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_009",
+      "name": "Department of Business Administration",
+      "category": "department",
+      "parent": "School of Commerce & Management Studies (SOCMS)",
+      "school": "School of Commerce & Management Studies (SOCMS)",
+      "description": "Department of Business Administration, offering courses under School of Commerce & Management Studies (SOCMS).",
+      "keywords": [
+        "department",
+        "School of Commerce & Management Studies"
+      ],
+      "aliases": [],
+      "courses": [
+        "BBA",
+        "MBA"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_010",
+      "name": "Department of Commerce",
+      "category": "department",
+      "parent": "School of Commerce & Management Studies (SOCMS)",
+      "school": "School of Commerce & Management Studies (SOCMS)",
+      "description": "Department of Commerce, offering courses under School of Commerce & Management Studies (SOCMS).",
+      "keywords": [
+        "department",
+        "School of Commerce & Management Studies"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Com",
+        "M.Com"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_011",
+      "name": "Department of Pharmacy",
+      "category": "department",
+      "parent": "School of Pharmaceutical Sciences (SOPS)",
+      "school": "School of Pharmaceutical Sciences (SOPS)",
+      "description": "Department of Pharmacy, offering courses under School of Pharmaceutical Sciences (SOPS).",
+      "keywords": [
+        "department",
+        "School of Pharmaceutical Sciences"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Pharm",
+        "M.Pharm",
+        "D.Pharm"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_012",
+      "name": "Department of Law",
+      "category": "department",
+      "parent": "School of Law (SOL)",
+      "school": "School of Law (SOL)",
+      "description": "Department of Law, offering courses under School of Law (SOL).",
+      "keywords": [
+        "department",
+        "School of Law"
+      ],
+      "aliases": [],
+      "courses": [
+        "BA LLB",
+        "LLB",
+        "LLM"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_013",
+      "name": "Department of Physics",
+      "category": "department",
+      "parent": "School of Science (SOS)",
+      "school": "School of Science (SOS)",
+      "description": "Department of Physics, offering courses under School of Science (SOS).",
+      "keywords": [
+        "department",
+        "School of Science"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Sc Physics",
+        "M.Sc Physics"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_014",
+      "name": "Department of Chemistry",
+      "category": "department",
+      "parent": "School of Science (SOS)",
+      "school": "School of Science (SOS)",
+      "description": "Department of Chemistry, offering courses under School of Science (SOS).",
+      "keywords": [
+        "department",
+        "School of Science"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Sc Chemistry",
+        "M.Sc Chemistry"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_015",
+      "name": "Department of Mathematics",
+      "category": "department",
+      "parent": "School of Science (SOS)",
+      "school": "School of Science (SOS)",
+      "description": "Department of Mathematics, offering courses under School of Science (SOS).",
+      "keywords": [
+        "department",
+        "School of Science"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Sc Mathematics",
+        "M.Sc Mathematics"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_016",
+      "name": "Department of Fashion Design",
+      "category": "department",
+      "parent": "School of Design (SOD)",
+      "school": "School of Design (SOD)",
+      "description": "Department of Fashion Design, offering courses under School of Design (SOD).",
+      "keywords": [
+        "department",
+        "School of Design"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Des Fashion Design"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_017",
+      "name": "Department of Interior Design",
+      "category": "department",
+      "parent": "School of Design (SOD)",
+      "school": "School of Design (SOD)",
+      "description": "Department of Interior Design, offering courses under School of Design (SOD).",
+      "keywords": [
+        "department",
+        "School of Design"
+      ],
+      "aliases": [],
+      "courses": [
+        "B.Des Interior Design"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    },
+    {
+      "id": "dep_018",
+      "name": "Department of Computer Applications",
+      "category": "department",
+      "parent": "School of Computer Science Applications (SOCSA)",
+      "school": "School of Computer Science Applications (SOCSA)",
+      "description": "Department of Computer Applications, offering courses under School of Computer Science Applications (SOCSA).",
+      "keywords": [
+        "department",
+        "School of Computer Science Applications"
+      ],
+      "aliases": [],
+      "courses": [
+        "BCA",
+        "MCA"
+      ],
+      "coordinates": {
+        "latitude": null,
+        "longitude": null
+      },
+      "google_maps_walking_link": null
+    }
+  ]
+}
