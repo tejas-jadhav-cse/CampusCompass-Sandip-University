@@ -2,9 +2,45 @@
 <html lang="en">
 
 <head>
+        <!--
+                CampusCompass — Single-file static campus navigation app
+
+                Purpose:
+                - Offline-first campus navigation for Sandip University.
+                - Features: search, filters, favorites, recent searches, "Near Me" sorting,
+                    gestures (swipe to reveal), PWA install support, multi-language (en/hi/mr).
+
+                Companion files required when deploying:
+                - manifest.json          (PWA manifest)
+                - sw.js                  (service worker for offline caching)
+                - robots.txt             (SEO robots rules)
+                - icon-192.png / icon-512.png (app icons)
+
+                Updating dataset:
+                - Replace the JSON payload inside the <script id="campusDataEmbedded"> block
+                    with a new payload following the existing shape: { institution, dataset, version, total_locations, locations: [...] }
+                - Optionally provide an external `sandip_university_campus.json` alongside the app; app will prefer it but fall back to the embedded copy.
+
+                Adding a new language:
+                - Add translation keys to the TRANSLATIONS object in this file (top-level key for language code), and include the code in SUPPORTED_LANGS.
+
+                Replacing OG / placeholder assets:
+                - Replace PLACEHOLDER_OG_IMAGE path or update <meta property="og:image"> in the <head>.
+
+                Notes for deploy:
+                - Host as static files (GitHub Pages, Netlify, Vercel, S3+CloudFront). Ensure `sw.js` served from root.
+                - When releasing a new version, bump CACHE_VERSION in `sw.js` to force clients to refresh cached app shell.
+        -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Campus Navigation | Sandip University</title>
+    <meta name="description" content="Offline-first campus navigation for Sandip University with search, filters, favorites, directions, and multilingual support.">
+    <link rel="canonical" href="https://example.com/campuscompass">
+    <meta property="og:title" content="CampusCompass | Sandip University Campus Navigation">
+    <meta property="og:description" content="Find campus locations offline with search, filters, favorites, directions, and multilingual support.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="./og-image-placeholder.jpg">
+    <!-- Replace the placeholder OG image path with a real campus photo or logo after hosting. -->
 
     <!-- PWA: manifest + icons -->
     <link rel="manifest" href="manifest.json">
@@ -43,7 +79,7 @@
     <script>
         tailwind.config = { darkMode: "class" };
     </script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
     <!-- Devanagari-capable webfont for Hindi/Marathi UI text. Loaded via CDN
          link (not @import) so it degrades gracefully offline to the system
          font stack below, which also covers Devanagari on most platforms. -->
@@ -78,6 +114,233 @@
         .modal-overlay {
             background: rgba(15, 23, 42, 0.55);
             backdrop-filter: blur(2px);
+        }
+
+        #detailModal,
+        .modal-scroll-body {
+            overscroll-behavior: none;
+        }
+
+        .gesture-scroll-none {
+            overscroll-behavior: none;
+        }
+
+        .gesture-pan-y {
+            touch-action: pan-y;
+        }
+
+        .card-shell {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1.5rem;
+        }
+
+        .card-main {
+            position: relative;
+            z-index: 1;
+            transition: transform 0.22s ease;
+        }
+
+        .card-shell[data-quick-reveal="true"] .card-main {
+            transform: translateX(-5.25rem);
+        }
+
+        .card-quick-action {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 5.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
+            color: #fff;
+            transform: translateX(100%);
+            transition: transform 0.22s ease;
+            z-index: 0;
+        }
+
+        .card-shell[data-quick-reveal="true"] .card-quick-action {
+            transform: translateX(0);
+        }
+
+        .card-favorite-btn,
+        .modal-favorite-btn,
+        .near-me-btn,
+        .recent-chip,
+        .clear-recent-btn,
+        .share-btn {
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .card-favorite-btn {
+            position: absolute;
+            top: 0.75rem;
+            left: 0.75rem;
+            z-index: 11;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 999px;
+            padding: 0.55rem;
+            background: rgba(255, 255, 255, 0.92);
+            color: #e11d48;
+            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
+        }
+
+        .card-favorite-btn[data-favorited="true"],
+        .modal-favorite-btn[data-favorited="true"] {
+            background: #ffe4e6;
+            color: #be123c;
+        }
+
+        html.dark .card-favorite-btn {
+            background: rgba(15, 23, 42, 0.92);
+            color: #fb7185;
+        }
+
+        html.dark .card-favorite-btn[data-favorited="true"],
+        html.dark .modal-favorite-btn[data-favorited="true"] {
+            background: rgba(159, 18, 57, 0.25);
+            color: #fecdd3;
+        }
+
+        .modal-favorite-btn,
+        .share-btn,
+        .near-me-btn,
+        .clear-recent-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            border-radius: 999px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #0f172a;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 0.7rem 0.95rem;
+        }
+
+        html.dark .modal-favorite-btn,
+        html.dark .share-btn,
+        html.dark .near-me-btn,
+        html.dark .clear-recent-btn {
+            background: #131c2f;
+            color: #e2e8f0;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .near-me-btn[data-active="true"] {
+            background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .near-me-status,
+        .recent-searches-wrap,
+        .location-inline-note {
+            font-size: 12px;
+        }
+
+        .recent-searches-wrap {
+            display: none;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .recent-searches-wrap[data-visible="true"] {
+            display: flex;
+        }
+
+        .recent-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            border-radius: 999px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #334155;
+            padding: 0.55rem 0.85rem;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        html.dark .recent-chip {
+            background: #1e293b;
+            color: #cbd5e1;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .card-distance-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin-top: 0.65rem;
+            padding: 0.35rem 0.55rem;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        html.dark .card-distance-pill {
+            background: rgba(67, 56, 202, 0.22);
+            color: #c7d2fe;
+        }
+
+        .near-me-status[data-error="true"] {
+            color: #b91c1c;
+        }
+
+        html.dark .near-me-status[data-error="true"] {
+            color: #fca5a5;
+        }
+
+        .pull-refresh-banner {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.18s ease, opacity 0.18s ease;
+            pointer-events: none;
+        }
+
+        .pull-refresh-banner[data-visible="true"] {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-header-actions {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .modal-header-meta {
+            min-width: 0;
+        }
+
+        .modal-action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+        }
+
+        .inline-gesture-hint {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        html.dark .inline-gesture-hint {
+            color: #94a3b8;
         }
 
         .chip {
@@ -364,7 +627,12 @@
             margin-top: 2px;
         }
 
-        /* ---------- Skeleton loaders ---------- */
+          /* Critical CSS: header, search bar, skeleton loader, and tap targets.
+              Deferred CSS: modal, dark variants, animation, about panel, and
+              virtualization scaffolding are grouped below so the above-the-fold
+              shell remains easy to find in this single-file app. */
+
+          /* ---------- Skeleton loaders ---------- */
         .skeleton-card {
             border-radius: 1.5rem;
             padding: 1.5rem;
@@ -640,6 +908,76 @@
             justify-content: center;
             cursor: pointer;
         }
+
+        /* ---------- Virtualized list, about panel, and error boundary ---------- */
+        #listViewport {
+            max-height: min(74dvh, 820px);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .virtual-spacer {
+            width: 100%;
+            pointer-events: none;
+        }
+
+        #dataErrorBanner {
+            background: linear-gradient(135deg, #fef2f2 0%, #fff7ed 100%);
+            border: 1px solid #fecaca;
+            color: #7f1d1d;
+        }
+
+        html.dark #dataErrorBanner {
+            background: linear-gradient(135deg, rgba(69, 10, 10, 0.9) 0%, rgba(30, 41, 59, 0.98) 100%);
+            border-color: rgba(248, 113, 113, 0.35);
+            color: #fee2e2;
+        }
+
+        .about-panel {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+        }
+
+        html.dark .about-panel {
+            background: linear-gradient(180deg, #131c2f 0%, #0f172a 100%);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .about-toggle-btn {
+            min-width: 44px;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #0f172a;
+        }
+
+        html.dark .about-toggle-btn {
+            background: #131c2f;
+            border-color: rgba(255, 255, 255, 0.08);
+            color: #e2e8f0;
+        }
+
+        .usage-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: #e2e8f0;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        html.dark .usage-pill {
+            background: #1e293b;
+            color: #cbd5e1;
+        }
     </style>
 </head>
 
@@ -704,11 +1042,28 @@
                     placeholder="Search building, department, hostel..."
                     class="w-full pl-10 pr-4 py-3.5 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-rose-500 outline-none text-sm font-medium">
             </div>
+            <div id="recentSearchesWrap" class="recent-searches-wrap" aria-live="polite"></div>
             <div class="flex gap-2 overflow-x-auto no-scrollbar" id="filterContainer"></div>
+            <div class="flex items-center justify-between gap-2 flex-wrap pt-1">
+                <button id="nearMeBtn" onclick="toggleNearMe()" class="near-me-btn tap-shrink" aria-pressed="false" aria-label="Show nearby locations">
+                    <i data-lucide="navigation-2" class="w-4 h-4"></i>
+                    <span id="nearMeBtnText">Near Me</span>
+                </button>
+                <p id="nearMeStatus" class="near-me-status text-slate-500 flex-1 min-w-0 text-right" aria-live="polite"></p>
+            </div>
         </div>
     </div>
 
     <main class="max-w-md mx-auto p-4 mt-2">
+        <div id="dataErrorBanner" class="hidden mb-4 rounded-3xl p-4 shadow-sm" role="alert" aria-live="assertive">
+            <div class="flex items-start gap-3">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-black" id="dataErrorTitle">Unable to load campus data</p>
+                    <p class="text-xs font-medium leading-relaxed mt-1" id="dataErrorText">The app could not load either the online dataset or the embedded fallback.</p>
+                </div>
+                <button id="retryLoadBtn" onclick="retryLoadData()" class="tap-shrink inline-flex items-center justify-center px-4 py-3 rounded-2xl text-sm font-black bg-rose-600 text-white shadow-sm" style="min-width:44px;min-height:44px;">Retry</button>
+            </div>
+        </div>
         <div id="loader" class="grid gap-4" aria-hidden="true">
             <div class="skeleton-card" aria-hidden="true">
                 <div class="skeleton-line h-4 w-2/3 mb-3"></div>
@@ -762,11 +1117,53 @@
             </svg>
             <p class="text-sm font-bold" id="emptyStateText">No matching locations found</p>
         </div>
-        <div id="locationList" class="grid gap-4"></div>
+        <div id="listViewport" class="rounded-[28px] gesture-scroll-none">
+            <div id="pullRefreshBanner" class="pull-refresh-banner mb-2 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 px-4 py-3 shadow-sm">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="refresh-ccw" class="w-4 h-4"></i>
+                    <span id="pullRefreshText" class="text-xs font-bold">Pull to refresh</span>
+                </div>
+            </div>
+            <div id="listSpacerTop" class="virtual-spacer" aria-hidden="true"></div>
+            <div id="locationList" class="grid gap-4"></div>
+            <div id="listSpacerBottom" class="virtual-spacer" aria-hidden="true"></div>
+        </div>
+
+        <div class="flex items-center justify-between gap-3 mt-4 px-1">
+            <div>
+                <p class="text-[10px] uppercase tracking-[0.28em] font-black text-slate-400" id="aboutRowLabel">About</p>
+                <p class="text-sm font-bold text-slate-700" id="aboutRowSubtitle">Dataset metadata and local-only usage stats</p>
+            </div>
+            <button id="aboutToggleBtn" class="about-toggle-btn tap-shrink" onclick="toggleAboutPanel()" aria-expanded="false" aria-controls="aboutPanel" aria-label="Open dataset details">
+                <i data-lucide="info" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <section id="aboutPanel" class="hidden about-panel rounded-[28px] p-4 mt-3 shadow-sm" aria-label="Dataset details">
+            <div class="grid gap-3">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="usage-pill" id="aboutInstitutionPill">Institution</span>
+                    <span class="usage-pill" id="aboutVersionPill">Version</span>
+                    <span class="usage-pill" id="aboutTotalPill">79 locations</span>
+                </div>
+                <div>
+                    <p class="text-[10px] uppercase tracking-[0.28em] font-black text-slate-400 mb-1" id="localAnalyticsLabel">Local-only analytics</p>
+                    <p class="text-xs font-medium text-slate-600 leading-relaxed" id="localAnalyticsNote">Counts are stored only in this browser's localStorage. Nothing is transmitted anywhere.</p>
+                </div>
+                <div>
+                    <p class="text-[10px] uppercase tracking-[0.28em] font-black text-slate-400 mb-2" id="mostViewedLabel">Most viewed</p>
+                    <div id="mostViewedList" class="grid gap-2"></div>
+                </div>
+                <div>
+                    <p class="text-[10px] uppercase tracking-[0.28em] font-black text-slate-400 mb-2" id="topSearchesLabel">Top searches</p>
+                    <div id="topSearchesList" class="grid gap-2"></div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Detail Modal -->
-    <div id="detailModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center modal-overlay"
+    <div id="detailModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center modal-overlay gesture-scroll-none"
         role="dialog" aria-modal="true" aria-labelledby="modalTitleRegion"
         onclick="if(event.target === this) closeModal();">
         <div class="modal-panel w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl max-h-[85vh] p-6 relative shadow-2xl flex flex-col"
@@ -775,7 +1172,7 @@
                 class="absolute top-4 right-4 bg-slate-100 rounded-full p-2 tap-shrink z-10" style="min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;">
                 <i data-lucide="x" class="w-4 h-4 text-slate-600"></i>
             </button>
-            <div class="modal-scroll-body" id="modalScrollBody">
+            <div class="modal-scroll-body gesture-pan-y" id="modalScrollBody">
                 <div id="modalContent"></div>
             </div>
         </div>
@@ -818,9 +1215,42 @@
 {"institution":"Sandip University","dataset":"campus_navigation","version":"1.0","total_locations":79,"locations":[{"id":"adm_001","name":"Sandip University Nashik Admission Cell","category":"admission_cell","parent":"O Building","description":"Central admission cell for Sandip University handling overall admission inquiries and processes.","keywords":["admission","enquiry","university admission"],"aliases":["Main Admission Cell","SU Admission Cell"],"coordinates":{"latitude":19.9667389,"longitude":73.6705707},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9667389,73.6705707&travelmode=walking"},{"id":"adm_002","name":"SF: SITRC Admission Cell","category":"admission_cell","parent":"SITRC","description":"Admission cell for Sandip Institute of Technology & Research Centre (SITRC).","keywords":["admission","SITRC","engineering admission"],"aliases":["Sandip Institute of Technology & Research Centre Admission Cell"],"coordinates":{"latitude":19.9660434,"longitude":73.6678583},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9660434,73.6678583&travelmode=walking"},{"id":"adm_003","name":"SF: SIEM Admission Cell","category":"admission_cell","parent":"SIEM","description":"Admission cell for Sandip Institute of Engineering & Management (SIEM).","keywords":["admission","SIEM","engineering admission"],"aliases":["Sandip Institute of Engineering & Management Admission Cell"],"coordinates":{"latitude":19.9615929,"longitude":73.6679589},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9615929,73.6679589&travelmode=walking"},{"id":"adm_004","name":"SF: SIPS Admission Cell","category":"admission_cell","parent":"SIPS","description":"Admission cell for Sandip Institute of Pharmaceutical Sciences (SIPS).","keywords":["admission","SIPS","pharmacy admission"],"aliases":["Sandip Institute of Pharmaceutical Sciences Admission Cell"],"coordinates":{"latitude":19.9631874,"longitude":73.6686355},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9631874,73.6686355&travelmode=walking"},{"id":"adm_005","name":"SF: SP Admission Cell","category":"admission_cell","parent":"Sandip Polytechnic","description":"Admission cell for Sandip Polytechnic (SP).","keywords":["admission","polytechnic admission","diploma admission"],"aliases":["Sandip Polytechnic Admission Cell"],"coordinates":{"latitude":19.9631758,"longitude":73.6671687},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9631758,73.6671687&travelmode=walking"},{"id":"gate_001","name":"Foundation Gate","category":"gate","parent":null,"description":"One of the main entrance gates to the Sandip University campus.","keywords":["entrance","gate","campus entry"],"aliases":["Foundation Entrance"],"coordinates":{"latitude":19.9672825,"longitude":73.6667492},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9672825,73.6667492&travelmode=walking"},{"id":"gate_002","name":"University Gate","category":"gate","parent":null,"description":"Main entrance gate leading into the Sandip University campus.","keywords":["entrance","gate","campus entry","main gate"],"aliases":["Main University Gate"],"coordinates":{"latitude":19.9680823,"longitude":73.670044},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9680823,73.6700440&travelmode=walking"},{"id":"bld_001","name":"SITRC Admin Block","category":"building","parent":"SITRC","description":"Administrative block of Sandip Institute of Technology & Research Centre.","keywords":["admin","SITRC","administration office"],"aliases":[],"coordinates":{"latitude":19.9657113,"longitude":73.6681165},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9657113,73.6681165&travelmode=walking"},{"id":"acc_001","name":"SITRC Accounts Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9657113,"longitude":73.6681165},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9657113,73.6681165&travelmode=walking"},{"id":"std_001","name":"SITRC Student Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9657113,"longitude":73.6681165},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9657113,73.6681165&travelmode=walking"},{"id":"bld_002","name":"SITRC Amphitheatre","category":"building","parent":"SITRC","description":"Open-air amphitheatre at SITRC used for events and gatherings.","keywords":["amphitheatre","SITRC","events"],"aliases":[],"coordinates":{"latitude":19.9650271,"longitude":73.6683022},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9650271,73.6683022&travelmode=walking"},{"id":"bld_003","name":"SITRC Building","category":"building","parent":"SITRC","description":"Main academic building of Sandip Institute of Technology & Research Centre.","keywords":["SITRC","academic building"],"aliases":[],"coordinates":{"latitude":19.9650271,"longitude":73.6683022},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9650271,73.6683022&travelmode=walking"},{"id":"fc_001","name":"SITRC Food Court","category":"food_court","parent":"SITRC","description":"Food court located within the SITRC campus premises.","keywords":["food","canteen","SITRC"],"aliases":["Food Court (SITRC)"],"coordinates":{"latitude":19.9650716,"longitude":73.6690308},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9650716,73.6690308&travelmode=walking"},{"id":"bld_004","name":"SIEM Admin Block","category":"building","parent":"SIEM","description":"Administrative block of Sandip Institute of Engineering & Management.","keywords":["admin","SIEM","administration office"],"aliases":[],"coordinates":{"latitude":19.9615929,"longitude":73.6679589},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9615929,73.6679589&travelmode=walking"},{"id":"bld_005","name":"SIEM Building","category":"building","parent":"SIEM","description":"Main academic building of Sandip Institute of Engineering & Management.","keywords":["SIEM","academic building"],"aliases":[],"coordinates":{"latitude":19.96308,"longitude":73.6678992},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9630800,73.6678992&travelmode=walking"},{"id":"acc_002","name":"SIEM Accounts Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.96308,"longitude":73.6678992},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9630800,73.6678992&travelmode=walking"},{"id":"std_002","name":"SIEM Student Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.96308,"longitude":73.6678992},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9630800,73.6678992&travelmode=walking"},{"id":"fc_002","name":"SIEM Food Court","category":"food_court","parent":"SIEM","description":"Food court located within the SIEM campus premises.","keywords":["food","canteen","SIEM"],"aliases":[],"coordinates":{"latitude":19.9631301,"longitude":73.6682268},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9631301,73.6682268&travelmode=walking"},{"id":"bld_006","name":"School of Design (SOD)","category":"building","parent":"Sandip University","description":"Academic building housing the School of Design.","keywords":["SOD","design school"],"aliases":["SOD Building"],"coordinates":{"latitude":19.9621673,"longitude":73.6673752},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9621673,73.6673752&travelmode=walking"},{"id":"bld_007","name":"O Building","category":"building","parent":"Sandip University","description":"Academic building on the Sandip University main campus.","keywords":["O Building"],"aliases":[],"coordinates":{"latitude":19.9667651,"longitude":73.67056},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9667651,73.6705600&travelmode=walking"},{"id":"bld_008","name":"Y Building","category":"building","parent":"Sandip University","description":"Academic building housing the School of Engineering & Technology and Distance Learning programs.","keywords":["Y Building","SOET","distance learning"],"aliases":["Y Building (School of Engineering & Technology / Distance Learning)"],"coordinates":{"latitude":19.9632807,"longitude":73.6661045},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9632807,73.6661045&travelmode=walking"},{"id":"bld_009","name":"School of Science (SOS)","category":"building","parent":"Sandip University","description":"Academic building housing the School of Science.","keywords":["SOS","science school"],"aliases":["SOS Building"],"coordinates":{"latitude":19.9630258,"longitude":73.6665963},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9630258,73.6665963&travelmode=walking"},{"id":"bld_010","name":"Department of Transportation","category":"building","parent":"Sandip University","description":"University department managing transport and bus services for staff and students.","keywords":["transport","bus department"],"aliases":[],"coordinates":{"latitude":19.9632731,"longitude":73.6660985},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9632731,73.6660985&travelmode=walking"},{"id":"bld_011","name":"Sandip Polytechnic Admin Block","category":"building","parent":"Sandip Polytechnic","description":"Administrative block of Sandip Polytechnic.","keywords":["admin","polytechnic","administration office"],"aliases":[],"coordinates":{"latitude":19.9632432,"longitude":73.667163},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9632432,73.6671630&travelmode=walking"},{"id":"std_003","name":"SP Student Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9632432,"longitude":73.667163},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9632432,73.6671630&travelmode=walking"},{"id":"acc_003","name":"SP Account Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9632432,"longitude":73.667163},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9632432,73.6671630&travelmode=walking"},{"id":"bld_012","name":"S Building","category":"building","parent":"Sandip University","description":"Multi-school academic building housing SOL, SOCSE, SOPS, SOCMS, and SOCSA.","keywords":["S Building","multi-school building"],"aliases":[],"coordinates":{"latitude":19.9672948,"longitude":73.6697225},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9672948,73.6697225&travelmode=walking"},{"id":"lm_001","name":"Clock Tower","category":"landmark","parent":null,"description":"Iconic clock tower landmark on campus.","keywords":["clock tower","landmark"],"aliases":[],"coordinates":{"latitude":19.9673616,"longitude":73.6699813},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9673616,73.6699813&travelmode=walking"},{"id":"lm_002","name":"Foundation Fountain","category":"landmark","parent":null,"description":"Fountain landmark near the Foundation Gate area.","keywords":["fountain","landmark"],"aliases":[],"coordinates":{"latitude":19.9664982,"longitude":73.6669853},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9664982,73.6669853&travelmode=walking"},{"id":"cnt_001","name":"Central Canteen","category":"canteen","parent":null,"description":"Main canteen serving the entire university campus.","keywords":["food","canteen","central canteen"],"aliases":[],"coordinates":{"latitude":19.9654608,"longitude":73.6692008},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9654608,73.6692008&travelmode=walking"},{"id":"sp_001","name":"Sports Ground","category":"sports","parent":null,"description":"Open sports ground used for outdoor sports and events.","keywords":["sports","ground","playground"],"aliases":[],"coordinates":{"latitude":19.9626233,"longitude":73.6698311},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9626233,73.6698311&travelmode=walking"},{"id":"sp_002","name":"Sports Complex","category":"sports","parent":null,"description":"Indoor/outdoor sports complex with multiple facilities.","keywords":["sports","complex","gymnasium"],"aliases":[],"coordinates":{"latitude":19.9629668,"longitude":73.6726846},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9629668,73.6726846&travelmode=walking"},{"id":"sp_003","name":"Cricket Turf","category":"sports","parent":null,"description":"Dedicated cricket turf/ground on campus.","keywords":["cricket","turf","sports"],"aliases":[],"coordinates":{"latitude":19.9664792,"longitude":73.6690056},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9664792,73.6690056&travelmode=walking"},{"id":"park_001","name":"Bus Parking","category":"parking","parent":null,"description":"Designated parking area for university buses.","keywords":["parking","bus"],"aliases":[],"coordinates":{"latitude":19.9641599,"longitude":73.6659251},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9641599,73.6659251&travelmode=walking"},{"id":"park_002","name":"Foundation Gate Parking","category":"parking","parent":null,"description":"Parking area located near Foundation Gate.","keywords":["parking","Foundation Gate"],"aliases":[],"coordinates":{"latitude":19.9672551,"longitude":73.6662889},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9672551,73.6662889&travelmode=walking"},{"id":"park_003","name":"University Gate Parking","category":"parking","parent":null,"description":"Parking area located near University Gate.","keywords":["parking","University Gate"],"aliases":[],"coordinates":{"latitude":19.9682918,"longitude":73.6696554},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9682918,73.6696554&travelmode=walking"},{"id":"stat_001","name":"Stationery Shop (Behind O Building)","category":"stationery","parent":"O Building","description":"Stationery shop located behind O Building.","keywords":["stationery","shop"],"aliases":[],"coordinates":{"latitude":19.966438,"longitude":73.6716339},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9664380,73.6716339&travelmode=walking"},{"id":"std_004","name":"SIPS Student Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9631937,"longitude":73.6686506},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9631937,73.6686506&travelmode=walking"},{"id":"acc_004","name":"SIPS Accounts Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9631937,"longitude":73.6686506},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9631937,73.6686506&travelmode=walking"},{"id":"stat_002","name":"SIPS Stationery","category":"stationery","parent":"SIPS","description":"Stationery shop located within the SIPS campus area.","keywords":["stationery","shop","SIPS"],"aliases":[],"coordinates":{"latitude":19.9631937,"longitude":73.6686506},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9631937,73.6686506&travelmode=walking"},{"id":"lm_003","name":"Olive","category":"landmark","parent":null,"description":"Campus landmark/eatery known as Olive.","keywords":["Olive"],"aliases":[],"coordinates":{"latitude":19.963679,"longitude":73.6681413},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9636790,73.6681413&travelmode=walking"},{"id":"lm_004","name":"Junior College","category":"landmark","parent":null,"description":"Junior College facility located within the campus premises.","keywords":["junior college"],"aliases":[],"coordinates":{"latitude":19.963575,"longitude":73.6671894},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9635750,73.6671894&travelmode=walking"},{"id":"lm_005","name":"Neelam Sagar Dam","category":"landmark","parent":null,"description":"Dam landmark located near the Sandip University campus.","keywords":["dam","Neelam Sagar Dam"],"aliases":[],"coordinates":{"latitude":19.9609106,"longitude":73.6667465},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9609106,73.6667465&travelmode=walking"},{"id":"host_b1","name":"B1 Hostel","category":"hostel","parent":null,"description":"Boys hostel block B1 on campus.","keywords":["hostel","boys hostel"],"aliases":[],"coordinates":{"latitude":19.9635375,"longitude":73.6713774},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9635375,73.6713774&travelmode=walking"},{"id":"host_b2","name":"B2 Hostel","category":"hostel","parent":null,"description":"Boys hostel block B2 on campus.","keywords":["hostel","boys hostel"],"aliases":[],"coordinates":{"latitude":19.9635375,"longitude":73.6713774},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9635375,73.6713774&travelmode=walking"},{"id":"host_b3","name":"B3 Hostel","category":"hostel","parent":null,"description":"Boys hostel block B3 on campus.","keywords":["hostel","boys hostel"],"aliases":[],"coordinates":{"latitude":19.9634786,"longitude":73.6705449},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9634786,73.6705449&travelmode=walking"},{"id":"host_b4","name":"B4 Hostel","category":"hostel","parent":null,"description":"Boys hostel block B4 on campus.","keywords":["hostel","boys hostel"],"aliases":[],"coordinates":{"latitude":19.9634786,"longitude":73.6705449},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9634786,73.6705449&travelmode=walking"},{"id":"host_g1","name":"G1 Hostel","category":"hostel","parent":null,"description":"Girls hostel block G1 on campus.","keywords":["hostel","girls hostel"],"aliases":[],"coordinates":{"latitude":19.9649455,"longitude":73.6711584},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9649455,73.6711584&travelmode=walking"},{"id":"host_g2","name":"G2 Hostel","category":"hostel","parent":null,"description":"Girls hostel block G2 on campus.","keywords":["hostel","girls hostel"],"aliases":[],"coordinates":{"latitude":19.9649455,"longitude":73.6711584},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9649455,73.6711584&travelmode=walking"},{"id":"host_g3","name":"G3 Hostel","category":"hostel","parent":null,"description":"Girls hostel block G3 on campus.","keywords":["hostel","girls hostel"],"aliases":[],"coordinates":{"latitude":19.9649455,"longitude":73.6711584},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9649455,73.6711584&travelmode=walking"},{"id":"host_g4","name":"G4 Hostel","category":"hostel","parent":null,"description":"Girls hostel block G4 on campus.","keywords":["hostel","girls hostel"],"aliases":[],"coordinates":{"latitude":19.9649455,"longitude":73.6711584},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9649455,73.6711584&travelmode=walking"},{"id":"sch_001","name":"School of Engineering & Technology (SOET)","category":"building","parent":"Y Building","description":"Academic school building/unit: School of Engineering & Technology (SOET).","keywords":["school","School of Engineering & Technology"],"aliases":[],"coordinates":{"latitude":19.9632731,"longitude":73.6660985},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9632731,73.6660985&travelmode=walking"},{"id":"sch_002","name":"School of Computer Science & Engineering (SOCSE)","category":"building","parent":"S Building","description":"Academic school building/unit: School of Computer Science & Engineering (SOCSE).","keywords":["school","School of Computer Science & Engineering"],"aliases":[],"coordinates":{"latitude":19.9668281,"longitude":73.6701164},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"},{"id":"sch_003","name":"School of Commerce & Management Studies (SOCMS)","category":"building","parent":"S Building","description":"Academic school building/unit: School of Commerce & Management Studies (SOCMS).","keywords":["school","School of Commerce & Management Studies"],"aliases":[],"coordinates":{"latitude":19.9668281,"longitude":73.6701164},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"},{"id":"sch_004","name":"School of Pharmaceutical Sciences (SOPS)","category":"building","parent":"S Building","description":"Academic school building/unit: School of Pharmaceutical Sciences (SOPS).","keywords":["school","School of Pharmaceutical Sciences"],"aliases":[],"coordinates":{"latitude":19.9668281,"longitude":73.6701164},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"},{"id":"sch_005","name":"School of Law (SOL)","category":"building","parent":"S Building","description":"Academic school building/unit: School of Law (SOL).","keywords":["school","School of Law"],"aliases":[],"coordinates":{"latitude":19.9668281,"longitude":73.6701164},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"},{"id":"sch_006","name":"School of Science (SOS)","category":"building","parent":"SOS Building","description":"Academic school building/unit: School of Science (SOS).","keywords":["school","School of Science"],"aliases":[],"coordinates":{"latitude":19.9630258,"longitude":73.6665963},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9630258,73.6665963&travelmode=walking"},{"id":"sch_007","name":"School of Design (SOD)","category":"building","parent":"School of Design (SOD)","description":"Academic school building/unit: School of Design (SOD).","keywords":["school","School of Design"],"aliases":[],"coordinates":{"latitude":19.9621673,"longitude":73.6673752},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9621673,73.6673752&travelmode=walking"},{"id":"sch_008","name":"School of Computer Science Applications (SOCSA)","category":"building","parent":"S Building","description":"Academic school building/unit: School of Computer Science Applications (SOCSA).","keywords":["school","School of Computer Science Applications"],"aliases":[],"coordinates":{"latitude":19.9668281,"longitude":73.6701164},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9668281,73.6701164&travelmode=walking"},{"id":"std_005","name":"SUN Student Section","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9667389,"longitude":73.6705707},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9667389,73.6705707&travelmode=walking"},{"id":"acc_005","name":"SUN Account Section (Sandip University)","category":"sections","parent":null,"description":null,"keywords":[],"aliases":[],"coordinates":{"latitude":19.9667389,"longitude":73.6705707},"google_maps_walking_link":"https://www.google.com/maps/dir/?api=1&destination=19.9667389,73.6705707&travelmode=walking"},{"id":"dep_001","name":"Department of Computer Engineering","category":"department","parent":"School of Engineering & Technology (SOET)","school":"School of Engineering & Technology (SOET)","description":"Department of Computer Engineering, offering courses under School of Engineering & Technology (SOET).","keywords":["department","School of Engineering & Technology"],"aliases":[],"courses":["B.Tech Computer Engineering","M.Tech Computer Engineering"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_002","name":"Department of Mechanical Engineering","category":"department","parent":"School of Engineering & Technology (SOET)","school":"School of Engineering & Technology (SOET)","description":"Department of Mechanical Engineering, offering courses under School of Engineering & Technology (SOET).","keywords":["department","School of Engineering & Technology"],"aliases":[],"courses":["B.Tech Mechanical Engineering","M.Tech Mechanical Engineering"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_003","name":"Department of Civil Engineering","category":"department","parent":"School of Engineering & Technology (SOET)","school":"School of Engineering & Technology (SOET)","description":"Department of Civil Engineering, offering courses under School of Engineering & Technology (SOET).","keywords":["department","School of Engineering & Technology"],"aliases":[],"courses":["B.Tech Civil Engineering"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_004","name":"Department of Electrical Engineering","category":"department","parent":"School of Engineering & Technology (SOET)","school":"School of Engineering & Technology (SOET)","description":"Department of Electrical Engineering, offering courses under School of Engineering & Technology (SOET).","keywords":["department","School of Engineering & Technology"],"aliases":[],"courses":["B.Tech Electrical Engineering"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_005","name":"Department of Electronics & Telecommunication Engineering","category":"department","parent":"School of Engineering & Technology (SOET)","school":"School of Engineering & Technology (SOET)","description":"Department of Electronics & Telecommunication Engineering, offering courses under School of Engineering & Technology (SOET).","keywords":["department","School of Engineering & Technology"],"aliases":[],"courses":["B.Tech Electronics & Telecommunication Engineering"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_006","name":"Department of Artificial Intelligence & Data Science","category":"department","parent":"School of Computer Science & Engineering (SOCSE)","school":"School of Computer Science & Engineering (SOCSE)","description":"Department of Artificial Intelligence & Data Science, offering courses under School of Computer Science & Engineering (SOCSE).","keywords":["department","School of Computer Science & Engineering"],"aliases":[],"courses":["B.Tech AI & Data Science","M.Tech AI & Data Science"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_007","name":"Department of Computer Science & Engineering","category":"department","parent":"School of Computer Science & Engineering (SOCSE)","school":"School of Computer Science & Engineering (SOCSE)","description":"Department of Computer Science & Engineering, offering courses under School of Computer Science & Engineering (SOCSE).","keywords":["department","School of Computer Science & Engineering"],"aliases":[],"courses":["B.Tech CSE","M.Tech CSE","Ph.D CSE"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_008","name":"Department of Information Technology","category":"department","parent":"School of Computer Science & Engineering (SOCSE)","school":"School of Computer Science & Engineering (SOCSE)","description":"Department of Information Technology, offering courses under School of Computer Science & Engineering (SOCSE).","keywords":["department","School of Computer Science & Engineering"],"aliases":[],"courses":["B.Tech IT"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_009","name":"Department of Business Administration","category":"department","parent":"School of Commerce & Management Studies (SOCMS)","school":"School of Commerce & Management Studies (SOCMS)","description":"Department of Business Administration, offering courses under School of Commerce & Management Studies (SOCMS).","keywords":["department","School of Commerce & Management Studies"],"aliases":[],"courses":["BBA","MBA"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_010","name":"Department of Commerce","category":"department","parent":"School of Commerce & Management Studies (SOCMS)","school":"School of Commerce & Management Studies (SOCMS)","description":"Department of Commerce, offering courses under School of Commerce & Management Studies (SOCMS).","keywords":["department","School of Commerce & Management Studies"],"aliases":[],"courses":["B.Com","M.Com"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_011","name":"Department of Pharmacy","category":"department","parent":"School of Pharmaceutical Sciences (SOPS)","school":"School of Pharmaceutical Sciences (SOPS)","description":"Department of Pharmacy, offering courses under School of Pharmaceutical Sciences (SOPS).","keywords":["department","School of Pharmaceutical Sciences"],"aliases":[],"courses":["B.Pharm","M.Pharm","D.Pharm"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_012","name":"Department of Law","category":"department","parent":"School of Law (SOL)","school":"School of Law (SOL)","description":"Department of Law, offering courses under School of Law (SOL).","keywords":["department","School of Law"],"aliases":[],"courses":["BA LLB","LLB","LLM"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_013","name":"Department of Physics","category":"department","parent":"School of Science (SOS)","school":"School of Science (SOS)","description":"Department of Physics, offering courses under School of Science (SOS).","keywords":["department","School of Science"],"aliases":[],"courses":["B.Sc Physics","M.Sc Physics"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_014","name":"Department of Chemistry","category":"department","parent":"School of Science (SOS)","school":"School of Science (SOS)","description":"Department of Chemistry, offering courses under School of Science (SOS).","keywords":["department","School of Science"],"aliases":[],"courses":["B.Sc Chemistry","M.Sc Chemistry"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_015","name":"Department of Mathematics","category":"department","parent":"School of Science (SOS)","school":"School of Science (SOS)","description":"Department of Mathematics, offering courses under School of Science (SOS).","keywords":["department","School of Science"],"aliases":[],"courses":["B.Sc Mathematics","M.Sc Mathematics"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_016","name":"Department of Fashion Design","category":"department","parent":"School of Design (SOD)","school":"School of Design (SOD)","description":"Department of Fashion Design, offering courses under School of Design (SOD).","keywords":["department","School of Design"],"aliases":[],"courses":["B.Des Fashion Design"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_017","name":"Department of Interior Design","category":"department","parent":"School of Design (SOD)","school":"School of Design (SOD)","description":"Department of Interior Design, offering courses under School of Design (SOD).","keywords":["department","School of Design"],"aliases":[],"courses":["B.Des Interior Design"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null},{"id":"dep_018","name":"Department of Computer Applications","category":"department","parent":"School of Computer Science Applications (SOCSA)","school":"School of Computer Science Applications (SOCSA)","description":"Department of Computer Applications, offering courses under School of Computer Science Applications (SOCSA).","keywords":["department","School of Computer Science Applications"],"aliases":[],"courses":["BCA","MCA"],"coordinates":{"latitude":null,"longitude":null},"google_maps_walking_link":null}]}</script>
 
     <script>
+        // ===== MODULE: data.js (data loading, parsing, embedded dataset) =====
+
+        /** @type {string} */
         const DATA_URL = "./sandip_university_campus.json";
 
-        // Icon mapping per category for quick visual identification
+        /** @type {string} */
+        const ANALYTICS_KEY = "cc-usage-analytics";
+
+        /** @type {string} */
+        const PREFS_KEY = "cc-preferences";
+
+        /** @type {string} */
+        const INSTALL_DISMISSED_KEY = "cc-install-dismissed";
+
+        /** @type {string} */
+        const INSTALLED_KEY = "cc-installed";
+
+        /** @type {string} */
+        const IOS_TIP_DISMISSED_KEY = "cc-ios-tip-dismissed";
+
+        /** @type {number} */
+        const SEARCH_DEBOUNCE_MS = 200;
+
+        /** @type {number} */
+        const VIRTUAL_OVERSCAN = 4;
+
+        /** @type {number} */
+        const DEFAULT_VIRTUAL_ROW_HEIGHT = 228;
+
+        /** @type {string} */
+        const ALL_FILTER = "All";
+
+        /** @type {string} */
+        const DEFAULT_ICON = "map-pin";
+
+        /** @type {Object.<string, string>} */
         const CATEGORY_ICONS = {
             admission_cell: "clipboard-list",
             gate: "door-open",
@@ -834,27 +1264,84 @@
             sports: "dumbbell",
             landmark: "map-pin"
         };
-        const DEFAULT_ICON = "map-pin";
 
-        let allLocations = [];      // Raw locations from JSON (parsed once)
-        let searchIndex = [];       // Precomputed lowercase search strings, same order as allLocations
-        let categories = ["All"];   // Unique categories discovered from data
-        let currentFilter = "All";
+        /** @type {{institution:string, version:string, total_locations:number}} */
+        let datasetMeta = { institution: "Sandip University", version: "", total_locations: 0 };
+
+        /** @type {Array<Object>} */
+        let allLocations = [];
+
+        /** @type {Array<string>} */
+        let searchIndex = [];
+
+        /** @type {Array<string>} */
+        let categories = [ALL_FILTER];
+
+        /** @type {Array<number>} */
+        let filteredIndexes = [];
+
+        /** @type {string} */
+        let currentFilter = ALL_FILTER;
+
+        /** @type {string} */
         let currentQuery = "";
-        let lastFocusedElement = null; // Element to restore focus to after modal closes
 
-        // ---------- i18n: Translation dictionary ----------
+        /** @type {string} */
+        let currentLang = "en";
+
+        /** @type {HTMLElement | null} */
+        let lastFocusedElement = null;
+
+        /** @type {HTMLElement | null} */
+        let deferredInstallPrompt = null;
+
+        /** @type {number | null} */
+        let toastTimeoutId = null;
+
+        /** @type {number | null} */
+        let offlineHideTimeoutId = null;
+
+        /** @type {number | null} */
+        let virtualRenderFrameId = null;
+
+        /** @type {number} */
+        let firstLaunchPending = false;
+
+        /** @type {{start:number,end:number,total:number,estimatedRowHeight:number,lastSignature:string}} */
+        const virtualState = {
+            start: 0,
+            end: 0,
+            total: 0,
+            estimatedRowHeight: DEFAULT_VIRTUAL_ROW_HEIGHT,
+            lastSignature: ""
+        };
+
+        // ---------- i18n module ----------
+
+        /**
+         * Translation dictionary for all supported UI strings.
+         * Pure data only, no DOM access.
+         */
         const TRANSLATIONS = {
             en: {
                 appTitle: "SANDIP UNIVERSITY",
                 appSubtitle: "CAMPUS NAVIGATION",
                 searchPlaceholder: "Search building, department, hostel...",
                 filterAll: "All",
+                favoritesFilter: "Favorites",
                 categoryLabels: {
-                    admission_cell: "Admission Cell", gate: "Gate", building: "Building",
-                    department: "Department", hostel: "Hostel", parking: "Parking",
-                    food_court: "Food Court", canteen: "Canteen", stationery: "Stationery",
-                    sports: "Sports", landmark: "Landmark", sections: "Sections",
+                    admission_cell: "Admission Cell",
+                    gate: "Gate",
+                    building: "Building",
+                    department: "Department",
+                    hostel: "Hostel",
+                    parking: "Parking",
+                    food_court: "Food Court",
+                    canteen: "Canteen",
+                    stationery: "Stationery",
+                    sports: "Sports",
+                    landmark: "Landmark",
+                    sections: "Sections",
                     uncategorized: "Uncategorized"
                 },
                 viewDetails: "View Details",
@@ -882,7 +1369,7 @@
                 notSpecified: "Not specified",
                 unnamedLocation: "Unnamed Location",
                 emptyStateText: "No matching locations found",
-                offlineBannerText: "You're offline — showing saved data",
+                offlineBannerText: "You're offline - showing saved data",
                 installBannerTitle: "Install CampusCompass",
                 installBannerSubtitle: "Add to your home screen for quick, offline access.",
                 installBannerBtn: "Install",
@@ -890,19 +1377,66 @@
                 iosInstallTipSubtitle: 'Tap the Share icon, then "Add to Home Screen".',
                 langPickerTitle: "Choose your language",
                 langPickerSubtitle: "भाषा चुनें · भाषा निवडा",
-                langPickerNote: "Place names stay in English. You can change this anytime from the 🌐 icon.",
-                closeDetails: "Close details"
+                langPickerNote: "Place names stay in English. You can change this anytime from the globe icon.",
+                closeDetails: "Close details",
+                favoritesEmptyStateText: "No favorites yet",
+                recentSearchesLabel: "Recent searches",
+                clearRecent: "Clear recent",
+                nearMeLabel: "Near Me",
+                nearMeLoading: "Finding your location...",
+                nearMeUnavailable: "Near Me is unavailable on this device.",
+                nearMePermissionDenied: "Location permission was denied.",
+                nearMeTimedOut: "Location request timed out.",
+                nearMeErrorGeneric: "Could not get your location.",
+                nearMeActive: "Sorted by nearest locations",
+                share: "Share",
+                shareFallbackCopied: "Link copied - Web Share not supported on this browser",
+                upToDate: "Up to date",
+                pullToRefresh: "Pull to refresh",
+                swipeNavigateHint: "Swipe left for quick Navigate",
+                favoriteOn: "Remove from favorites",
+                favoriteOff: "Add to favorites",
+                aboutRowLabel: "About",
+                aboutRowSubtitle: "Dataset metadata and local-only usage stats",
+                aboutPanelTitle: "Dataset details",
+                institutionLabel: "Institution",
+                versionLabel: "Version",
+                totalLocationsLabel: "Total locations",
+                localAnalyticsLabel: "Local-only analytics",
+                localAnalyticsNote: "Counts are stored only in this browser's localStorage. Nothing is transmitted anywhere.",
+                mostViewedLabel: "Most viewed",
+                topSearchesLabel: "Top searches",
+                usageEmpty: "No local usage yet.",
+                dataLoadErrorTitle: "Unable to load campus data",
+                dataLoadErrorText: "The app could not load either the online dataset or the embedded fallback.",
+                retry: "Retry",
+                openDatasetDetails: "Open dataset details",
+                closeDatasetDetails: "Close dataset details"
+                ,
+                resetData: "Reset app data",
+                resetDataConfirm: "Reset app data? This will clear saved preferences and local statistics.",
+                resetDataDone: "App data cleared",
+                privacyNote: "Privacy: location, searches and view counts stay only on this device."
             },
             hi: {
-                appTitle: "सैंडिप विश्वविद्यालय",
+                appTitle: "संदीप विश्वविद्यालय",
                 appSubtitle: "कैंपस नेविगेशन",
                 searchPlaceholder: "भवन, विभाग, छात्रावास खोजें...",
                 filterAll: "सभी",
+                favoritesFilter: "पसंदीदा",
                 categoryLabels: {
-                    admission_cell: "प्रवेश प्रकोष्ठ", gate: "प्रवेश द्वार", building: "भवन",
-                    department: "विभाग", hostel: "छात्रावास", parking: "पार्किंग",
-                    food_court: "फूड कोर्ट", canteen: "कैंटीन", stationery: "स्टेशनरी",
-                    sports: "खेल", landmark: "स्थल चिह्न", sections: "अनुभाग",
+                    admission_cell: "प्रवेश प्रकोष्ठ",
+                    gate: "प्रवेश द्वार",
+                    building: "भवन",
+                    department: "विभाग",
+                    hostel: "छात्रावास",
+                    parking: "पार्किंग",
+                    food_court: "फूड कोर्ट",
+                    canteen: "कैंटीन",
+                    stationery: "स्टेशनरी",
+                    sports: "खेल",
+                    landmark: "स्थल चिह्न",
+                    sections: "अनुभाग",
                     uncategorized: "अवर्गीकृत"
                 },
                 viewDetails: "विवरण देखें",
@@ -930,7 +1464,7 @@
                 notSpecified: "निर्दिष्ट नहीं",
                 unnamedLocation: "अज्ञात स्थान",
                 emptyStateText: "कोई मिलान स्थान नहीं मिला",
-                offlineBannerText: "आप ऑफ़लाइन हैं — सहेजा गया डेटा दिखाया जा रहा है",
+                offlineBannerText: "आप ऑफ़लाइन हैं - सहेजा गया डेटा दिखाया जा रहा है",
                 installBannerTitle: "CampusCompass इंस्टॉल करें",
                 installBannerSubtitle: "त्वरित, ऑफ़लाइन एक्सेस के लिए होम स्क्रीन पर जोड़ें।",
                 installBannerBtn: "इंस्टॉल करें",
@@ -938,19 +1472,66 @@
                 iosInstallTipSubtitle: 'शेयर आइकन टैप करें, फिर "होम स्क्रीन पर जोड़ें" चुनें।',
                 langPickerTitle: "अपनी भाषा चुनें",
                 langPickerSubtitle: "Choose your language · भाषा निवडा",
-                langPickerNote: "स्थानों के नाम अंग्रेज़ी में ही रहेंगे। आप इसे 🌐 आइकन से कभी भी बदल सकते हैं।",
-                closeDetails: "विवरण बंद करें"
+                langPickerNote: "स्थानों के नाम अंग्रेज़ी में ही रहेंगे। आप इसे ग्लोब आइकन से कभी भी बदल सकते हैं।",
+                closeDetails: "विवरण बंद करें",
+                favoritesEmptyStateText: "अभी कोई पसंदीदा नहीं",
+                recentSearchesLabel: "हाल की खोजें",
+                clearRecent: "हाल की साफ़ करें",
+                nearMeLabel: "मेरे पास",
+                nearMeLoading: "आपका स्थान ढूंढा जा रहा है...",
+                nearMeUnavailable: "इस डिवाइस पर Near Me उपलब्ध नहीं है।",
+                nearMePermissionDenied: "स्थान अनुमति अस्वीकार की गई।",
+                nearMeTimedOut: "स्थान अनुरोध समय समाप्त हो गया।",
+                nearMeErrorGeneric: "आपका स्थान प्राप्त नहीं हो सका।",
+                nearMeActive: "निकटतम स्थानों के अनुसार क्रमित",
+                share: "साझा करें",
+                shareFallbackCopied: "लिंक कॉपी हो गया - इस ब्राउज़र पर Web Share समर्थित नहीं है",
+                upToDate: "अप-टू-डेट",
+                pullToRefresh: "रीफ्रेश के लिए खींचें",
+                swipeNavigateHint: "त्वरित नेविगेट के लिए बाईं ओर स्वाइप करें",
+                favoriteOn: "पसंदीदा से हटाएँ",
+                favoriteOff: "पसंदीदा में जोड़ें",
+                aboutRowLabel: "परिचय",
+                aboutRowSubtitle: "डेटासेट मेटाडेटा और केवल स्थानीय उपयोग आंकड़े",
+                aboutPanelTitle: "डेटासेट विवरण",
+                institutionLabel: "संस्था",
+                versionLabel: "संस्करण",
+                totalLocationsLabel: "कुल स्थान",
+                localAnalyticsLabel: "केवल स्थानीय आंकड़े",
+                localAnalyticsNote: "गिनती केवल इस ब्राउज़र के localStorage में रहती है। कुछ भी बाहर नहीं भेजा जाता।",
+                mostViewedLabel: "सबसे अधिक देखे गए",
+                topSearchesLabel: "शीर्ष खोजें",
+                usageEmpty: "अभी कोई स्थानीय उपयोग नहीं है।",
+                dataLoadErrorTitle: "कैंपस डेटा लोड नहीं हो सका",
+                dataLoadErrorText: "ऐप ऑनलाइन डेटासेट या एम्बेडेड फॉलबैक, दोनों में से कोई भी लोड नहीं कर सका।",
+                retry: "पुनः प्रयास",
+                openDatasetDetails: "डेटासेट विवरण खोलें",
+                closeDatasetDetails: "डेटासेट विवरण बंद करें"
+                ,
+                resetData: "ऐप डेटा रीसेट करें",
+                resetDataConfirm: "ऐप डेटा रीसेट करें? इससे सहेजी गई प्राथमिकताएँ और स्थानीय आँकड़े हट जाएंगे।",
+                resetDataDone: "ऐप डेटा साफ़ किया गया",
+                privacyNote: "गोपनीयता: स्थान, खोजें और दृश्य गिनती केवल इस डिवाइस पर रहती हैं।"
             },
             mr: {
-                appTitle: "सँडिप विद्यापीठ",
+                appTitle: "संदीप विद्यापीठ",
                 appSubtitle: "कॅम्पस नेव्हिगेशन",
                 searchPlaceholder: "इमारत, विभाग, वसतिगृह शोधा...",
                 filterAll: "सर्व",
+                favoritesFilter: "आवडते",
                 categoryLabels: {
-                    admission_cell: "प्रवेश कक्ष", gate: "प्रवेशद्वार", building: "इमारत",
-                    department: "विभाग", hostel: "वसतिगृह", parking: "पार्किंग",
-                    food_court: "फूड कोर्ट", canteen: "कॅन्टीन", stationery: "स्टेशनरी",
-                    sports: "क्रीडा", landmark: "खूणस्थान", sections: "विभाग",
+                    admission_cell: "प्रवेश कक्ष",
+                    gate: "प्रवेशद्वार",
+                    building: "इमारत",
+                    department: "विभाग",
+                    hostel: "वसतिगृह",
+                    parking: "पार्किंग",
+                    food_court: "फूड कोर्ट",
+                    canteen: "कॅन्टीन",
+                    stationery: "स्टेशनरी",
+                    sports: "क्रीडा",
+                    landmark: "खूणस्थान",
+                    sections: "विभाग",
                     uncategorized: "अवर्गीकृत"
                 },
                 viewDetails: "तपशील पहा",
@@ -978,173 +1559,733 @@
                 notSpecified: "नमूद केलेले नाही",
                 unnamedLocation: "अनामित स्थान",
                 emptyStateText: "जुळणारी स्थाने आढळली नाहीत",
-                offlineBannerText: "तुम्ही ऑफलाइन आहात — जतन केलेला डेटा दाखवत आहे",
+                offlineBannerText: "तुम्ही ऑफलाइन आहात - जतन केलेला डेटा दाखवत आहे",
                 installBannerTitle: "CampusCompass इंस्टॉल करा",
                 installBannerSubtitle: "जलद, ऑफलाइन प्रवेशासाठी होम स्क्रीनवर जोडा.",
                 installBannerBtn: "इंस्टॉल करा",
-                iosInstallTipTitle: "हे अ‍ॅप इंस्टॉल करा",
+                iosInstallTipTitle: "हे अॅप इंस्टॉल करा",
                 iosInstallTipSubtitle: 'शेअर आयकॉनवर टॅप करा, नंतर "होम स्क्रीनवर जोडा" निवडा.',
                 langPickerTitle: "तुमची भाषा निवडा",
                 langPickerSubtitle: "Choose your language · भाषा चुनें",
-                langPickerNote: "स्थानांची नावे इंग्रजीतच राहतील. तुम्ही हे 🌐 आयकॉनवरून कधीही बदलू शकता.",
-                closeDetails: "तपशील बंद करा"
+                langPickerNote: "स्थानांची नावे इंग्रजीतच राहतील. तुम्ही हे ग्लोब आयकॉनवरून कधीही बदलू शकता.",
+                closeDetails: "तपशील बंद करा",
+                favoritesEmptyStateText: "अजून कोणतेही आवडते नाहीत",
+                recentSearchesLabel: "अलीकडील शोध",
+                clearRecent: "अलीकडील साफ करा",
+                nearMeLabel: "माझ्या जवळ",
+                nearMeLoading: "तुमचे स्थान शोधले जात आहे...",
+                nearMeUnavailable: "या डिव्हाइसवर Near Me उपलब्ध नाही.",
+                nearMePermissionDenied: "स्थानाची परवानगी नाकारली गेली.",
+                nearMeTimedOut: "स्थान विनंतीची वेळ संपली.",
+                nearMeErrorGeneric: "तुमचे स्थान मिळवता आले नाही.",
+                nearMeActive: "सर्वात जवळच्या स्थानांनुसार क्रमित",
+                share: "शेअर",
+                shareFallbackCopied: "लिंक कॉपी झाली - या ब्राउझरवर Web Share समर्थित नाही",
+                upToDate: "अद्ययावत आहे",
+                pullToRefresh: "रीफ्रेशसाठी खाली ओढा",
+                swipeNavigateHint: "जलद नेव्हिगेटसाठी डावीकडे स्वाइप करा",
+                favoriteOn: "आवडीमधून काढा",
+                favoriteOff: "आवडीमध्ये जोडा",
+                aboutRowLabel: "माहिती",
+                aboutRowSubtitle: "डेटासेट मेटाडेटा आणि फक्त स्थानिक वापर आकडे",
+                aboutPanelTitle: "डेटासेट तपशील",
+                institutionLabel: "संस्था",
+                versionLabel: "आवृत्ती",
+                totalLocationsLabel: "एकूण स्थाने",
+                localAnalyticsLabel: "फक्त स्थानिक आकडे",
+                localAnalyticsNote: "मोजणी फक्त या ब्राउझरच्या localStorage मध्ये राहते. काहीही बाहेर पाठवले जात नाही.",
+                mostViewedLabel: "सर्वाधिक पाहिलेले",
+                topSearchesLabel: "शीर्ष शोध",
+                usageEmpty: "अजून कोणताही स्थानिक वापर नाही.",
+                dataLoadErrorTitle: "कॅम्पस डेटा लोड होऊ शकला नाही",
+                dataLoadErrorText: "अॅप ऑनलाइन डेटासेट किंवा एम्बेडेड फॉलबॅक, दोन्हींपैकी काहीही लोड करू शकले नाही.",
+                retry: "पुन्हा प्रयत्न करा",
+                openDatasetDetails: "डेटासेट तपशील उघडा",
+                closeDatasetDetails: "डेटासेट तपशील बंद करा"
+                ,
+                resetData: "अॅप डेटा रीसेट करा",
+                resetDataConfirm: "अॅप डेटा रीसेट करायचा? यामुळे साठवलेल्या प्राधान्ये आणि स्थानिक आकडे हटतील.",
+                resetDataDone: "अॅप डेटा साफ केले",
+                privacyNote: "गोपनीयता: स्थान, शोध आणि दृश्यमान मोजमाप फक्त या उपकरणावर राहतात."
             }
         };
 
+        /** @type {string[]} */
         const SUPPORTED_LANGS = ["en", "hi", "mr"];
-        const PREFS_KEY = "cc-preferences"; // single consistent preferences object shared with dark mode
-        let currentLang = "en";
+
+        /** @type {string} */
+        const FAVORITES_FILTER = "Favorites";
+
+        /** @type {number} */
+        const RECENT_SEARCH_LIMIT = 5;
+
+        /** @type {number} */
+        const NEAR_ME_REFRESH_RADIUS = 0;
+
+        /** @type {string} */
+        const PREFERENCES_FAVORITES_KEY = "favorites";
+
+        /** @type {string} */
+        const PREFERENCES_RECENTS_KEY = "recentSearches";
+
+        /** @type {string} */
+        const PREFERENCES_THEME_KEY = "theme";
+
+        /** @type {string} */
+        const PLACEHOLDER_OG_IMAGE = "./og-image-placeholder.jpg";
+
+        /** @type {string} */
+        const PLACEHOLDER_CANONICAL = "https://example.com/campuscompass";
+
+        /** @type {string} */
+        const CARD_SWIPE_OPEN_CLASS = "quick-reveal";
+
+        /** @type {string} */
+        const EMPTY_SELECTION_KEY = "__empty__";
+
+        /** @type {{views: Record<string, number>, filters: Record<string, number>, searches: Record<string, number>}} */
+        const defaultAnalytics = { views: {}, filters: {}, searches: {} };
+
+        /** @type {Array<string>} */
+        let favoriteLocationIds = [];
+
+        /** @type {Array<string>} */
+        let recentSearches = [];
+
+        /** @type {boolean} */
+        let searchInputFocused = false;
+
+        /** @type {boolean} */
+        let currentNearMeActive = false;
+
+        /** @type {{latitude:number, longitude:number} | null} */
+        let currentNearMeCoords = null;
+
+        /** @type {string} */
+        let currentNearMeStatus = "";
+
+        /** @type {boolean} */
+        let currentNearMeError = false;
+
+        /** @type {number | null} */
+        let currentDataVersionSignature = null;
+
+        /** @type {string} */
+        let lastRecordedSearchQuery = "";
+
+        /** @type {boolean} */
+        let isPullRefreshing = false;
+
+        /** @type {{active:boolean,startX:number,startY:number,deltaX:number,deltaY:number,revealed:boolean,ignoreClick:boolean}|null} */
+        let modalGestureState = null;
+
+        /** @type {Map<number, number>} */
+        let distanceByLocationIndex = new Map();
+
+        /** @type {number | null} */
+        let pullRefreshStartY = null;
+
+        /** @type {number | null} */
+        let pullRefreshTouchId = null;
+
+        /** @type {number} */
+        const PULL_REFRESH_THRESHOLD = 72;
+
+        /** @type {number} */
+        const CARD_SWIPE_THRESHOLD = 56;
+
+        /** @type {number} */
+        const MODAL_SWIPE_THRESHOLD = 72;
+
+        /**
+         * Return the storage key that should identify a location for favorites and analytics.
+         * Pure function: no DOM access.
+         * @param {Object} location
+         * @returns {string}
+         */
+        function getLocationStorageKey(location) {
+            if (!location) return EMPTY_SELECTION_KEY;
+            return String(location.id || location.name || location.category || EMPTY_SELECTION_KEY);
+        }
+
+        /**
+         * Read a preference array from the saved preferences blob.
+         * Pure function: no DOM access beyond loadPreferences.
+         * @param {string} key
+         * @returns {Array<string>}
+         */
+        function readPreferenceArray(key) {
+            const prefs = loadPreferences();
+            const mapping = {
+                [PREFERENCES_FAVORITES_KEY]: 'favorites',
+                [PREFERENCES_RECENTS_KEY]: 'recentSearches'
+            };
+            const prop = mapping[key] || key;
+            const value = prefs[prop];
+            return Array.isArray(value) ? value.filter((item) => typeof item === "string") : [];
+        }
+
+        /**
+         * Persist a preference array with de-duplication and a max length.
+         * @param {string} key
+         * @param {Array<string>} values
+         * @param {number} [limit=Infinity]
+         * @returns {void}
+         */
+        function writePreferenceArray(key, values, limit = Infinity) {
+            const uniqueValues = [];
+            values.forEach((value) => {
+                if (typeof value === "string" && value && !uniqueValues.includes(value)) {
+                    uniqueValues.push(value);
+                }
+            });
+            const mapping = {
+                [PREFERENCES_FAVORITES_KEY]: 'favorites',
+                [PREFERENCES_RECENTS_KEY]: 'recentSearches'
+            };
+            const prop = mapping[key] || key;
+            savePreferences({ [prop]: uniqueValues.slice(0, limit) });
+        }
+
+        /**
+         * Get the current list of favorite location ids.
+         * @returns {Array<string>}
+         */
+        function getFavoriteLocationIds() {
+            return readPreferenceArray(PREFERENCES_FAVORITES_KEY);
+        }
+
+        /**
+         * Persist the favorite location ids.
+         * @param {Array<string>} ids
+         * @returns {void}
+         */
+        function setFavoriteLocationIds(ids) {
+            favoriteLocationIds = Array.isArray(ids) ? ids.slice() : [];
+            writePreferenceArray(PREFERENCES_FAVORITES_KEY, favoriteLocationIds);
+        }
+
+        /**
+         * Check whether a location is favorited.
+         * Pure function: no DOM access.
+         * @param {Object} location
+         * @returns {boolean}
+         */
+        function isFavoriteLocation(location) {
+            const key = getLocationStorageKey(location);
+            return favoriteLocationIds.includes(key);
+        }
+
+        /**
+         * Toggle a favorite location id and refresh the current view.
+         * @param {string} locationId
+         * @returns {void}
+         */
+        function toggleFavorite(locationId) {
+            hapticTap();
+            if (!locationId) return;
+            const ids = getFavoriteLocationIds();
+            const existingIndex = ids.indexOf(locationId);
+            if (existingIndex >= 0) {
+                ids.splice(existingIndex, 1);
+            } else {
+                ids.unshift(locationId);
+            }
+            setFavoriteLocationIds(ids);
+            applyAll(false);
+            renderAboutPanel();
+            updateOpenModalFavoriteButton();
+        }
+
+        /**
+         * Get the current recent search list.
+         * @returns {Array<string>}
+         */
+        function getRecentSearches() {
+            return readPreferenceArray(PREFERENCES_RECENTS_KEY);
+        }
+
+        /**
+         * Persist the recent search list.
+         * @param {Array<string>} values
+         * @returns {void}
+         */
+        function setRecentSearches(values) {
+            recentSearches = Array.isArray(values) ? values.slice(0, RECENT_SEARCH_LIMIT) : [];
+            writePreferenceArray(PREFERENCES_RECENTS_KEY, recentSearches, RECENT_SEARCH_LIMIT);
+        }
+
+        /**
+         * Add a query to the recent search history.
+         * @param {string} query
+         * @returns {void}
+         */
+        function addRecentSearch(query) {
+            const trimmed = String(query || "").trim();
+            if (!trimmed) return;
+            const normalized = normalizeText(trimmed);
+            const deduped = recentSearches.filter((item) => normalizeText(item) !== normalized);
+            deduped.unshift(trimmed);
+            setRecentSearches(deduped);
+            renderRecentSearches();
+        }
+
+        /**
+         * Clear the recent search history.
+         * @returns {void}
+         */
+        function clearRecentSearches() {
+            setRecentSearches([]);
+            renderRecentSearches();
+            showToast(t("clearRecent"));
+        }
+
+        /**
+         * Set the current query to a recent search and run it immediately.
+         * @param {string} query
+         * @returns {void}
+         */
+        function applyRecentSearch(query) {
+            const searchInput = getEl("searchInput");
+            if (searchInput) {
+                searchInput.value = query;
+                currentQuery = normalizeText(query);
+                searchInput.focus();
+            } else {
+                currentQuery = normalizeText(query);
+            }
+            applyAll(true);
+            renderRecentSearches();
+        }
+
+        /**
+         * Clear the active search query.
+         * @returns {void}
+         */
+        function clearSearchQuery() {
+            const searchInput = getEl("searchInput");
+            if (searchInput) searchInput.value = "";
+            currentQuery = "";
+            applyAll(true);
+            renderRecentSearches();
+        }
+
+        /**
+         * Calculate the straight-line distance between two points on Earth.
+         * Pure function: no DOM access.
+         * @param {number} latitudeA
+         * @param {number} longitudeA
+         * @param {number} latitudeB
+         * @param {number} longitudeB
+         * @returns {number}
+         */
+        function haversineDistanceMeters(latitudeA, longitudeA, latitudeB, longitudeB) {
+            const radiusMeters = 6371000;
+            const toRadians = (value) => value * Math.PI / 180;
+            const deltaLatitude = toRadians(latitudeB - latitudeA);
+            const deltaLongitude = toRadians(longitudeB - longitudeA);
+            const a = Math.sin(deltaLatitude / 2) ** 2
+                + Math.cos(toRadians(latitudeA)) * Math.cos(toRadians(latitudeB))
+                * Math.sin(deltaLongitude / 2) ** 2;
+            return 2 * radiusMeters * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        }
+
+        /**
+         * Compute the distance from the user's coordinates to a location.
+         * Pure function: no DOM access.
+         * @param {{latitude:number, longitude:number}} userCoords
+         * @param {Object} location
+         * @returns {number | null}
+         */
+        function distanceToLocation(userCoords, location) {
+            const coordinates = location && location.coordinates;
+            if (!userCoords || !coordinates || coordinates.latitude == null || coordinates.longitude == null) return null;
+            return haversineDistanceMeters(userCoords.latitude, userCoords.longitude, coordinates.latitude, coordinates.longitude);
+        }
+
+        /**
+         * Format a distance label for the current language.
+         * Pure function: no DOM access.
+         * @param {number} meters
+         * @param {string} [lang=currentLang]
+         * @returns {string}
+         */
+        function formatDistanceLabel(meters, lang = currentLang) {
+            if (!Number.isFinite(meters)) return "";
+            if (meters < 1000) {
+                const rounded = Math.max(1, Math.round(meters));
+                if (lang === "hi") return `${rounded} मीटर दूर`;
+                if (lang === "mr") return `${rounded} मीटर अंतरावर`;
+                return `${rounded} m away`;
+            }
+            const kilometers = (meters / 1000).toFixed(meters >= 10000 ? 0 : 1);
+            if (lang === "hi") return `${kilometers} किमी दूर`;
+            if (lang === "mr") return `${kilometers} किमी अंतरावर`;
+            return `${kilometers} km away`;
+        }
+
+        /**
+         * Compare two numeric values and fall back to index order.
+         * Pure function: no DOM access.
+         * @param {number} left
+         * @param {number} right
+         * @param {number} leftIndex
+         * @param {number} rightIndex
+         * @returns {number}
+         */
+        function compareWithIndexFallback(left, right, leftIndex, rightIndex) {
+            if (left < right) return -1;
+            if (left > right) return 1;
+            return leftIndex - rightIndex;
+        }
+
+        /**
+         * Resolve the active display order for the filtered indexes.
+         * Pure function: no DOM access.
+         * @param {Array<number>} indexes
+         * @returns {Array<number>}
+         */
+        function sortFilteredIndexes(indexes) {
+            const ordered = indexes.slice();
+            if (!currentNearMeActive || !currentNearMeCoords) return ordered;
+            return ordered.sort((leftIndex, rightIndex) => {
+                const leftDistance = distanceByLocationIndex.get(leftIndex);
+                const rightDistance = distanceByLocationIndex.get(rightIndex);
+                const safeLeft = Number.isFinite(leftDistance) ? leftDistance : Number.POSITIVE_INFINITY;
+                const safeRight = Number.isFinite(rightDistance) ? rightDistance : Number.POSITIVE_INFINITY;
+                return compareWithIndexFallback(safeLeft, safeRight, leftIndex, rightIndex);
+            });
+        }
+
+        /**
+         * Read the persisted preferences blob.
+         * @returns {Record<string, unknown>}
+         */
+        const PREFS_SCHEMA_VERSION = 1;
+
+        function makeDefaultPreferences() {
+            return {
+                version: PREFS_SCHEMA_VERSION,
+                theme: null,
+                language: null,
+                favorites: [],
+                recentSearches: [],
+                viewedCounts: {},
+            };
+        }
+
+        function migratePreferences(old) {
+            // Older shapes: plain object with keys, or simple arrays. Make best-effort mapping.
+            if (!old || typeof old !== 'object') return makeDefaultPreferences();
+            const base = makeDefaultPreferences();
+            if (typeof old.version === 'number') {
+                return Object.assign({}, base, old);
+            }
+            // possible legacy keys
+            if (Array.isArray(old)) {
+                // legacy stored favorites as array
+                base.favorites = old.slice(0, 100);
+                return base;
+            }
+            // map known legacy keys
+            base.theme = old.theme || old.ccTheme || base.theme;
+            base.language = old.language || old.lang || base.language;
+            base.favorites = Array.isArray(old.favorites) ? old.favorites : (Array.isArray(old[PREFERENCES_FAVORITES_KEY]) ? old[PREFERENCES_FAVORITES_KEY] : base.favorites);
+            base.recentSearches = Array.isArray(old.recentSearches) ? old.recentSearches : (Array.isArray(old[PREFERENCES_RECENTS_KEY]) ? old[PREFERENCES_RECENTS_KEY] : base.recentSearches);
+            base.viewedCounts = old.viewedCounts || old.views || base.viewedCounts;
+            return base;
+        }
 
         function loadPreferences() {
             try {
                 const raw = localStorage.getItem(PREFS_KEY);
-                return raw ? JSON.parse(raw) : {};
-            } catch (e) {
-                return {};
+                if (!raw) return makeDefaultPreferences();
+                const parsed = JSON.parse(raw);
+                if (!parsed || typeof parsed !== 'object') return makeDefaultPreferences();
+                if (typeof parsed.version === 'number' && parsed.version === PREFS_SCHEMA_VERSION) return parsed;
+                // migrate
+                const migrated = migratePreferences(parsed);
+                try { localStorage.setItem(PREFS_KEY, JSON.stringify(migrated)); } catch (e) { /* ignore */ }
+                return migrated;
+            } catch (error) {
+                return makeDefaultPreferences();
             }
         }
 
+        /**
+         * Merge and persist a small preferences patch.
+         * @param {Record<string, unknown>} patch
+         * @returns {void}
+         */
         function savePreferences(patch) {
             try {
                 const current = loadPreferences();
-                const merged = Object.assign({}, current, patch);
+                const merged = Object.assign({}, current, patch, { version: PREFS_SCHEMA_VERSION });
                 localStorage.setItem(PREFS_KEY, JSON.stringify(merged));
-            } catch (e) { /* localStorage unavailable */ }
+            } catch (error) {
+                // localStorage unavailable.
+            }
         }
 
-        // Looks up `key` (dot-path supported, e.g. "categoryLabels.gate") in
-        // the current language, falling back to English, then to the key
-        // itself so a missing translation never renders blank.
-        function t(key) {
-            const resolve = (lang) => {
-                const dict = TRANSLATIONS[lang];
+        /**
+         * Resolve a translation key from the active language with English fallback.
+         * Pure function: no DOM access, no mutation.
+         * @param {string} key
+         * @param {string} [lang=currentLang]
+         * @returns {string}
+         */
+        function t(key, lang = currentLang) {
+            const resolve = (candidateLang) => {
+                const dict = TRANSLATIONS[candidateLang];
                 if (!dict) return undefined;
-                return key.split(".").reduce((obj, part) => (obj && obj[part] !== undefined ? obj[part] : undefined), dict);
+                return key.split(".").reduce((value, part) => (value && value[part] !== undefined ? value[part] : undefined), dict);
             };
-            const viaLang = resolve(currentLang);
+            const viaLang = resolve(lang);
             if (viaLang !== undefined) return viaLang;
             const viaEnglish = resolve("en");
             if (viaEnglish !== undefined) return viaEnglish;
             return key;
         }
 
-        // ---------- Utilities ----------
+        // ===== MODULE: search.js (search index, debounce, filter logic) =====
 
-        // Simple debounce helper: delays invoking fn until `wait` ms have
-        // passed since the last call.
+        /**
+         * Escape HTML for safe text injection into template strings.
+         * Pure function: no DOM access.
+         * @param {unknown} value
+         * @returns {string}
+         */
+        function escapeHtml(value) {
+            return String(value ?? "").replace(/[&<>'"]/g, (match) => {
+                switch (match) {
+                    case "&": return "&amp;";
+                    case "<": return "&lt;";
+                    case ">": return "&gt;";
+                    case '"': return "&quot;";
+                    case "'": return "&#39;";
+                    default: return match;
+                }
+            });
+        }
+
+        /**
+         * Normalize text for deterministic, case-insensitive search.
+         * Pure function: no DOM access.
+         * @param {unknown} value
+         * @returns {string}
+         */
+        function normalizeText(value) {
+            return String(value ?? "").trim().toLowerCase();
+        }
+
+        /**
+         * Build a single searchable string for a location.
+         * Pure function: no DOM access.
+         * @param {Object} location
+         * @returns {string}
+         */
+        function buildSearchIndexEntry(location) {
+            const parts = [
+                location && location.name,
+                location && location.category,
+                location && location.parent,
+                location && location.school,
+                ...(Array.isArray(location && location.aliases) ? location.aliases : []),
+                ...(Array.isArray(location && location.keywords) ? location.keywords : []),
+                ...(Array.isArray(location && location.courses) ? location.courses : [])
+            ].filter(Boolean);
+            return normalizeText(parts.join(" "));
+        }
+
+        /**
+         * Build the search index for the currently loaded dataset.
+         * @returns {void}
+         */
+        function buildSearchIndex() {
+            searchIndex = allLocations.map((location) => buildSearchIndexEntry(location));
+        }
+
+        /**
+         * Build the category list from loaded locations.
+         * @returns {void}
+         */
+        function buildCategoryList() {
+            const found = new Set();
+            allLocations.forEach((location) => {
+                if (location && location.category) found.add(location.category);
+            });
+            categories = [FAVORITES_FILTER, ALL_FILTER, ...Array.from(found).sort()];
+        }
+
+        /**
+         * Determine whether a location matches the active filter/query.
+         * Pure function: no DOM access.
+         * @param {Object} location
+         * @param {string} searchEntry
+         * @param {string} query
+         * @param {string} filter
+         * @returns {boolean}
+         */
+        function matchesLocation(location, searchEntry, query, filter) {
+            if (filter === FAVORITES_FILTER) {
+                if (!isFavoriteLocation(location)) return false;
+            } else if (filter !== ALL_FILTER && location.category !== filter) {
+                return false;
+            }
+            if (!query) return true;
+            return searchEntry.includes(query);
+        }
+
+        /**
+         * Filter the dataset to matching indexes.
+         * Pure function: no DOM access.
+         * @param {Array<Object>} locations
+         * @param {Array<string>} indexList
+         * @param {string} query
+         * @param {string} filter
+         * @returns {Array<number>}
+         */
+        function filterLocationIndexes(locations, indexList, query, filter) {
+            const matching = [];
+            for (let index = 0; index < locations.length; index += 1) {
+                if (matchesLocation(locations[index], indexList[index] || "", query, filter)) {
+                    matching.push(index);
+                }
+            }
+            return matching;
+        }
+
+        /**
+         * Debounce a function call by wait milliseconds.
+         * Pure utility: no DOM access.
+         * @param {Function} fn
+         * @param {number} wait
+         * @returns {Function}
+         */
         function debounce(fn, wait) {
             let timeoutId = null;
-            return function (...args) {
+            return function debounced(...args) {
                 clearTimeout(timeoutId);
                 timeoutId = setTimeout(() => fn.apply(this, args), wait);
             };
         }
 
-        // Light haptic-style feedback on primary button taps. Guarded so it
-        // silently no-ops on devices/browsers without vibration support.
+        // ===== MODULE: render.js (cards, modal, skeleton, virtualization) =====
+
+        /**
+         * Convenience DOM lookup.
+         * DOM-coupled helper: reads the document, no mutation.
+         * @param {string} id
+         * @returns {HTMLElement | null}
+         */
+        function getEl(id) {
+            return document.getElementById(id);
+        }
+
+        /**
+         * Simple haptic-style feedback on supported devices.
+         * DOM-coupled helper: uses navigator only.
+         * @returns {void}
+         */
         function hapticTap() {
             if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
                 navigator.vibrate(10);
             }
         }
 
+        /**
+         * Check whether the user prefers reduced motion.
+         * DOM-coupled helper: reads matchMedia only.
+         * @returns {boolean}
+         */
         function prefersReducedMotion() {
-            return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            return Boolean(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
         }
 
-        // ---------- Dark Mode ----------
-
+        /**
+         * Keep the theme toggle glyphs in sync with the html.dark class.
+         * DOM-coupled helper: mutates the icon visibility in the document.
+         * @returns {void}
+         */
         function applyThemeIcons() {
             const isDark = document.documentElement.classList.contains("dark");
-            document.getElementById("themeIconSun").classList.toggle("hidden", isDark);
-            document.getElementById("themeIconMoon").classList.toggle("hidden", !isDark);
+            const sun = getEl("themeIconSun");
+            const moon = getEl("themeIconMoon");
+            if (sun) sun.classList.toggle("hidden", isDark);
+            if (moon) moon.classList.toggle("hidden", !isDark);
         }
 
+        /**
+         * Toggle the global theme and persist the preference.
+         * DOM-coupled helper: mutates document state and localStorage.
+         * @returns {void}
+         */
         function toggleTheme() {
             hapticTap();
-            const html = document.documentElement;
-            const isDark = html.classList.toggle("dark");
+            const isDark = document.documentElement.classList.toggle("dark");
             try {
                 localStorage.setItem("cc-theme", isDark ? "dark" : "light");
-            } catch (e) { /* localStorage unavailable */ }
+            } catch (error) {
+                // localStorage unavailable.
+            }
             applyThemeIcons();
+            initIconsForRoot(getEl("themeToggleBtn"));
         }
 
-        // ---------- Language (i18n) ----------
-
-        // Determines the language to use on boot: a saved preference if
-        // present, otherwise null (meaning: no preference yet, so the
-        // full-screen picker should be shown before the app renders).
-        function initLanguage() {
-            const prefs = loadPreferences();
-            const saved = prefs.language;
-            if (saved && SUPPORTED_LANGS.includes(saved)) {
-                currentLang = saved;
-                document.documentElement.setAttribute("lang", currentLang);
-                applyLanguageToStaticText();
-                return true; // preference already existed
-            }
-            currentLang = "en";
-            document.documentElement.setAttribute("lang", "en");
-            return false; // first launch, no saved preference
-        }
-
-        // Shows the full-screen language picker. `dismissible` controls
-        // whether tapping doesn't auto-close on first-launch flows (it's
-        // always closable via a language choice; this flag just governs
-        // whether we treat it as a "change language later" reopen vs the
-        // mandatory first-run picker).
-        function openLangPicker() {
-            const overlay = document.getElementById("langPickerOverlay");
-            overlay.classList.add("picker-shown");
-            requestAnimationFrame(() => overlay.classList.add("picker-visible"));
-            if (typeof lucide !== "undefined") lucide.createIcons();
-        }
-
-        function closeLangPicker() {
-            const overlay = document.getElementById("langPickerOverlay");
-            overlay.classList.remove("picker-visible");
-            const finish = () => overlay.classList.remove("picker-shown");
-            if (prefersReducedMotion()) {
-                finish();
-            } else {
-                setTimeout(finish, 280);
+        /**
+         * Load the embedded JSON dataset from the page.
+         * @returns {Object | null}
+         */
+        function loadEmbeddedData() {
+            try {
+                const script = getEl("campusDataEmbedded");
+                if (!script || !script.textContent.trim()) return null;
+                return JSON.parse(script.textContent);
+            } catch (error) {
+                console.error("Failed to parse embedded campus dataset:", error);
+                return null;
             }
         }
 
-        // Called when the user taps a language card. Saves the preference,
-        // switches the UI instantly (no reload), and closes the picker.
-        function selectLanguage(lang) {
-            hapticTap();
-            if (!SUPPORTED_LANGS.includes(lang)) lang = "en";
-            currentLang = lang;
-            document.documentElement.setAttribute("lang", lang);
-            savePreferences({ language: lang });
-            applyLanguageToStaticText();
-
-            // Re-render dynamic sections so filter chips, cards, and any
-            // open modal pick up the new language immediately.
-            if (allLocations.length > 0) {
-                renderFilters();
-                applyAll();
-            }
-            const modal = document.getElementById("detailModal");
-            if (modal && !modal.classList.contains("hidden")) {
-                closeModal();
-            }
-
-            closeLangPicker();
+        /**
+         * Extract a normalized locations array from any supported payload shape.
+         * Pure function: no DOM access.
+         * @param {unknown} payload
+         * @returns {Array<Object>}
+         */
+        function extractLocations(payload) {
+            if (!payload) return [];
+            if (Array.isArray(payload)) return payload;
+            if (Array.isArray(payload.locations)) return payload.locations;
+            return [];
         }
 
-        // Updates every static (non-data-driven) piece of chrome text in
-        // the DOM to the current language. Called on boot and on every
-        // language switch. Dynamic sections (filters/cards/modal) are
-        // re-rendered separately via their own render*() functions, which
-        // already call t() internally.
+        /**
+         * Extract dataset metadata from payloads, preferring the embedded JSON.
+         * Pure function: no DOM access.
+         * @param {Object | null} embeddedPayload
+         * @param {Object | null} fallbackPayload
+         * @param {Array<Object>} locations
+         * @returns {{institution:string, version:string, total_locations:number}}
+         */
+        function extractDatasetMeta(embeddedPayload, fallbackPayload, locations) {
+            const source = embeddedPayload || fallbackPayload || {};
+            return {
+                institution: source.institution || "Sandip University",
+                version: String(source.version || ""),
+                total_locations: Number(source.total_locations != null ? source.total_locations : locations.length) || locations.length
+            };
+        }
+
+        /**
+         * Render text into the translation-aware static chrome.
+         * DOM-coupled helper: writes textContent/attributes only.
+         * @returns {void}
+         */
         function applyLanguageToStaticText() {
             const setText = (id, key) => {
-                const el = document.getElementById(id);
-                if (el) el.textContent = t(key);
+                const element = getEl(id);
+                if (element) element.textContent = t(key);
             };
 
             setText("appTitle", "appTitle");
@@ -1159,22 +2300,1174 @@
             setText("langPickerTitle", "langPickerTitle");
             setText("langPickerSubtitle", "langPickerSubtitle");
             setText("langPickerNote", "langPickerNote");
+            setText("aboutRowLabel", "aboutRowLabel");
+            setText("aboutRowSubtitle", "aboutRowSubtitle");
+            setText("aboutRowSubtitle", "aboutRowSubtitle");
+            setText("dataErrorTitle", "dataLoadErrorTitle");
+            setText("dataErrorText", "dataLoadErrorText");
+            setText("retryLoadBtn", "retry");
+            setText("aboutRowLabel", "aboutRowLabel");
+            setText("aboutRowSubtitle", "aboutRowSubtitle");
+            setText("localAnalyticsLabel", "localAnalyticsLabel");
+            setText("localAnalyticsNote", "localAnalyticsNote");
+            setText("mostViewedLabel", "mostViewedLabel");
+            setText("topSearchesLabel", "topSearchesLabel");
 
-            const searchInput = document.getElementById("searchInput");
+            const searchInput = getEl("searchInput");
             if (searchInput) searchInput.placeholder = t("searchPlaceholder");
 
-            const closeBtn = document.getElementById("modalCloseBtn");
+            const closeBtn = getEl("modalCloseBtn");
             if (closeBtn) closeBtn.setAttribute("aria-label", t("closeDetails"));
 
-            const langToggle = document.getElementById("langToggleBtn");
+            const langToggle = getEl("langToggleBtn");
             if (langToggle) langToggle.setAttribute("aria-label", t("langPickerTitle"));
+
+            const aboutToggle = getEl("aboutToggleBtn");
+            if (aboutToggle) aboutToggle.setAttribute("aria-label", t("openDatasetDetails"));
+
+            const aboutPanel = getEl("aboutPanel");
+            if (aboutPanel) aboutPanel.setAttribute("aria-label", t("aboutPanelTitle"));
         }
 
-        // ---------- Toast ----------
+        /**
+         * Mark the language picker open and optionally focus the first option.
+         * DOM-coupled helper: shows the overlay.
+         * @param {boolean} [focusFirstOption=false]
+         * @returns {void}
+         */
+        function openLangPicker(focusFirstOption = false) {
+            const overlay = getEl("langPickerOverlay");
+            if (!overlay) return;
+            overlay.classList.add("picker-shown");
+            requestAnimationFrame(() => {
+                overlay.classList.add("picker-visible");
+                if (focusFirstOption) {
+                    const firstCard = overlay.querySelector(".lang-card");
+                    if (firstCard && typeof firstCard.focus === "function") firstCard.focus();
+                }
+            });
+            initIconsForRoot(overlay);
+        }
 
-        let toastTimeoutId = null;
+        /**
+         * Close the language picker overlay.
+         * DOM-coupled helper: hides the overlay.
+         * @returns {void}
+         */
+        function closeLangPicker() {
+            const overlay = getEl("langPickerOverlay");
+            if (!overlay) return;
+            overlay.classList.remove("picker-visible");
+            const finish = () => overlay.classList.remove("picker-shown");
+            if (prefersReducedMotion()) {
+                finish();
+            } else {
+                setTimeout(finish, 280);
+            }
+        }
+
+        /**
+         * Initialize the active language from saved preferences.
+         * @returns {boolean}
+         */
+        function initLanguage() {
+            const prefs = loadPreferences();
+            const saved = prefs.language;
+            if (saved && SUPPORTED_LANGS.includes(saved)) {
+                currentLang = saved;
+                document.documentElement.setAttribute("lang", currentLang);
+                applyLanguageToStaticText();
+                return true;
+            }
+            currentLang = "en";
+            document.documentElement.setAttribute("lang", "en");
+            return false;
+        }
+
+        /**
+         * Switch the active language and rerender translated chrome.
+         * DOM-coupled helper: updates document state.
+         * @param {string} lang
+         * @returns {void}
+         */
+        function selectLanguage(lang) {
+            hapticTap();
+            if (!SUPPORTED_LANGS.includes(lang)) lang = "en";
+            currentLang = lang;
+            document.documentElement.setAttribute("lang", lang);
+            savePreferences({ language: lang });
+            applyLanguageToStaticText();
+
+            if (allLocations.length > 0) {
+                renderFilters();
+                applyAll(true);
+            }
+
+            const modal = getEl("detailModal");
+            if (modal && !modal.classList.contains("hidden")) closeModal();
+            closeLangPicker();
+        }
+
+        /**
+         * General-purpose icon hydration scoped to a root element.
+         * DOM-coupled helper: delegates to Lucide for the subtree only.
+         * @param {HTMLElement | null} root
+         * @returns {void}
+         */
+        function initIconsForRoot(root) {
+            if (root && typeof lucide !== "undefined" && typeof lucide.createIcons === "function") {
+                lucide.createIcons({ root: root });
+            }
+        }
+
+        /**
+         * Format a category label in the current language.
+         * Pure function: no DOM access.
+         * @param {string} category
+         * @param {string} [lang=currentLang]
+         * @returns {string}
+         */
+        function formatCategoryLabel(category, lang = currentLang) {
+            if (category === FAVORITES_FILTER) return t("favoritesFilter", lang);
+            if (!category) return t("categoryLabels.uncategorized", lang);
+            const dict = TRANSLATIONS[lang] && TRANSLATIONS[lang].categoryLabels;
+            const english = TRANSLATIONS.en.categoryLabels;
+            if (dict && dict[category]) return dict[category];
+            if (english[category]) return english[category];
+            return category.split("_").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
+        }
+
+        /**
+         * Render the category filter pills.
+         * DOM-coupled helper: writes filter markup.
+         * @returns {void}
+         */
+        function renderFilters() {
+            const container = getEl("filterContainer");
+            if (!container) return;
+
+            container.innerHTML = categories.map((category) => {
+                const icon = category === FAVORITES_FILTER ? "star" : (category === ALL_FILTER ? "layout-grid" : (CATEGORY_ICONS[category] || DEFAULT_ICON));
+                const isActive = currentFilter === category;
+                const label = category === ALL_FILTER ? t("filterAll") : formatCategoryLabel(category);
+                return `
+                    <button onclick='setFilter(${JSON.stringify(category)})' aria-pressed="${isActive}"
+                        class="filter-chip tap-shrink inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-xs font-bold border whitespace-nowrap transition-all
+                        ${isActive ? "bg-slate-900 text-white border-slate-900" : "bg-white filter-chip-inactive text-slate-500 border-slate-200"}"
+                        style="min-height:44px;">
+                        <i data-lucide="${icon}" class="w-3.5 h-3.5"></i>
+                        <span>${escapeHtml(label)}</span>
+                    </button>
+                `;
+            }).join("");
+            initIconsForRoot(container);
+        }
+
+        /**
+         * Render the recent search chips below the search box.
+         * DOM-coupled helper: writes the recent search area only.
+         * @returns {void}
+         */
+        function renderRecentSearches() {
+            const wrap = getEl("recentSearchesWrap");
+            const searchInput = getEl("searchInput");
+            if (!wrap || !searchInput) return;
+
+            const visible = searchInputFocused && currentQuery === "";
+            wrap.setAttribute("data-visible", String(visible));
+
+            if (!visible) {
+                wrap.innerHTML = "";
+                return;
+            }
+
+            const items = recentSearches.slice(0, RECENT_SEARCH_LIMIT);
+            const chips = items.map((query) => `
+                <button class="recent-chip tap-shrink" onclick='applyRecentSearch(${JSON.stringify(query)})' aria-label="${escapeHtml(query)}">
+                    <i data-lucide="history" class="w-3.5 h-3.5"></i>
+                    <span>${escapeHtml(query)}</span>
+                </button>
+            `).join("");
+            const clearButton = items.length > 0
+                ? `<button class="clear-recent-btn tap-shrink" onclick="clearRecentSearches()" aria-label="${escapeHtml(t("clearRecent"))}">${escapeHtml(t("clearRecent"))}</button>`
+                : `<p class="text-xs font-medium text-slate-400 italic">${escapeHtml(t("usageEmpty"))}</p>`;
+
+            wrap.innerHTML = `
+                <div class="flex items-center justify-between gap-2">
+                    <p class="text-[10px] uppercase tracking-[0.22em] font-black text-slate-400">${escapeHtml(t("recentSearchesLabel"))}</p>
+                    ${clearButton}
+                </div>
+                <div class="flex flex-wrap gap-2">${chips || `<p class="text-xs font-medium text-slate-400 italic">${escapeHtml(t("usageEmpty"))}</p>`}</div>
+            `;
+            initIconsForRoot(wrap);
+        }
+
+        /**
+         * Update the near-me button and status line.
+         * DOM-coupled helper: writes button and status text only.
+         * @returns {void}
+         */
+        function renderNearMeState() {
+            const button = getEl("nearMeBtn");
+            const text = getEl("nearMeBtnText");
+            const status = getEl("nearMeStatus");
+            if (!button || !text || !status) return;
+
+            button.setAttribute("aria-pressed", String(currentNearMeActive));
+            button.setAttribute("data-active", String(currentNearMeActive));
+            text.textContent = t("nearMeLabel");
+            status.textContent = currentNearMeStatus || (currentNearMeActive ? t("nearMeActive") : "");
+            status.setAttribute("data-error", String(currentNearMeError));
+            initIconsForRoot(button);
+        }
+
+        /**
+         * Persist a filter usage count locally.
+         * Local-only analytics: never transmitted anywhere.
+         * @param {string} filter
+         * @returns {void}
+         */
+        function recordFilterUsage(filter) {
+            const stats = loadAnalytics();
+            const key = filter || ALL_FILTER;
+            stats.filters[key] = (stats.filters[key] || 0) + 1;
+            saveAnalytics(stats);
+        }
+
+        /**
+         * Persist a location view count locally.
+         * Local-only analytics: never transmitted anywhere.
+         * @param {Object} location
+         * @returns {void}
+         */
+        function recordLocationView(location) {
+            const stats = loadAnalytics();
+            const key = String((location && location.id) || (location && location.name) || "unknown");
+            stats.views[key] = (stats.views[key] || 0) + 1;
+            saveAnalytics(stats);
+            renderAboutPanel();
+        }
+
+        /**
+         * Persist a search term count locally.
+         * Local-only analytics: never transmitted anywhere.
+         * @param {string} query
+         * @returns {void}
+         */
+        function recordSearchUsage(query) {
+            const normalized = normalizeText(query);
+            if (!normalized) {
+                lastRecordedSearchQuery = "";
+                return;
+            }
+            if (normalized === lastRecordedSearchQuery) return;
+            lastRecordedSearchQuery = normalized;
+            const stats = loadAnalytics();
+            stats.searches[normalized] = (stats.searches[normalized] || 0) + 1;
+            saveAnalytics(stats);
+            addRecentSearch(query);
+        }
+
+        /**
+         * Read the local-only analytics object.
+         * @returns {{views: Record<string, number>, filters: Record<string, number>, searches: Record<string, number>}}
+         */
+        function loadAnalytics() {
+            try {
+                const raw = localStorage.getItem(ANALYTICS_KEY);
+                return raw ? JSON.parse(raw) : Object.assign({}, defaultAnalytics);
+            } catch (error) {
+                return Object.assign({}, defaultAnalytics);
+            }
+        }
+
+        /**
+         * Save the local-only analytics object.
+         * @param {{views: Record<string, number>, filters: Record<string, number>, searches: Record<string, number>}} stats
+         * @returns {void}
+         */
+        function saveAnalytics(stats) {
+            try {
+                localStorage.setItem(ANALYTICS_KEY, JSON.stringify(stats));
+            } catch (error) {
+                // localStorage unavailable.
+            }
+        }
+
+        /**
+         * Pick the most viewed locations for the About panel.
+         * Pure function: no DOM access.
+         * @param {Array<Object>} locations
+         * @param {{views: Record<string, number>}} stats
+         * @param {number} [limit=3]
+         * @returns {Array<{location:Object,count:number}>}
+         */
+        function getMostViewedLocations(locations, stats, limit = 3) {
+            const locationByKey = new Map();
+            locations.forEach((location) => {
+                const key = String((location && location.id) || (location && location.name) || "unknown");
+                locationByKey.set(key, location);
+            });
+            return Object.entries(stats.views || {})
+                .map(([key, count]) => ({ location: locationByKey.get(key), count: Number(count) || 0 }))
+                .filter((entry) => entry.location)
+                .sort((a, b) => b.count - a.count)
+                .slice(0, limit);
+        }
+
+        /**
+         * Pick the top searched terms for the About panel.
+         * Pure function: no DOM access.
+         * @param {{searches: Record<string, number>}} stats
+         * @param {number} [limit=3]
+         * @returns {Array<{term:string,count:number}>}
+         */
+        function getTopSearches(stats, limit = 3) {
+            return Object.entries(stats.searches || {})
+                .map(([term, count]) => ({ term, count: Number(count) || 0 }))
+                .sort((a, b) => b.count - a.count)
+                .slice(0, limit);
+        }
+
+        /**
+         * Render the About panel content.
+         * DOM-coupled helper: updates a hidden/visible panel in the page.
+         * @returns {void}
+         */
+        function renderAboutPanel() {
+            const panel = getEl("aboutPanel");
+            const institutionPill = getEl("aboutInstitutionPill");
+            const versionPill = getEl("aboutVersionPill");
+            const totalPill = getEl("aboutTotalPill");
+            const mostViewedList = getEl("mostViewedList");
+            const topSearchesList = getEl("topSearchesList");
+
+            if (!panel || !institutionPill || !versionPill || !totalPill || !mostViewedList || !topSearchesList) return;
+
+            institutionPill.textContent = `${t("institutionLabel")}: ${datasetMeta.institution || "-"}`;
+            versionPill.textContent = `${t("versionLabel")}: ${datasetMeta.version || "-"}`;
+            totalPill.textContent = `${t("totalLocationsLabel")}: ${datasetMeta.total_locations || 0}`;
+
+            const stats = loadAnalytics();
+            const mostViewed = getMostViewedLocations(allLocations, stats, 3);
+            const topSearches = getTopSearches(stats, 3);
+
+            mostViewedList.innerHTML = mostViewed.length
+                ? mostViewed.map((entry) => {
+                    const locationName = entry.location.name || t("unnamedLocation");
+                    return `<div class="flex items-center justify-between gap-3 rounded-2xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600">
+                        <span class="min-w-0 truncate">${escapeHtml(locationName)}</span>
+                        <span class="shrink-0">${entry.count}</span>
+                    </div>`;
+                }).join("")
+                : `<p class="text-xs font-medium text-slate-400 italic">${escapeHtml(t("usageEmpty"))}</p>`;
+
+            topSearchesList.innerHTML = topSearches.length
+                ? topSearches.map((entry) => {
+                    return `<div class="flex items-center justify-between gap-3 rounded-2xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600">
+                        <span class="min-w-0 truncate">${escapeHtml(entry.term)}</span>
+                        <span class="shrink-0">${entry.count}</span>
+                    </div>`;
+                }).join("")
+                : `<p class="text-xs font-medium text-slate-400 italic">${escapeHtml(t("usageEmpty"))}</p>`;
+
+            // Add privacy note and reset button
+            const privacyNote = document.createElement('div');
+            privacyNote.className = 'text-xs text-slate-500 mt-2';
+            privacyNote.textContent = t('privacyNote');
+            const resetBtn = document.createElement('button');
+            resetBtn.className = 'clear-recent-btn tap-shrink mt-3';
+            resetBtn.textContent = t('resetData');
+            resetBtn.onclick = () => {
+                if (!confirm(t('resetDataConfirm'))) return;
+                resetAppData();
+            };
+            // Avoid duplicate nodes
+            const existingPrivacy = panel.querySelector('.cc-privacy-note');
+            if (!existingPrivacy) {
+                privacyNote.classList.add('cc-privacy-note');
+                panel.appendChild(privacyNote);
+                panel.appendChild(resetBtn);
+            }
+            initIconsForRoot(panel);
+        }
+
+        /**
+         * Toggle the About panel visibility.
+         * DOM-coupled helper: reads/writes element state.
+         * @returns {void}
+         */
+        function toggleAboutPanel() {
+            const panel = getEl("aboutPanel");
+            const button = getEl("aboutToggleBtn");
+            if (!panel || !button) return;
+            const isHidden = panel.classList.toggle("hidden");
+            button.setAttribute("aria-expanded", String(!isHidden));
+            button.setAttribute("aria-label", isHidden ? t("openDatasetDetails") : t("closeDatasetDetails"));
+            if (!isHidden) renderAboutPanel();
+        }
+
+        /**
+         * Reset stored preferences and clear caches where possible.
+         * DOM-coupled helper: clears localStorage and tries to clear service worker cache.
+         */
+        async function resetAppData() {
+            try {
+                localStorage.removeItem(PREFS_KEY);
+                localStorage.removeItem(ANALYTICS_KEY);
+                // clear caches for this app shell
+                if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                    try {
+                        const keys = await caches.keys();
+                        await Promise.all(keys.filter(k => k.startsWith('campuscompass-shell-')).map(k => caches.delete(k)));
+                    } catch (e) { /* ignore */ }
+                }
+                // reload to ensure a clean slate
+                showToast(t('resetDataDone'));
+                setTimeout(() => window.location.reload(), 700);
+            } catch (e) {
+                console.warn('Failed to reset data', e);
+                showToast(t('copyFailed'));
+            }
+        }
+
+        /**
+         * Resolve the best available Google Maps URL for a location.
+         * Pure function: no DOM access.
+         * @param {Object} location
+         * @returns {string | null}
+         */
+        function getMapUrl(location) {
+            if (location && location.google_maps_walking_link) return location.google_maps_walking_link;
+            const coordinates = location && location.coordinates;
+            if (coordinates && coordinates.latitude != null && coordinates.longitude != null) {
+                return `https://www.google.com/maps/dir/?api=1&destination=${coordinates.latitude},${coordinates.longitude}&travelmode=walking`;
+            }
+            return null;
+        }
+
+        /**
+         * Open an external navigation URL.
+         * DOM-coupled helper: triggers browser navigation.
+         * @param {string | null} url
+         * @returns {void}
+         */
+        function navigateToLocation(url) {
+            hapticTap();
+            if (url) {
+                try {
+                    // Use a temporary anchor to ensure rel attributes for security
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                    // Some environments may require the anchor to be in-DOM to open reliably
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    return;
+                } catch (e) {
+                    try { window.open(url, '_blank'); } catch (e2) { /* fallback */ }
+                    return;
+                }
+            }
+            alert(`${t("locationNotAvailable")}.`);
+        }
+
+        /**
+         * Copy a map URL to the clipboard.
+         * DOM-coupled helper: uses clipboard and toast UI.
+         * @param {string | null} url
+         * @returns {void}
+         */
+        function copyMapLink(url, successMessage = null) {
+            hapticTap();
+            if (!url) return;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url)
+                    .then(() => showToast(successMessage || t("linkCopied")))
+                    .catch(() => showToast(t("copyFailed")));
+            } else {
+                showToast(t("copyUnsupported"));
+            }
+        }
+
+        /**
+         * Share a location using the Web Share API, with clipboard fallback.
+         * DOM-coupled helper: uses browser share/clipboard APIs and toasts.
+         * @param {Object} location
+         * @param {string} url
+         * @returns {void}
+         */
+        function shareLocation(locationName, url) {
+            hapticTap();
+            if (!url) return;
+            const sharePayload = {
+                title: locationName || t("unnamedLocation"),
+                text: locationName || t("unnamedLocation"),
+                url
+            };
+            if (navigator.share) {
+                navigator.share(sharePayload).catch(() => {
+                    copyMapLink(url, t("shareFallbackCopied"));
+                });
+            } else {
+                copyMapLink(url, t("shareFallbackCopied"));
+            }
+        }
+
+        /**
+         * Render an array of chips or a fallback line.
+         * DOM-coupled helper: returns HTML only.
+         * @param {Array<string>} items
+         * @param {string} emptyLabel
+         * @returns {string}
+         */
+        function renderChipList(items, emptyLabel) {
+            if (!Array.isArray(items) || items.length === 0) {
+                return `<p class="text-xs font-medium text-slate-400 italic">${escapeHtml(emptyLabel)}</p>`;
+            }
+            return `<div class="flex flex-wrap gap-2">${items.map((item) => `<span class="chip bg-slate-100 text-slate-600 text-[11px] font-bold px-3 py-1.5 rounded-full">${escapeHtml(item)}</span>`).join("")}</div>`;
+        }
+
+        /**
+         * Render the coordinate block for a location.
+         * DOM-coupled helper: returns HTML only.
+         * @param {Object} location
+         * @returns {string}
+         */
+        function renderCoordinates(location) {
+            const coordinates = location && location.coordinates;
+            const mapUrl = getMapUrl(location);
+            const coordsText = (coordinates && coordinates.latitude != null && coordinates.longitude != null)
+                ? `${coordinates.latitude}, ${coordinates.longitude}`
+                : t("coordinatesNotAvailable");
+            const locationName = location && location.name ? location.name : t("unnamedLocation");
+            const navigateHandler = mapUrl ? `navigateToLocation(${JSON.stringify(mapUrl)})` : "navigateToLocation(null)";
+            const copyHandler = mapUrl ? `copyMapLink(${JSON.stringify(mapUrl)})` : "";
+            const shareHandler = mapUrl ? `shareLocation(${JSON.stringify(locationName)}, ${JSON.stringify(mapUrl)})` : "";
+
+            return `
+                <p class="text-xs font-bold text-slate-700 mb-3">${escapeHtml(coordsText)}</p>
+                <div class="modal-footer-sticky">
+                    <button onclick='${navigateHandler}' aria-label="${escapeHtml(t("navigateToLocation"))}" class="navigate-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
+                        <span class="navigate-btn-icon">📍</span>
+                        ${escapeHtml(t("navigateToLocation"))}
+                    </button>
+                    <button onclick='${shareHandler}' aria-label="${escapeHtml(t("share"))}" class="share-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
+                        <i data-lucide="share-2" class="w-4 h-4"></i>
+                        ${escapeHtml(t("share"))}
+                    </button>
+                    <button onclick='${copyHandler}' aria-label="${escapeHtml(t("copyLink"))}" class="copy-link-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
+                        <span>📋</span> ${escapeHtml(t("copyLink"))}
+                    </button>
+                    ${!mapUrl ? `<p class="text-[11px] font-semibold text-slate-400 italic mt-2 text-center">${escapeHtml(t("locationNotAvailable"))}</p>` : ""}
+                </div>
+            `;
+        }
+
+        /**
+         * Render breadcrumb markup for department locations.
+         * DOM-coupled helper: returns HTML only.
+         * @param {Object} location
+         * @returns {string}
+         */
+        function renderBreadcrumb(location) {
+            const crumbs = [location.school, location.parent, location.name || t("unnamedLocation")].filter(Boolean);
+            if (crumbs.length <= 1) return "";
+            return `
+                <nav aria-label="Breadcrumb" class="breadcrumb text-[11px] font-bold text-slate-400 mb-2">
+                    ${crumbs.map((crumb, index) => `
+                        ${index > 0 ? '<i data-lucide="chevron-right" class="w-3 h-3"></i>' : ""}
+                        <span class="${index === crumbs.length - 1 ? "text-rose-600" : ""}">${escapeHtml(crumb)}</span>
+                    `).join("")}
+                </nav>
+            `;
+        }
+
+        /**
+         * Render a single location card.
+         * DOM-coupled helper: returns HTML only.
+         * @param {Object} location
+         * @param {number} originalIndex
+         * @returns {string}
+         */
+        function renderCard(location, originalIndex) {
+            const locationId = getLocationStorageKey(location);
+            const icon = CATEGORY_ICONS[location.category] || DEFAULT_ICON;
+            const description = location.description && location.description.trim() !== "" ? location.description : t("noDescription");
+            const parentLine = location.parent
+                ? `<i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i> ${escapeHtml(location.parent)}`
+                : "";
+            const mapUrl = getMapUrl(location);
+            const navHandler = mapUrl ? `navigateToLocation(${JSON.stringify(mapUrl)})` : `navigateToLocation(null)`;
+            const locationName = location.name || t("unnamedLocation");
+            const isFavorite = isFavoriteLocation(location);
+            const distanceMeters = currentNearMeActive ? distanceByLocationIndex.get(originalIndex) : null;
+            const distanceLabel = currentNearMeActive && Number.isFinite(distanceMeters) ? formatDistanceLabel(distanceMeters) : "";
+            const favoriteLabel = isFavorite ? t("favoriteOn") : t("favoriteOff");
+            return `
+                <div class="card-shell card tap-shrink bg-white rounded-3xl p-6 shadow-sm border border-slate-100 relative overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-500 gesture-pan-y"
+                    data-location-id="${escapeHtml(locationId)}" data-quick-reveal="false"
+                    onclick='handleCardActivate(event, ${originalIndex}, ${JSON.stringify(locationId)})'
+                    onkeydown='handleCardActivate(event, ${originalIndex}, ${JSON.stringify(locationId)})'
+                    tabindex="0" role="button" aria-label="${escapeHtml(t("viewDetails"))} ${escapeHtml(locationName)}">
+                    <button class="card-favorite-btn tap-shrink" data-favorited="${isFavorite}" onclick='event.stopPropagation(); toggleFavorite(${JSON.stringify(locationId)})'
+                        aria-label="${escapeHtml(favoriteLabel)}">
+                        <i data-lucide="${isFavorite ? "heart" : "star"}" class="w-4 h-4"></i>
+                    </button>
+                    <div class="card-quick-action">
+                        <button onclick='event.stopPropagation(); ${navHandler}' class="tap-shrink inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/15 text-white font-black text-xs" aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}">
+                            <i data-lucide="navigation-2" class="w-4 h-4"></i>
+                            <span>${escapeHtml(t("navigate"))}</span>
+                        </button>
+                    </div>
+                    <div class="card-main">
+                    <div class="absolute top-0 right-0 p-4">
+                        <span class="bg-rose-50 text-rose-700 text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-tighter">
+                            ${escapeHtml(formatCategoryLabel(location.category))}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <i data-lucide="${icon}" class="w-4 h-4 text-rose-600"></i>
+                        <h2 class="text-xl font-black text-slate-800">${escapeHtml(locationName)}</h2>
+                    </div>
+                    ${parentLine ? `<p class="text-sm font-bold text-rose-600 flex items-center gap-1 mb-3">${parentLine}</p>` : `<div class="mb-3"></div>`}
+                    <p class="text-xs font-medium text-slate-500 line-clamp-2">${escapeHtml(description)}</p>
+                    ${distanceLabel ? `<p class="card-distance-pill"><i data-lucide="navigation-2" class="w-3.5 h-3.5"></i><span>${escapeHtml(distanceLabel)}</span></p>` : ""}
+                    <div class="flex items-center justify-between mt-4">
+                        <div class="flex items-center gap-1 text-slate-400">
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-wide">${escapeHtml(t("viewDetails"))}</span>
+                        </div>
+                        <button onclick='event.stopPropagation(); ${navHandler}' aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}"
+                            class="navigate-btn-small tap-shrink" style="min-height:32px;" ${mapUrl ? "" : "disabled"}>
+                            <span>📍</span> ${escapeHtml(t("navigate"))}
+                        </button>
+                    </div>
+                    <p class="inline-gesture-hint mt-3">${escapeHtml(t("swipeNavigateHint"))}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Update the distance cache for the current filtered results.
+         * @param {Array<number>} indexes
+         * @returns {void}
+         */
+        function updateDistanceCache(indexes) {
+            distanceByLocationIndex = new Map();
+            if (!currentNearMeActive || !currentNearMeCoords) return;
+            indexes.forEach((locationIndex) => {
+                const distance = distanceToLocation(currentNearMeCoords, allLocations[locationIndex]);
+                if (Number.isFinite(distance)) {
+                    distanceByLocationIndex.set(locationIndex, distance);
+                }
+            });
+        }
+
+        /**
+         * Prepare the display order for the current filtered results.
+         * @param {Array<number>} indexes
+         * @returns {Array<number>}
+         */
+        function getDisplayIndexes(indexes) {
+            updateDistanceCache(indexes);
+            return sortFilteredIndexes(indexes);
+        }
+
+        /**
+         * Decide whether the empty state should show the favorites-specific copy.
+         * @returns {string}
+         */
+        function getEmptyStateCopy() {
+            if (currentFilter === FAVORITES_FILTER && getFavoriteLocationIds().length === 0) {
+                return t("favoritesEmptyStateText");
+            }
+            return t("emptyStateText");
+        }
+
+        /**
+         * Update the favorite state in the open modal, if present.
+         * @returns {void}
+         */
+        function updateOpenModalFavoriteButton() {
+            const button = getEl("modalFavoriteBtn");
+            const locationId = button && button.getAttribute("data-location-id");
+            if (!button || !locationId) return;
+            const isFavorite = favoriteLocationIds.includes(locationId);
+            button.setAttribute("data-favorited", String(isFavorite));
+            button.setAttribute("aria-label", isFavorite ? t("favoriteOn") : t("favoriteOff"));
+            initIconsForRoot(button);
+        }
+
+        /**
+         * Handle opening a card from click or keyboard, while respecting swipe gestures.
+         * @param {Event} event
+         * @param {number} index
+         * @param {string} locationId
+         * @returns {void}
+         */
+        function handleCardActivate(event, index, locationId) {
+            if (event && event.type === "keydown") {
+                const key = event.key;
+                if (key !== "Enter" && key !== " ") return;
+                event.preventDefault();
+            }
+
+            const card = event && event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
+            if (card && card.dataset.gestureIgnore === "true") {
+                card.dataset.gestureIgnore = "false";
+                return;
+            }
+
+            if (event && event.target instanceof HTMLElement && event.target.closest("button")) {
+                return;
+            }
+
+            openModal(index);
+        }
+
+        /**
+         * Bind swipe gestures to a rendered card element.
+         * @param {HTMLElement} card
+         * @param {number} index
+         * @returns {void}
+         */
+        function bindCardGesture(card, index) {
+            const state = { active: false, startX: 0, startY: 0, deltaX: 0, deltaY: 0, pointerId: null };
+
+            const resetReveal = () => {
+                card.dataset.quickReveal = "false";
+            };
+
+            card.addEventListener("pointerdown", (event) => {
+                if (event.button !== 0) return;
+                if (event.target instanceof HTMLElement && event.target.closest("button")) return;
+                state.active = true;
+                state.pointerId = event.pointerId;
+                state.startX = event.clientX;
+                state.startY = event.clientY;
+                state.deltaX = 0;
+                state.deltaY = 0;
+                card.dataset.gestureIgnore = "false";
+                card.setPointerCapture(event.pointerId);
+            });
+
+            card.addEventListener("pointermove", (event) => {
+                if (!state.active || event.pointerId !== state.pointerId) return;
+                state.deltaX = event.clientX - state.startX;
+                state.deltaY = event.clientY - state.startY;
+                if (Math.abs(state.deltaX) < 8 && Math.abs(state.deltaY) < 8) return;
+                if (Math.abs(state.deltaX) > Math.abs(state.deltaY)) {
+                    event.preventDefault();
+                    if (state.deltaX < -CARD_SWIPE_THRESHOLD) {
+                        card.dataset.quickReveal = "true";
+                        card.dataset.gestureIgnore = "true";
+                    } else if (state.deltaX > CARD_SWIPE_THRESHOLD) {
+                        resetReveal();
+                        card.dataset.gestureIgnore = "true";
+                    }
+                }
+            });
+
+            const finishGesture = (event) => {
+                if (!state.active || (event && event.pointerId !== state.pointerId)) return;
+                state.active = false;
+                try {
+                    card.releasePointerCapture(state.pointerId);
+                } catch (error) {
+                    // Pointer capture may already be released.
+                }
+
+                const mostlyHorizontal = Math.abs(state.deltaX) > Math.abs(state.deltaY);
+                if (mostlyHorizontal && state.deltaX < -CARD_SWIPE_THRESHOLD) {
+                    card.dataset.quickReveal = "true";
+                    card.dataset.gestureIgnore = "true";
+                } else if (mostlyHorizontal && state.deltaX > CARD_SWIPE_THRESHOLD) {
+                    resetReveal();
+                    card.dataset.gestureIgnore = "true";
+                } else if (Math.abs(state.deltaX) < 10 && Math.abs(state.deltaY) < 10) {
+                    card.dataset.gestureIgnore = "false";
+                }
+            };
+
+            card.addEventListener("pointerup", finishGesture);
+            card.addEventListener("pointercancel", finishGesture);
+        }
+
+        /**
+         * Bind gesture handlers to the modal bottom sheet.
+         * @returns {void}
+         */
+        function bindModalGesture() {
+            const panel = getEl("modalPanel");
+            const body = getEl("modalScrollBody");
+            if (!panel || !body || panel.dataset.gestureBound === "true") return;
+            panel.dataset.gestureBound = "true";
+
+            const state = { active: false, startX: 0, startY: 0, deltaX: 0, deltaY: 0, pointerId: null };
+
+            const resetPanel = () => {
+                panel.style.transform = "";
+                panel.style.transition = "opacity 0.22s ease, transform 0.22s ease";
+            };
+
+            body.addEventListener("pointerdown", (event) => {
+                if (event.button !== 0) return;
+                if (event.target instanceof HTMLElement && event.target.closest("button, a, input, textarea")) return;
+                if (body.scrollTop > 0) return;
+                state.active = true;
+                state.pointerId = event.pointerId;
+                state.startX = event.clientX;
+                state.startY = event.clientY;
+                state.deltaX = 0;
+                state.deltaY = 0;
+                panel.style.transition = "none";
+                body.setPointerCapture(event.pointerId);
+            });
+
+            body.addEventListener("pointermove", (event) => {
+                if (!state.active || event.pointerId !== state.pointerId) return;
+                state.deltaX = event.clientX - state.startX;
+                state.deltaY = event.clientY - state.startY;
+                if (state.deltaY > 0 && Math.abs(state.deltaY) > Math.abs(state.deltaX)) {
+                    event.preventDefault();
+                    panel.style.transform = `translateY(${Math.min(state.deltaY, 180)}px)`;
+                }
+            });
+
+            const finishModalGesture = (event) => {
+                if (!state.active || (event && event.pointerId !== state.pointerId)) return;
+                state.active = false;
+                try {
+                    body.releasePointerCapture(state.pointerId);
+                } catch (error) {
+                    // Pointer capture may already be released.
+                }
+                const swipeDown = state.deltaY > MODAL_SWIPE_THRESHOLD && state.deltaY > Math.abs(state.deltaX);
+                if (swipeDown) {
+                    closeModal();
+                    return;
+                }
+                resetPanel();
+            };
+
+            body.addEventListener("pointerup", finishModalGesture);
+            body.addEventListener("pointercancel", finishModalGesture);
+        }
+
+        /**
+         * Bind pull-to-refresh gestures to the list viewport.
+         * @returns {void}
+         */
+        function bindPullToRefresh() {
+            const viewport = getEl("listViewport");
+            const banner = getEl("pullRefreshBanner");
+            if (!viewport || !banner || viewport.dataset.pullBound === "true") return;
+            viewport.dataset.pullBound = "true";
+
+            const showBanner = (visible, progress = 0) => {
+                banner.setAttribute("data-visible", String(visible));
+                banner.style.transform = visible ? `translateY(${Math.min(progress, 72)}px)` : "";
+                const text = getEl("pullRefreshText");
+                if (text) text.textContent = isPullRefreshing ? t("nearMeLoading") : t("pullToRefresh");
+            };
+
+            viewport.addEventListener("touchstart", (event) => {
+                if (viewport.scrollTop > 0 || event.touches.length !== 1) return;
+                pullRefreshTouchId = event.touches[0].identifier;
+                pullRefreshStartY = event.touches[0].clientY;
+            }, { passive: true });
+
+            viewport.addEventListener("touchmove", (event) => {
+                if (pullRefreshStartY == null || event.touches.length !== 1) return;
+                const touch = event.touches[0];
+                if (touch.identifier !== pullRefreshTouchId || viewport.scrollTop > 0) return;
+                const deltaY = touch.clientY - pullRefreshStartY;
+                if (deltaY > 0) {
+                    event.preventDefault();
+                    showBanner(true, deltaY);
+                    if (deltaY > PULL_REFRESH_THRESHOLD) {
+                        const text = getEl("pullRefreshText");
+                        if (text) text.textContent = t("pullToRefresh");
+                    }
+                }
+            }, { passive: false });
+
+            const finishRefresh = async () => {
+                if (pullRefreshStartY == null) return;
+                const shouldRefresh = isPullRefreshing || (banner.getAttribute("data-visible") === "true" && banner.style.transform !== "");
+                const delta = banner.style.transform ? Number((banner.style.transform.match(/translateY\((\d+)/) || [0, 0])[1]) : 0;
+                showBanner(false, 0);
+                pullRefreshStartY = null;
+                pullRefreshTouchId = null;
+                if (delta > PULL_REFRESH_THRESHOLD) {
+                    await loadData({ fromRefresh: true });
+                }
+            };
+
+            viewport.addEventListener("touchend", finishRefresh);
+            viewport.addEventListener("touchcancel", finishRefresh);
+        }
+
+        /**
+         * Activate or deactivate the near-me mode.
+         * @returns {void}
+         */
+        function toggleNearMe() {
+            hapticTap();
+            if (currentNearMeActive) {
+                currentNearMeActive = false;
+                currentNearMeCoords = null;
+                currentNearMeStatus = "";
+                currentNearMeError = false;
+                renderNearMeState();
+                applyAll(false);
+                return;
+            }
+
+            if (!navigator.geolocation) {
+                currentNearMeStatus = t("nearMeUnavailable");
+                currentNearMeError = true;
+                currentNearMeActive = false;
+                renderNearMeState();
+                return;
+            }
+
+            currentNearMeStatus = t("nearMeLoading");
+            currentNearMeError = false;
+            renderNearMeState();
+
+            navigator.geolocation.getCurrentPosition((position) => {
+                currentNearMeCoords = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                };
+                currentNearMeActive = true;
+                currentNearMeError = false;
+                currentNearMeStatus = t("nearMeActive");
+                renderNearMeState();
+                applyAll(false);
+            }, (error) => {
+                currentNearMeActive = false;
+                currentNearMeCoords = null;
+                currentNearMeError = true;
+                currentNearMeStatus = error && error.code === error.PERMISSION_DENIED ? t("nearMePermissionDenied")
+                    : error && error.code === error.TIMEOUT ? t("nearMeTimedOut")
+                    : t("nearMeErrorGeneric");
+                renderNearMeState();
+                showToast(currentNearMeStatus);
+            }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 });
+        }
+
+        /**
+         * Measure visible cards and adjust the estimated row height.
+         * DOM-coupled helper: reads rendered cards only.
+         * @returns {void}
+         */
+        function refineVirtualEstimate() {
+            const list = getEl("locationList");
+            if (!list) return;
+            const cards = list.querySelectorAll(".card");
+            if (!cards.length) return;
+            const measured = Array.from(cards).reduce((sum, card) => sum + card.getBoundingClientRect().height, 0) / cards.length;
+            if (measured > 0) {
+                virtualState.estimatedRowHeight = Math.max(180, Math.round((virtualState.estimatedRowHeight * 0.7) + ((measured + 16) * 0.3)));
+            }
+        }
+
+        /**
+         * Compute the current virtualized slice for the scroll position.
+         * Pure function: no DOM access.
+         * @param {number} total
+         * @param {number} scrollTop
+         * @param {number} viewportHeight
+         * @param {number} estimatedRowHeight
+         * @returns {{start:number,end:number}}
+         */
+        function getVirtualWindow(total, scrollTop, viewportHeight, estimatedRowHeight) {
+            const rowsPerViewport = Math.max(1, Math.ceil(viewportHeight / estimatedRowHeight));
+            const start = Math.max(0, Math.floor(scrollTop / estimatedRowHeight) - VIRTUAL_OVERSCAN);
+            const end = Math.min(total, start + rowsPerViewport + (VIRTUAL_OVERSCAN * 2));
+            return { start, end };
+        }
+
+        /**
+         * Render the current virtualized list window.
+         * DOM-coupled helper: updates spacer heights and visible card nodes.
+         * @param {boolean} [resetScroll=false]
+         * @returns {void}
+         */
+        function renderVirtualizedList(resetScroll = false) {
+            const list = getEl("locationList");
+            const viewport = getEl("listViewport");
+            const topSpacer = getEl("listSpacerTop");
+            const bottomSpacer = getEl("listSpacerBottom");
+            const emptyState = getEl("emptyState");
+            if (!list || !viewport || !topSpacer || !bottomSpacer || !emptyState) return;
+
+            const displayIndexes = getDisplayIndexes(filteredIndexes);
+            const total = displayIndexes.length;
+            virtualState.total = total;
+            const emptyText = getEl("emptyStateText");
+            if (emptyText) emptyText.textContent = getEmptyStateCopy();
+
+            if (total === 0) {
+                list.innerHTML = "";
+                topSpacer.style.height = "0px";
+                bottomSpacer.style.height = "0px";
+                emptyState.classList.remove("hidden");
+                return;
+            }
+
+            emptyState.classList.add("hidden");
+
+            if (resetScroll) viewport.scrollTop = 0;
+
+            const { start, end } = getVirtualWindow(total, viewport.scrollTop, Math.max(1, viewport.clientHeight), virtualState.estimatedRowHeight);
+            const signature = `${start}:${end}:${total}:${Math.round(virtualState.estimatedRowHeight)}`;
+            if (signature === virtualState.lastSignature) return;
+            virtualState.start = start;
+            virtualState.end = end;
+            virtualState.lastSignature = signature;
+
+            topSpacer.style.height = `${start * virtualState.estimatedRowHeight}px`;
+            bottomSpacer.style.height = `${Math.max(0, total - end) * virtualState.estimatedRowHeight}px`;
+
+            list.innerHTML = displayIndexes.slice(start, end).map((originalIndex) => renderCard(allLocations[originalIndex], originalIndex)).join("");
+            initIconsForRoot(list);
+            list.querySelectorAll(".card-shell").forEach((card, localIndex) => {
+                const originalIndex = displayIndexes[start + localIndex];
+                if (card instanceof HTMLElement && !card.dataset.gestureBound) {
+                    card.dataset.gestureBound = "true";
+                    bindCardGesture(card, originalIndex);
+                }
+            });
+            refineVirtualEstimate();
+            initIconsForRoot(getEl("aboutPanel"));
+        }
+
+        /**
+         * Open the modal for a particular location index.
+         * DOM-coupled helper: writes modal content and updates focus.
+         * @param {number} index
+         * @returns {void}
+         */
+        function openModal(index) {
+            const location = allLocations[index];
+            if (!location) return;
+            const locationId = getLocationStorageKey(location);
+
+            lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+            recordLocationView(location);
+
+            const icon = CATEGORY_ICONS[location.category] || DEFAULT_ICON;
+            const isDepartment = location.category === "department";
+            const departmentSection = isDepartment
+                ? `
+                    <div class="mt-5">
+                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${escapeHtml(t("fieldSchool"))}</p>
+                        <p class="text-sm font-bold text-slate-700 mb-4">${escapeHtml(location.school || location.parent || t("notSpecified"))}</p>
+                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${escapeHtml(t("fieldParentBuilding"))}</p>
+                        <p class="text-sm font-bold text-slate-700 mb-4">${escapeHtml(location.parent || t("notSpecified"))}</p>
+                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-2">${escapeHtml(t("fieldCoursesOffered"))}</p>
+                        ${renderChipList(location.courses, t("noCourses"))}
+                    </div>
+                `
+                : "";
+
+            const modalContent = getEl("modalContent");
+            if (!modalContent) return;
+
+            modalContent.innerHTML = `
+                ${isDepartment ? renderBreadcrumb(location) : ""}
+                <div class="modal-header-actions mb-2 pr-8">
+                    <div class="modal-header-meta" id="modalTitleRegion">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i data-lucide="${icon}" class="w-5 h-5 text-rose-600"></i>
+                            <h2 class="text-xl font-black text-slate-800">${escapeHtml(location.name || t("unnamedLocation"))}</h2>
+                        </div>
+                        <span class="inline-block bg-rose-50 text-rose-700 text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-tighter">
+                            ${escapeHtml(formatCategoryLabel(location.category))}
+                        </span>
+                    </div>
+                    <button id="modalFavoriteBtn" data-location-id="${escapeHtml(locationId)}" data-favorited="${isFavoriteLocation(location)}"
+                        onclick='toggleFavorite(${JSON.stringify(locationId)})' class="modal-favorite-btn tap-shrink" aria-label="${escapeHtml(isFavoriteLocation(location) ? t("favoriteOn") : t("favoriteOff"))}">
+                        <i data-lucide="${isFavoriteLocation(location) ? "heart" : "star"}" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${escapeHtml(t("fieldParent"))}</p>
+                <p class="text-sm font-bold text-slate-700 mb-4">${escapeHtml(location.parent || t("fieldParentTopLevel"))}</p>
+                <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${escapeHtml(t("fieldDescription"))}</p>
+                <p class="text-sm font-medium text-slate-600 mb-4">${escapeHtml(location.description && location.description.trim() !== "" ? location.description : t("noDescription"))}</p>
+                <p class="text-[10px] uppercase font-bold text-slate-400 mb-2">${escapeHtml(t("fieldKeywords"))}</p>
+                <div class="mb-4">${renderChipList(location.keywords, t("noKeywords"))}</div>
+                <p class="text-[10px] uppercase font-bold text-slate-400 mb-2">${escapeHtml(t("fieldAliases"))}</p>
+                <div class="mb-4">${renderChipList(location.aliases, t("noAliases"))}</div>
+                ${departmentSection}
+                <p class="text-[10px] uppercase font-bold text-slate-400 mb-2 mt-4">${escapeHtml(t("fieldCoordinates"))}</p>
+                ${renderCoordinates(location)}
+            `;
+
+            const modal = getEl("detailModal");
+            if (!modal) return;
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+            initIconsForRoot(modalContent);
+            bindModalGesture();
+            updateOpenModalFavoriteButton();
+
+            const scrollBody = getEl("modalScrollBody");
+            if (scrollBody) scrollBody.scrollTop = 0;
+
+            requestAnimationFrame(() => {
+                modal.classList.add("modal-visible", "modal-overlay-active");
+            });
+
+            const closeBtn = getEl("modalCloseBtn");
+            if (closeBtn) closeBtn.focus();
+        }
+
+        /**
+         * Close the detail modal and restore prior focus.
+         * DOM-coupled helper: updates modal visibility.
+         * @returns {void}
+         */
+        function closeModal() {
+            const modal = getEl("detailModal");
+            if (!modal) return;
+            const panel = getEl("modalPanel");
+            const finish = () => {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+                if (panel) panel.style.transform = "";
+                if (lastFocusedElement && typeof lastFocusedElement.focus === "function" && document.contains(lastFocusedElement)) {
+                    lastFocusedElement.focus();
+                } else {
+                    const searchInput = getEl("searchInput");
+                    if (searchInput) searchInput.focus();
+                }
+            };
+            modal.classList.remove("modal-visible", "modal-overlay-active");
+            if (prefersReducedMotion()) {
+                finish();
+            } else {
+                setTimeout(finish, 220);
+            }
+        }
+
+        /**
+         * Show a short toast message.
+         * DOM-coupled helper: mutates the toast banner.
+         * @param {string} message
+         * @returns {void}
+         */
         function showToast(message) {
-            const toast = document.getElementById("toast");
+            const toast = getEl("toast");
+            if (!toast) return;
             toast.textContent = message;
             toast.classList.add("toast-visible");
             clearTimeout(toastTimeoutId);
@@ -1183,505 +3476,97 @@
             }, 1800);
         }
 
-        // ---------- Data Loading ----------
-
-        // Loads the campus dataset. Tries the external JSON file first (works
-        // when the page is served over http/https, and lets the data be
-        // updated independently of the HTML). If that fetch fails -- which
-        // happens when the file is opened directly via file:// and the
-        // browser blocks local cross-file requests -- it falls back to the
-        // dataset embedded in the #campusDataEmbedded script tag below, so
-        // the app still works when double-clicked open with no server.
-        async function loadData() {
-            let json = null;
-
-            try {
-                const res = await fetch(DATA_URL);
-                if (!res.ok) throw new Error("Network response was not ok");
-                json = await res.json();
-            } catch (e) {
-                console.warn("External fetch of", DATA_URL, "failed, using embedded dataset instead:", e.message);
-                json = loadEmbeddedData();
-            }
-
-            allLocations = json ? (Array.isArray(json) ? json : (json.locations || [])) : [];
-
-            if (allLocations.length === 0) {
-                console.error("No campus locations could be loaded from either source.");
-            }
-
-            buildSearchIndex();
-            buildCategoryList();
-            initUI();
-            document.getElementById("loader").classList.add("hidden");
-        }
-
-        // Parses the embedded JSON dataset stored in the page itself.
-        function loadEmbeddedData() {
-            try {
-                const el = document.getElementById("campusDataEmbedded");
-                if (!el || !el.textContent.trim()) return null;
-                return JSON.parse(el.textContent);
-            } catch (e) {
-                console.error("Failed to parse embedded campus dataset:", e);
-                return null;
-            }
-        }
-
-        // Precompute a single lowercase searchable string per location so
-        // typing doesn't re-derive this on every keystroke.
-        function buildSearchIndex() {
-            searchIndex = allLocations.map(loc => {
-                const parts = [
-                    loc.name,
-                    loc.category,
-                    loc.parent,
-                    loc.school,
-                    ...(Array.isArray(loc.aliases) ? loc.aliases : []),
-                    ...(Array.isArray(loc.keywords) ? loc.keywords : []),
-                    ...(Array.isArray(loc.courses) ? loc.courses : [])
-                ].filter(Boolean);
-                return parts.join(" ").toLowerCase();
-            });
-        }
-
-        function buildCategoryList() {
-            const found = new Set();
-            allLocations.forEach(loc => {
-                if (loc.category) found.add(loc.category);
-            });
-            categories = ["All", ...Array.from(found).sort()];
-        }
-
-        function initUI() {
-            applyThemeIcons();
-            renderFilters();
-            applyAll();
-        }
-
-        // ---------- Rendering: Filters ----------
-
-        // Category labels are translated via the dictionary, with a safe
-        // fallback (title-cased raw category) for anything not covered.
-        function formatCategoryLabel(cat) {
-            if (!cat) return t("categoryLabels.uncategorized");
-            const dict = TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang].categoryLabels;
-            const dictEn = TRANSLATIONS.en.categoryLabels;
-            if (dict && dict[cat]) return dict[cat];
-            if (dictEn[cat]) return dictEn[cat];
-            return cat.split("_").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-        }
-
-        const ALL_FILTER_ICON = "layout-grid";
-
-        function renderFilters() {
-            const container = document.getElementById("filterContainer");
-            container.innerHTML = categories.map(cat => {
-                const icon = cat === "All" ? ALL_FILTER_ICON : (CATEGORY_ICONS[cat] || DEFAULT_ICON);
-                const isActive = currentFilter === cat;
-                return `
-                <button onclick="setFilter('${cat}')" aria-pressed="${isActive}"
-                    class="filter-chip tap-shrink inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-xs font-bold border whitespace-nowrap transition-all
-                    ${isActive ? "bg-slate-900 text-white border-slate-900" : "bg-white filter-chip-inactive text-slate-500 border-slate-200"}"
-                    style="min-height:44px;">
-                    <i data-lucide="${icon}" class="w-3.5 h-3.5"></i>
-                    <span>${cat === "All" ? t("filterAll") : formatCategoryLabel(cat)}</span>
-                </button>
-            `;
-            }).join("");
-            lucide.createIcons();
-        }
-
-        function setFilter(cat) {
-            currentFilter = cat;
-            renderFilters();
-            applyAll();
-        }
-
-        // ---------- Search & Filter Logic ----------
-
-        const debouncedApplyAll = debounce(() => applyAll(), 200);
-
-        document.getElementById("searchInput").addEventListener("input", (e) => {
-            currentQuery = e.target.value.trim().toLowerCase();
-            debouncedApplyAll();
-        });
-
-        // ---------- Global keyboard handling (Esc to close, focus trap) ----------
-
-        document.addEventListener("keydown", (e) => {
-            const modal = document.getElementById("detailModal");
-            const isOpen = !modal.classList.contains("hidden");
-            if (!isOpen) return;
-
-            if (e.key === "Escape") {
-                e.preventDefault();
-                closeModal();
-                return;
-            }
-
-            if (e.key === "Tab") {
-                const panel = document.getElementById("modalPanel");
-                const focusable = panel.querySelectorAll(
-                    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-                );
-                if (focusable.length === 0) return;
-                const first = focusable[0];
-                const last = focusable[focusable.length - 1];
-
-                if (e.shiftKey && document.activeElement === first) {
-                    e.preventDefault();
-                    last.focus();
-                } else if (!e.shiftKey && document.activeElement === last) {
-                    e.preventDefault();
-                    first.focus();
-                }
-            }
-        });
-
-        function applyAll() {
-            const query = currentQuery;
-            const matchingIndexes = [];
-
-            for (let i = 0; i < allLocations.length; i++) {
-                const loc = allLocations[i];
-                const matchesCategory = currentFilter === "All" || loc.category === currentFilter;
-                if (!matchesCategory) continue;
-
-                const matchesSearch = query === "" || searchIndex[i].includes(query);
-                if (matchesSearch) matchingIndexes.push(i);
-            }
-
-            renderCards(matchingIndexes.map(i => allLocations[i]));
-        }
-
-        // ---------- Navigation helpers ----------
-
-        // Resolves the best available Google Maps URL for a location.
-        // Prefers a pre-built walking-directions link from the dataset,
-        // falling back to one constructed from raw coordinates.
-        function getMapUrl(loc) {
-            if (loc && loc.google_maps_walking_link) return loc.google_maps_walking_link;
-            const c = loc && loc.coordinates;
-            if (c && c.latitude != null && c.longitude != null) {
-                return `https://www.google.com/maps/dir/?api=1&destination=${c.latitude},${c.longitude}&travelmode=walking`;
-            }
-            return null;
-        }
-
-        // Opens the given location URL in a new tab, or informs the user
-        // that no location data is available for that place.
-        function navigateToLocation(url) {
-            hapticTap();
-            if (url) {
-                window.open(url, "_blank");
-            } else {
-                alert(t("locationNotAvailable") + ".");
-            }
-        }
-
-        // Copies the resolved map URL to the clipboard and shows a brief
-        // confirmation toast. No-ops gracefully if there's no URL or the
-        // Clipboard API isn't available.
-        function copyMapLink(url) {
-            hapticTap();
-            if (!url) return;
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(url)
-                    .then(() => showToast(t("linkCopied")))
-                    .catch(() => showToast(t("copyFailed")));
-            } else {
-                showToast(t("copyUnsupported"));
-            }
-        }
-
-        // ---------- Rendering: Cards ----------
-
-        function renderCards(data) {
-            const list = document.getElementById("locationList");
-            const emptyState = document.getElementById("emptyState");
-
-            if (data.length === 0) {
-                list.innerHTML = "";
-                emptyState.classList.remove("hidden");
-                return;
-            }
-            emptyState.classList.add("hidden");
-
-            list.innerHTML = data.map((loc, idx) => {
-                const originalIndex = allLocations.indexOf(loc);
-                const icon = CATEGORY_ICONS[loc.category] || DEFAULT_ICON;
-                const description = loc.description && loc.description.trim() !== ""
-                    ? loc.description
-                    : t("noDescription");
-                const parentLine = loc.parent
-                    ? `<i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i> ${loc.parent}`
-                    : "";
-                const mapUrl = getMapUrl(loc);
-                const navAttr = mapUrl ? `navigateToLocation('${mapUrl}')` : `navigateToLocation(null)`;
-                const locName = loc.name || t("unnamedLocation");
-
-                return `
-            <div onclick="openModal(${originalIndex})" onkeydown="if(event.key === 'Enter'){ openModal(${originalIndex}); }"
-                tabindex="0" role="button" aria-label="${t("viewDetails")} ${locName.replace(/"/g, '&quot;')}"
-                class="card tap-shrink bg-white rounded-3xl p-6 shadow-sm border border-slate-100 relative overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-500">
-                <div class="absolute top-0 right-0 p-4">
-                    <span class="bg-rose-50 text-rose-700 text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-tighter">
-                        ${formatCategoryLabel(loc.category)}
-                    </span>
-                </div>
-
-                <div class="flex items-center gap-2 mb-1">
-                    <i data-lucide="${icon}" class="w-4 h-4 text-rose-600"></i>
-                    <h2 class="text-xl font-black text-slate-800">${locName}</h2>
-                </div>
-
-                ${parentLine ? `<p class="text-sm font-bold text-rose-600 flex items-center gap-1 mb-3">${parentLine}</p>` : `<div class="mb-3"></div>`}
-
-                <p class="text-xs font-medium text-slate-500 line-clamp-2">${description}</p>
-
-                <div class="flex items-center justify-between mt-4">
-                    <div class="flex items-center gap-1 text-slate-400">
-                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                        <span class="text-[10px] font-bold uppercase tracking-wide">${t("viewDetails")}</span>
-                    </div>
-                    <button onclick="event.stopPropagation(); ${navAttr}" aria-label="${t("navigate")} ${locName.replace(/"/g, '&quot;')}"
-                        class="navigate-btn-small tap-shrink" style="min-height:32px;" ${mapUrl ? "" : "disabled"}>
-                        <span>📍</span> ${t("navigate")}
-                    </button>
-                </div>
-            </div>
-        `;
-            }).join("");
-
-            lucide.createIcons();
-        }
-
-        // ---------- Rendering: Detail Modal ----------
-
-        function renderChipList(items, emptyLabel) {
-            if (!Array.isArray(items) || items.length === 0) {
-                return `<p class="text-xs font-medium text-slate-400 italic">${emptyLabel}</p>`;
-            }
-            return `<div class="flex flex-wrap gap-2">
-                ${items.map(item => `<span class="chip bg-slate-100 text-slate-600 text-[11px] font-bold px-3 py-1.5 rounded-full">${item}</span>`).join("")}
-            </div>`;
-        }
-
-        function renderCoordinates(loc) {
-            const coords = loc && loc.coordinates;
-            const mapUrl = getMapUrl(loc);
-            const coordsText = (coords && coords.latitude != null && coords.longitude != null)
-                ? `${coords.latitude}, ${coords.longitude}`
-                : t("coordinatesNotAvailable");
-            const navAttr = mapUrl ? `navigateToLocation('${mapUrl}')` : `navigateToLocation(null)`;
-            const copyAttr = mapUrl ? `copyMapLink('${mapUrl}')` : "";
-
-            return `
-                <p class="text-xs font-bold text-slate-700 mb-3">${coordsText}</p>
-                <div class="modal-footer-sticky">
-                    <button onclick="${navAttr}" aria-label="${t("navigateToLocation")}" class="navigate-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
-                        <span class="navigate-btn-icon">📍</span>
-                        ${t("navigateToLocation")}
-                    </button>
-                    <button onclick="${copyAttr}" aria-label="${t("copyLink")}" class="copy-link-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
-                        <span>📋</span> ${t("copyLink")}
-                    </button>
-                    ${!mapUrl ? `<p class="text-[11px] font-semibold text-slate-400 italic mt-2 text-center">${t("locationNotAvailable")}</p>` : ""}
-                </div>
-            `;
-        }
-
-        function renderBreadcrumb(loc) {
-            const school = loc.school;
-            const parent = loc.parent;
-            const name = loc.name || t("unnamedLocation");
-            const crumbs = [school, parent, name].filter(Boolean);
-            if (crumbs.length <= 1) return "";
-
-            return `
-                <nav aria-label="Breadcrumb" class="breadcrumb text-[11px] font-bold text-slate-400 mb-2">
-                    ${crumbs.map((crumb, i) => `
-                        ${i > 0 ? '<i data-lucide="chevron-right" class="w-3 h-3"></i>' : ""}
-                        <span class="${i === crumbs.length - 1 ? "text-rose-600" : ""}">${crumb}</span>
-                    `).join("")}
-                </nav>
-            `;
-        }
-
-        function openModal(index) {
-            const loc = allLocations[index];
-            if (!loc) return;
-
-            lastFocusedElement = document.activeElement;
-
-            const icon = CATEGORY_ICONS[loc.category] || DEFAULT_ICON;
-            const isDepartment = loc.category === "department";
-
-            let departmentSection = "";
-            if (isDepartment) {
-                departmentSection = `
-                    <div class="mt-5">
-                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${t("fieldSchool")}</p>
-                        <p class="text-sm font-bold text-slate-700 mb-4">${loc.school || loc.parent || t("notSpecified")}</p>
-
-                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${t("fieldParentBuilding")}</p>
-                        <p class="text-sm font-bold text-slate-700 mb-4">${loc.parent || t("notSpecified")}</p>
-
-                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-2">${t("fieldCoursesOffered")}</p>
-                        ${renderChipList(loc.courses, t("noCourses"))}
-                    </div>
-                `;
-            }
-
-            const breadcrumb = isDepartment ? renderBreadcrumb(loc) : "";
-
-            document.getElementById("modalContent").innerHTML = `
-                ${breadcrumb}
-                <div class="flex items-center gap-2 mb-1 pr-8" id="modalTitleRegion">
-                    <i data-lucide="${icon}" class="w-5 h-5 text-rose-600"></i>
-                    <h2 class="text-xl font-black text-slate-800">${loc.name || t("unnamedLocation")}</h2>
-                </div>
-                <span class="inline-block bg-rose-50 text-rose-700 text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-tighter mb-4">
-                    ${formatCategoryLabel(loc.category)}
-                </span>
-
-                <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${t("fieldParent")}</p>
-                <p class="text-sm font-bold text-slate-700 mb-4">${loc.parent || t("fieldParentTopLevel")}</p>
-
-                <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${t("fieldDescription")}</p>
-                <p class="text-sm font-medium text-slate-600 mb-4">${loc.description && loc.description.trim() !== "" ? loc.description : t("noDescription")}</p>
-
-                <p class="text-[10px] uppercase font-bold text-slate-400 mb-2">${t("fieldKeywords")}</p>
-                <div class="mb-4">${renderChipList(loc.keywords, t("noKeywords"))}</div>
-
-                <p class="text-[10px] uppercase font-bold text-slate-400 mb-2">${t("fieldAliases")}</p>
-                <div class="mb-4">${renderChipList(loc.aliases, t("noAliases"))}</div>
-
-                ${departmentSection}
-
-                <p class="text-[10px] uppercase font-bold text-slate-400 mb-2 mt-4">${t("fieldCoordinates")}</p>
-                ${renderCoordinates(loc)}
-            `;
-
-            const modal = document.getElementById("detailModal");
-            modal.classList.remove("hidden");
-            modal.classList.add("flex");
-            lucide.createIcons();
-
-            // Reset scroll position for the newly opened location
-            const scrollBody = document.getElementById("modalScrollBody");
-            if (scrollBody) scrollBody.scrollTop = 0;
-
-            // Trigger the enter transition on the next frame so the
-            // "hidden -> flex" swap has already taken effect.
-            requestAnimationFrame(() => {
-                modal.classList.add("modal-visible", "modal-overlay-active");
-            });
-
-            // Move focus into the modal for keyboard/screen-reader users.
-            const closeBtn = document.getElementById("modalCloseBtn");
-            if (closeBtn) closeBtn.focus();
-        }
-
-        function closeModal() {
-            const modal = document.getElementById("detailModal");
-            const finish = () => {
-                modal.classList.add("hidden");
-                modal.classList.remove("flex");
-                if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
-                    lastFocusedElement.focus();
-                }
-            };
-
-            modal.classList.remove("modal-visible", "modal-overlay-active");
-
-            if (prefersReducedMotion()) {
-                finish();
-            } else {
-                setTimeout(finish, 220);
-            }
-        }
-
-        // ---------- Service Worker Registration ----------
-
-        if ("serviceWorker" in navigator) {
-            window.addEventListener("load", () => {
-                navigator.serviceWorker.register("sw.js").catch((err) => {
-                    console.warn("Service worker registration failed:", err);
-                });
-            });
-        }
-
-        // ---------- Offline Detection & Banner ----------
-
-        let offlineHideTimeoutId = null;
-
-        function updateOnlineStatus() {
-            const banner = document.getElementById("offlineBanner");
-            clearTimeout(offlineHideTimeoutId);
-
-            if (!navigator.onLine) {
-                banner.classList.add("banner-visible");
-            } else {
-                // Briefly acknowledge "back online" isn't required; just
-                // hide the offline banner once connectivity returns.
-                banner.classList.remove("banner-visible");
-            }
-        }
-
-        window.addEventListener("online", updateOnlineStatus);
-        window.addEventListener("offline", updateOnlineStatus);
-
-        // ---------- Install Prompt (Android/Chrome) ----------
-
-        let deferredInstallPrompt = null;
-        const INSTALL_DISMISSED_KEY = "cc-install-dismissed";
-        const INSTALLED_KEY = "cc-installed";
-        const IOS_TIP_DISMISSED_KEY = "cc-ios-tip-dismissed";
-
+        // ===== MODULE: pwa.js (service worker registration, install prompt, offline banner) =====
+
+        /**
+         * Detect standalone display mode.
+         * Pure-ish browser helper: no DOM mutation.
+         * @returns {boolean}
+         */
         function isStandaloneDisplay() {
-            return window.matchMedia && window.matchMedia("(display-mode: standalone)").matches
-                || window.navigator.standalone === true; // legacy iOS flag
+            return (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
         }
 
+        /**
+         * Detect iOS devices.
+         * Pure-ish browser helper: no DOM mutation.
+         * @returns {boolean}
+         */
         function isIos() {
             return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
         }
 
+        /**
+         * Safe localStorage read helper.
+         * @param {string} key
+         * @returns {string | null}
+         */
         function safeGetItem(key) {
             try {
                 return localStorage.getItem(key);
-            } catch (e) {
+            } catch (error) {
                 return null;
             }
         }
 
+        /**
+         * Safe localStorage write helper.
+         * @param {string} key
+         * @param {string} value
+         * @returns {void}
+         */
         function safeSetItem(key, value) {
             try {
                 localStorage.setItem(key, value);
-            } catch (e) { /* localStorage unavailable */ }
+            } catch (error) {
+                // localStorage unavailable.
+            }
         }
 
-        window.addEventListener("beforeinstallprompt", (event) => {
+        /**
+         * Update the offline banner according to navigator.onLine.
+         * DOM-coupled helper: mutates the status banner.
+         * @returns {void}
+         */
+        function updateOnlineStatus() {
+            const banner = getEl("offlineBanner");
+            if (!banner) return;
+            clearTimeout(offlineHideTimeoutId);
+            if (!navigator.onLine) {
+                banner.classList.add("banner-visible");
+            } else {
+                banner.classList.remove("banner-visible");
+            }
+        }
+
+        /**
+         * Show the Android/Chrome install banner when the prompt is available.
+         * @param {BeforeInstallPromptEvent} event
+         * @returns {void}
+         */
+        function onBeforeInstallPrompt(event) {
             event.preventDefault();
             deferredInstallPrompt = event;
-
             if (isStandaloneDisplay() || safeGetItem(INSTALLED_KEY) === "true" || safeGetItem(INSTALL_DISMISSED_KEY) === "true") {
                 return;
             }
+            const banner = getEl("installBanner");
+            if (banner) banner.classList.add("banner-shown");
+        }
 
-            document.getElementById("installBanner").classList.add("banner-shown");
-        });
-
+        /**
+         * Trigger the deferred install prompt.
+         * DOM-coupled helper: interacts with the browser prompt.
+         * @returns {void}
+         */
         function handleInstallClick() {
             hapticTap();
-            const banner = document.getElementById("installBanner");
+            const banner = getEl("installBanner");
+            if (!banner) return;
             if (!deferredInstallPrompt) {
                 banner.classList.remove("banner-shown");
                 return;
             }
-
             deferredInstallPrompt.prompt();
             deferredInstallPrompt.userChoice.finally(() => {
                 deferredInstallPrompt = null;
@@ -1689,47 +3574,359 @@
             });
         }
 
+        /**
+         * Dismiss the install banner and remember that choice.
+         * @returns {void}
+         */
         function dismissInstallBanner() {
             hapticTap();
-            document.getElementById("installBanner").classList.remove("banner-shown");
+            const banner = getEl("installBanner");
+            if (banner) banner.classList.remove("banner-shown");
             safeSetItem(INSTALL_DISMISSED_KEY, "true");
         }
 
-        window.addEventListener("appinstalled", () => {
+        /**
+         * Remember that the app was installed.
+         * @returns {void}
+         */
+        function onAppInstalled() {
             safeSetItem(INSTALLED_KEY, "true");
-            document.getElementById("installBanner").classList.remove("banner-shown");
-        });
+            const banner = getEl("installBanner");
+            if (banner) banner.classList.remove("banner-shown");
+        }
 
-        // ---------- iOS "Add to Home Screen" tip ----------
-
+        /**
+         * Show the iOS add-to-home tip when appropriate.
+         * @returns {void}
+         */
         function maybeShowIosInstallTip() {
             if (!isIos()) return;
             if (isStandaloneDisplay()) return;
             if (safeGetItem(IOS_TIP_DISMISSED_KEY) === "true") return;
-
-            document.getElementById("iosInstallTip").classList.add("banner-shown");
+            const tip = getEl("iosInstallTip");
+            if (tip) tip.classList.add("banner-shown");
         }
 
+        /**
+         * Dismiss the iOS add-to-home tip.
+         * @returns {void}
+         */
         function dismissIosInstallTip() {
             hapticTap();
-            document.getElementById("iosInstallTip").classList.remove("banner-shown");
+            const tip = getEl("iosInstallTip");
+            if (tip) tip.classList.remove("banner-shown");
             safeSetItem(IOS_TIP_DISMISSED_KEY, "true");
         }
 
-        let firstLaunchPending = false;
-
-        document.addEventListener("DOMContentLoaded", () => {
-            firstLaunchPending = !initLanguage();
-            if (firstLaunchPending) {
-                openLangPicker();
+        /**
+         * Register the service worker for offline support.
+         * @returns {void}
+         */
+        function registerServiceWorker() {
+            if ("serviceWorker" in navigator) {
+                window.addEventListener("load", () => {
+                    navigator.serviceWorker.register("sw.js").catch((error) => {
+                        console.warn("Service worker registration failed:", error);
+                    });
+                });
             }
-        });
+        }
 
-        window.onload = () => {
+        // ===== MODULE: app.js (init, event wiring, state) =====
+
+        /**
+         * Render the error banner and expose retry.
+         * DOM-coupled helper: toggles the visible failure state.
+         * @param {boolean} visible
+         * @returns {void}
+         */
+        function setDataErrorVisible(visible) {
+            const banner = getEl("dataErrorBanner");
+            const loader = getEl("loader");
+            if (!banner || !loader) return;
+            banner.classList.toggle("hidden", !visible);
+            loader.classList.toggle("hidden", visible);
+        }
+
+        /**
+         * Retry the dataset load flow.
+         * @returns {Promise<void>}
+         */
+        async function retryLoadData() {
+            await loadData();
+        }
+
+        /**
+         * Load the campus dataset, preferring the external file and falling back to the embedded JSON.
+         * @returns {Promise<void>}
+         */
+        async function loadData(options = {}) {
+            const fromRefresh = Boolean(options.fromRefresh);
+            setDataErrorVisible(false);
+
+            let externalPayload = null;
+            const embeddedPayload = loadEmbeddedData();
+
+            try {
+                const response = await fetch(DATA_URL);
+                if (!response.ok) throw new Error(`Network response was not ok: ${response.status}`);
+                externalPayload = await response.json();
+            } catch (error) {
+                console.warn(`External fetch of ${DATA_URL} failed, using embedded dataset instead:`, error && error.message ? error.message : error);
+            }
+
+            const externalLocations = extractLocations(externalPayload);
+            const embeddedLocations = extractLocations(embeddedPayload);
+            const selectedLocations = externalLocations.length > 0 ? externalLocations : embeddedLocations;
+
+            allLocations = selectedLocations;
+            datasetMeta = extractDatasetMeta(embeddedPayload, externalPayload, allLocations);
+
+            // Compute a simple data signature (version + total) to detect no-op refreshes.
+            const newSignature = `${datasetMeta.version || ""}:${Number(datasetMeta.total_locations || allLocations.length)}`;
+            if (fromRefresh && currentDataVersionSignature !== null && newSignature === currentDataVersionSignature) {
+                // Nothing changed since last load — inform the user and skip heavy re-render.
+                showToast(t("upToDate"));
+                return;
+            }
+            // Persist the latest known signature for future refresh comparisons.
+            currentDataVersionSignature = newSignature;
+
+            if (allLocations.length === 0) {
+                console.error("No campus locations could be loaded from either source.");
+                setDataErrorVisible(true);
+                renderAboutPanel();
+                return;
+            }
+
+            buildSearchIndex();
+            buildCategoryList();
+            renderFilters();
+            applyAll(true);
+            renderAboutPanel();
+            initIconsForRoot(document.body);
+            getEl("loader")?.classList.add("hidden");
+            // Ensure recent searches UI is populated after data availability.
+            recentSearches = getRecentSearches();
+            renderRecentSearches();
+        }
+
+        /**
+         * Initialize the search/filter state and render the current slice.
+         * @param {boolean} [resetScroll=true]
+         * @returns {void}
+         */
+        function applyAll(resetScroll = true) {
+            const query = currentQuery;
+            filteredIndexes = filterLocationIndexes(allLocations, searchIndex, query, currentFilter);
+            recordSearchUsage(query);
+            updateSearchResultsCount(filteredIndexes.length);
+            renderVirtualizedList(resetScroll);
+        }
+
+        /**
+         * Update an accessible search result count indicator.
+         * DOM-coupled helper: updates aria-live region.
+         * @param {number} count
+         */
+        function updateSearchResultsCount(count) {
+            const id = 'searchResultCount';
+            let el = document.getElementById(id);
+            if (!el) {
+                el = document.createElement('div');
+                el.id = id;
+                el.setAttribute('aria-live', 'polite');
+                el.style.position = 'absolute';
+                el.style.left = '-9999px';
+                el.style.width = '1px';
+                el.style.height = '1px';
+                el.style.overflow = 'hidden';
+                document.body.appendChild(el);
+            }
+            el.textContent = `${count} ${t('emptyStateText')}`;
+        }
+
+        /**
+         * Apply a filter pill selection.
+         * @param {string} category
+         * @returns {void}
+         */
+        function setFilter(category) {
+            currentFilter = category;
+            recordFilterUsage(category);
+            renderFilters();
+            applyAll(true);
+            renderAboutPanel();
+        }
+
+        /**
+         * React to search box input with a 200ms debounce.
+         * @param {InputEvent} event
+         * @returns {void}
+         */
+        function handleSearchInput(event) {
+            currentQuery = normalizeText(event.target.value);
+            debouncedApplyAll();
+        }
+
+        /**
+         * Rerender the virtualized list after a debounced search input.
+         * @returns {void}
+         */
+        function debouncedApplyAllHandler() {
+            applyAll(true);
+        }
+
+        /**
+         * Schedule a virtual list refresh on the next animation frame.
+         * @returns {void}
+         */
+        function scheduleVirtualRender() {
+            if (virtualRenderFrameId !== null) return;
+            virtualRenderFrameId = window.requestAnimationFrame(() => {
+                virtualRenderFrameId = null;
+                renderVirtualizedList(false);
+            });
+        }
+
+        /**
+         * Wire the list viewport scroll and keyboard handlers.
+         * @returns {void}
+         */
+        function wireListViewport() {
+            const viewport = getEl("listViewport");
+            if (!viewport) return;
+            viewport.addEventListener("scroll", scheduleVirtualRender, { passive: true });
+            window.addEventListener("resize", scheduleVirtualRender);
+        }
+
+        /**
+         * Handle keydown for modal focus trapping and escape closure.
+         * @param {KeyboardEvent} event
+         * @returns {void}
+         */
+        function handleGlobalKeydown(event) {
+            const modal = getEl("detailModal");
+            if (!modal || modal.classList.contains("hidden")) return;
+
+            if (event.key === "Escape") {
+                event.preventDefault();
+                closeModal();
+                return;
+            }
+
+            if (event.key === "Tab") {
+                const panel = getEl("modalPanel");
+                if (!panel) return;
+                const focusable = panel.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                if (focusable.length === 0) return;
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            }
+        }
+
+        /**
+         * Initialize non-data UI and event wiring.
+         * @returns {void}
+         */
+        function initUI() {
+            applyThemeIcons();
+            applyLanguageToStaticText();
+            renderFilters();
+            renderAboutPanel();
+            initIconsForRoot(document.body);
+            wireListViewport();
+            // Render recent searches if any and wire the recent search area
+            recentSearches = getRecentSearches();
+            renderRecentSearches();
+        }
+
+        /**
+         * Set the app title and start the data flow.
+         * @returns {void}
+         */
+        function bootApp() {
             updateOnlineStatus();
             maybeShowIosInstallTip();
             loadData();
-        };
+        }
+
+        /**
+         * Initialize the search box and modal close handlers.
+         * @returns {void}
+         */
+        function wireInteractiveHandlers() {
+            const searchInput = getEl("searchInput");
+            if (searchInput) {
+                searchInput.addEventListener("input", handleSearchInput);
+            }
+
+            const modal = getEl("detailModal");
+            if (modal) {
+                modal.addEventListener("click", (event) => {
+                    if (event.target === modal) closeModal();
+                });
+            }
+
+            document.addEventListener("keydown", handleGlobalKeydown);
+            window.addEventListener("online", updateOnlineStatus);
+            window.addEventListener("offline", updateOnlineStatus);
+            window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
+            window.addEventListener("appinstalled", onAppInstalled);
+        }
+
+        /**
+         * Initialize the app when DOM content is available.
+         * @returns {void}
+         */
+        function initApp() {
+            firstLaunchPending = !initLanguage();
+            // Load persisted UX preferences (favorites, recent searches)
+            favoriteLocationIds = getFavoriteLocationIds();
+            recentSearches = getRecentSearches();
+            initUI();
+            wireInteractiveHandlers();
+            debouncedApplyAll = debounce(debouncedApplyAllHandler, SEARCH_DEBOUNCE_MS);
+            if (firstLaunchPending) {
+                openLangPicker(true);
+            }
+        }
+
+        /**
+         * Debounced search application placeholder, assigned during init.
+         * @type {Function}
+         */
+        let debouncedApplyAll = () => {};
+
+        document.addEventListener("DOMContentLoaded", initApp);
+        registerServiceWorker();
+        window.addEventListener("load", bootApp);
+
+        // Expose the inline event handlers already present in the HTML.
+        window.openLangPicker = openLangPicker;
+        window.closeLangPicker = closeLangPicker;
+        window.selectLanguage = selectLanguage;
+        window.toggleTheme = toggleTheme;
+        window.showToast = showToast;
+        window.getMapUrl = getMapUrl;
+        window.navigateToLocation = navigateToLocation;
+        window.copyMapLink = copyMapLink;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.setFilter = setFilter;
+        window.handleInstallClick = handleInstallClick;
+        window.dismissInstallBanner = dismissInstallBanner;
+        window.dismissIosInstallTip = dismissIosInstallTip;
+        window.retryLoadData = retryLoadData;
+        window.toggleAboutPanel = toggleAboutPanel;
+        window.loadData = loadData;
     </script>
 </body>
 
