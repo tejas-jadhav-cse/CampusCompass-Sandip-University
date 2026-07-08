@@ -111,6 +111,11 @@
             display: none;
         }
 
+        .no-scrollbar {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE / Edge */
+        }
+
         .modal-overlay {
             background: rgba(15, 23, 42, 0.55);
             backdrop-filter: blur(2px);
@@ -132,7 +137,7 @@
         .card-shell {
             position: relative;
             overflow: hidden;
-            border-radius: 1.5rem;
+            border-radius: 24px;
         }
 
         .card-main {
@@ -177,18 +182,18 @@
 
         .card-favorite-btn {
             position: absolute;
-            top: 0.75rem;
-            left: 0.75rem;
+            top: 16px;
+            left: 16px;
             z-index: 11;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             border: none;
             border-radius: 999px;
-            padding: 0.55rem;
+            padding: 8px;
             background: rgba(255, 255, 255, 0.92);
             color: #e11d48;
-            box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
         }
 
         .card-favorite-btn[data-favorited="true"],
@@ -215,14 +220,14 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.35rem;
+            gap: 8px;
             border-radius: 999px;
             border: 1px solid #e2e8f0;
             background: #fff;
             color: #0f172a;
             font-size: 12px;
             font-weight: 800;
-            padding: 0.7rem 0.95rem;
+            padding: 8px 16px;
         }
 
         html.dark .modal-favorite-btn,
@@ -249,7 +254,7 @@
         .recent-searches-wrap {
             display: none;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 8px;
         }
 
         .recent-searches-wrap[data-visible="true"] {
@@ -259,12 +264,12 @@
         .recent-chip {
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 8px;
             border-radius: 999px;
             border: 1px solid #e2e8f0;
             background: #fff;
             color: #334155;
-            padding: 0.55rem 0.85rem;
+            padding: 8px 16px;
             font-size: 12px;
             font-weight: 700;
         }
@@ -278,9 +283,9 @@
         .card-distance-pill {
             display: inline-flex;
             align-items: center;
-            gap: 0.35rem;
-            margin-top: 0.65rem;
-            padding: 0.35rem 0.55rem;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 4px 8px;
             border-radius: 999px;
             background: #eef2ff;
             color: #4338ca;
@@ -320,7 +325,7 @@
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            gap: 0.75rem;
+            gap: 16px;
         }
 
         .modal-header-meta {
@@ -330,7 +335,7 @@
         .modal-action-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.65rem;
+            gap: 8px;
         }
 
         .inline-gesture-hint {
@@ -354,7 +359,7 @@
             justify-content: center;
             gap: 8px;
             width: 100%;
-            padding: 14px 20px;
+            padding: 16px 24px;
             border-radius: 16px;
             font-weight: 800;
             font-size: 14px;
@@ -366,7 +371,7 @@
             border: none;
             cursor: pointer;
             transition: transform 0.25s ease, box-shadow 0.25s ease, background-position 0.4s ease;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.28);
         }
 
         .navigate-btn:hover:not(:disabled) {
@@ -395,8 +400,8 @@
         .navigate-btn-small {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
+            gap: 8px;
+            padding: 8px 16px;
             border-radius: 999px;
             font-size: 11px;
             font-weight: 800;
@@ -426,17 +431,6 @@
             box-shadow: none;
         }
 
-        @media (max-width: 380px) {
-            .navigate-btn {
-                font-size: 13px;
-                padding: 12px 16px;
-            }
-
-            .navigate-btn-small {
-                font-size: 10px;
-                padding: 7px 11px;
-            }
-        }
 
         /* ---------- Dark mode base ---------- */
         html.dark body {
@@ -491,7 +485,7 @@
             color: #a3b0c2 !important;
         }
 
-        html.dark .text-slate-400 {
+        html.dark .text-slate-500 {
             color: #8b98ab !important;
         }
 
@@ -585,8 +579,8 @@
             margin: auto;
             width: 100%;
             max-width: 420px;
-            padding: 2rem 1.5rem calc(2rem + env(safe-area-inset-bottom));
-            padding-top: calc(2rem + env(safe-area-inset-top));
+            padding: 32px 24px calc(32px + env(safe-area-inset-bottom));
+            padding-top: calc(32px + env(safe-area-inset-top));
         }
 
         .lang-card {
@@ -594,10 +588,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
-            padding: 20px 24px;
+            gap: 16px;
+            padding: 24px;
             min-height: 44px;
-            border-radius: 20px;
+            border-radius: 24px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.18);
             color: #fff;
@@ -612,7 +606,7 @@
         }
 
         .lang-card + .lang-card {
-            margin-top: 14px;
+            margin-top: 16px;
         }
 
         .lang-card-native {
@@ -624,7 +618,7 @@
             font-size: 12px;
             font-weight: 600;
             color: rgba(255, 255, 255, 0.65);
-            margin-top: 2px;
+            margin-top: 4px;
         }
 
           /* Critical CSS: header, search bar, skeleton loader, and tap targets.
@@ -634,8 +628,8 @@
 
           /* ---------- Skeleton loaders ---------- */
         .skeleton-card {
-            border-radius: 1.5rem;
-            padding: 1.5rem;
+            border-radius: 24px;
+            padding: 24px;
             background: #fff;
             border: 1px solid #f1f5f9;
         }
@@ -723,6 +717,7 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 4px;
+            margin-bottom: 8px;
         }
 
         /* ---------- Toast ---------- */
@@ -735,7 +730,7 @@
             color: #fff;
             font-size: 12px;
             font-weight: 700;
-            padding: 10px 18px;
+            padding: 8px 16px;
             border-radius: 999px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
             z-index: 100;
@@ -760,7 +755,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding-top: 12px;
+            padding-top: 16px;
             background: linear-gradient(to top, #fff 60%, rgba(255, 255, 255, 0));
         }
 
@@ -774,8 +769,8 @@
             justify-content: center;
             gap: 8px;
             width: 100%;
-            padding: 12px 20px;
-            margin-top: 10px;
+            padding: 16px 24px;
+            margin-top: 8px;
             border-radius: 16px;
             font-weight: 800;
             font-size: 13px;
@@ -802,9 +797,9 @@
 
         /* ---------- Safe-area support (notched phones, standalone PWA) ---------- */
         header.sun-theme {
-            padding-top: calc(2.5rem + env(safe-area-inset-top));
-            padding-left: calc(1.5rem + env(safe-area-inset-left));
-            padding-right: calc(1.5rem + env(safe-area-inset-right));
+            padding-top: calc(48px + env(safe-area-inset-top));
+            padding-left: calc(24px + env(safe-area-inset-left));
+            padding-right: calc(24px + env(safe-area-inset-right));
         }
 
         .sticky-search-wrap {
@@ -821,13 +816,13 @@
         }
 
         body {
-            padding-bottom: calc(2.5rem + env(safe-area-inset-bottom));
+            padding-bottom: calc(48px + env(safe-area-inset-bottom));
         }
 
         /* ---------- Offline banner ---------- */
         #offlineBanner {
             position: fixed;
-            top: calc(12px + env(safe-area-inset-top));
+            top: calc(16px + env(safe-area-inset-top));
             left: 50%;
             transform: translateX(-50%) translateY(-16px);
             z-index: 90;
@@ -838,9 +833,9 @@
             color: #fef2f2;
             font-size: 12px;
             font-weight: 700;
-            padding: 10px 16px;
+            padding: 8px 16px;
             border-radius: 999px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.25s ease, transform 0.25s ease;
@@ -856,18 +851,18 @@
         #installBanner,
         #iosInstallTip {
             position: fixed;
-            left: 12px;
-            right: 12px;
-            bottom: calc(12px + env(safe-area-inset-bottom));
+            left: 16px;
+            right: 16px;
+            bottom: calc(16px + env(safe-area-inset-bottom));
             z-index: 95;
             background: #fff;
             color: #0f172a;
-            border-radius: 20px;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-            padding: 14px 16px;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            padding: 16px;
             display: none;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             transform: translateY(120%);
             transition: transform 0.25s ease;
         }
@@ -889,8 +884,8 @@
             color: #fff;
             font-weight: 800;
             font-size: 13px;
-            padding: 10px 16px;
-            border-radius: 12px;
+            padding: 8px 16px;
+            border-radius: 16px;
             border: none;
             cursor: pointer;
             white-space: nowrap;
@@ -937,6 +932,7 @@
         .about-panel {
             background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid #e2e8f0;
+            border-radius: 24px;
         }
 
         html.dark .about-panel {
@@ -965,8 +961,8 @@
         .usage-pill {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
+            gap: 8px;
+            padding: 8px 16px;
             border-radius: 999px;
             background: #e2e8f0;
             color: #334155;
@@ -978,14 +974,1266 @@
             background: #1e293b;
             color: #cbd5e1;
         }
+
+        /* ==========================================================================
+           MOBILE RESPONSIVENESS — target: 320px / 360px / 375px / 390px / 412px / 430px
+           Mobile-first: base styles ARE mobile, media queries scale UP only where needed.
+           ========================================================================== */
+
+        /* ---------- Global mobile foundation ---------- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            overflow-x: hidden;
+            min-width: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        img, svg, video, canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* ---------- Responsive typography ---------- */
+        /* fluid title: 20px at 320px → 24px at 430px */
+        #appTitle {
+            font-size: clamp(1.25rem, 4.5vw, 1.5rem);
+            line-height: 1.2;
+            word-break: break-word;
+        }
+
+        /* fluid subtitle */
+        #appSubtitle {
+            font-size: clamp(0.625rem, 2.5vw, 0.75rem);
+        }
+
+        /* ---------- Header responsive ---------- */
+        header.sun-theme {
+            padding-bottom: 48px;
+        }
+
+        /* ---------- Search bar responsive ---------- */
+        .sticky-search-wrap {
+            padding-left: max(8px, env(safe-area-inset-left));
+            padding-right: max(8px, env(safe-area-inset-right));
+        }
+
+        .glass-nav {
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        #searchInput {
+            font-size: 16px; /* prevents iOS zoom on focus */
+            min-height: 44px;
+        }
+
+        /* ---------- Filter chips responsive ---------- */
+        .filter-chip {
+            flex-shrink: 0;
+        }
+
+        #filterContainer {
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 2px; /* prevents clipping of shadows */
+        }
+
+        #filterContainer > * {
+            scroll-snap-align: start;
+        }
+
+        /* ---------- Cards responsive ---------- */
+        .card-shell.card {
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        .card-shell.card h2 {
+            font-size: clamp(1rem, 4.2vw, 1.25rem);
+            line-height: 1.3;
+            padding-right: 72px; /* room for category badge */
+        }
+
+        /* ---------- Modal responsive ---------- */
+        .modal-panel {
+            max-height: calc(100dvh - env(safe-area-inset-top, 0px));
+            max-height: calc(100vh - env(safe-area-inset-top, 0px));
+        }
+
+        .modal-scroll-body {
+            max-height: calc(100dvh - 84px - env(safe-area-inset-top, 0px));
+            max-height: calc(100vh - 84px - env(safe-area-inset-top, 0px));
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .modal-panel h2 {
+            font-size: clamp(1rem, 4.2vw, 1.25rem);
+            line-height: 1.3;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        /* ---------- Language picker responsive ---------- */
+        .lang-picker-inner {
+            padding-left: max(16px, env(safe-area-inset-left));
+            padding-right: max(16px, env(safe-area-inset-right));
+        }
+
+        .lang-card-native {
+            font-size: clamp(1rem, 4.5vw, 1.25rem);
+        }
+
+        /* ---------- Install / iOS banners responsive ---------- */
+        #installBanner,
+        #iosInstallTip {
+            left: max(8px, env(safe-area-inset-left));
+            right: max(8px, env(safe-area-inset-right));
+        }
+
+        /* ---------- Main content responsive ---------- */
+        main {
+            padding-left: max(16px, env(safe-area-inset-left));
+            padding-right: max(16px, env(safe-area-inset-right));
+        }
+
+        /* ---------- Toast responsive ---------- */
+        #toast {
+            max-width: calc(100vw - 32px);
+            text-align: center;
+        }
+
+        /* ---------- Offline banner responsive ---------- */
+        #offlineBanner {
+            max-width: calc(100vw - 32px);
+            text-align: center;
+        }
+
+        /* ---------- Virtual list responsive height ---------- */
+        #listViewport {
+            max-height: min(74dvh, calc(100vh - 220px));
+        }
+
+        /* ---------- Near-me status responsive ---------- */
+        .near-me-status {
+            font-size: 11px;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        /* ---------- Modal footer buttons responsive ---------- */
+        .modal-footer-sticky {
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+        }
+
+        .share-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* ---------- Card body overflow protection ---------- */
+        .card-main {
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .card-main p {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        /* ---------- About panel text wrapping ---------- */
+        .about-panel p,
+        .about-panel span {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        /* ---------- Chip overflow ---------- */
+        .chip {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ---------- Modal content text overflow ---------- */
+        #modalContent {
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        #modalContent p,
+        #modalContent h2,
+        #modalContent span {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        /* ============================
+           320px — smallest target
+           ============================ */
+        @media (max-width: 359px) {
+            header.sun-theme {
+                padding-left: calc(16px + env(safe-area-inset-left));
+                padding-right: calc(16px + env(safe-area-inset-right));
+                padding-top: calc(40px + env(safe-area-inset-top));
+                padding-bottom: 40px;
+            }
+
+            .sticky-search-wrap {
+                padding-left: max(4px, env(safe-area-inset-left));
+                padding-right: max(4px, env(safe-area-inset-right));
+            }
+
+            .glass-nav {
+                border-radius: 16px;
+            }
+
+            .card-shell.card {
+                padding: 16px;
+                border-radius: 20px;
+            }
+
+            .card-shell {
+                border-radius: 20px;
+            }
+
+            .card-favorite-btn {
+                top: 8px;
+                left: 8px;
+                padding: 6px;
+            }
+
+            .card-distance-pill {
+                font-size: 10px;
+            }
+
+            .navigate-btn {
+                font-size: 12px;
+                padding: 8px 16px;
+                border-radius: 12px;
+            }
+
+            .navigate-btn-small {
+                font-size: 9px;
+                padding: 4px 8px;
+                gap: 4px;
+            }
+
+            .modal-panel {
+                padding: 16px;
+                border-radius: 20px 20px 0 0;
+            }
+
+            .modal-panel h2 {
+                font-size: 1rem;
+            }
+
+            .modal-scroll-body {
+                max-height: calc(85dvh - 64px);
+            }
+
+            .skeleton-card {
+                padding: 16px;
+                border-radius: 20px;
+            }
+
+            .lang-card {
+                padding: 16px;
+                border-radius: 16px;
+            }
+
+            .lang-card-native {
+                font-size: 1rem;
+            }
+
+            .lang-picker-inner {
+                padding: 24px 16px calc(24px + env(safe-area-inset-bottom));
+                padding-top: calc(24px + env(safe-area-inset-top));
+            }
+
+            #installBanner,
+            #iosInstallTip {
+                flex-wrap: wrap;
+                padding: 12px;
+                gap: 8px;
+                border-radius: 16px;
+            }
+
+            .install-cta-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .about-panel {
+                border-radius: 20px;
+            }
+
+            .usage-pill {
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+
+            main {
+                padding-left: max(8px, env(safe-area-inset-left));
+                padding-right: max(8px, env(safe-area-inset-right));
+            }
+
+            .copy-link-btn {
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+
+            .inline-gesture-hint {
+                font-size: 10px;
+            }
+
+            .modal-favorite-btn,
+            .share-btn,
+            .near-me-btn,
+            .clear-recent-btn {
+                font-size: 11px;
+                padding: 8px 12px;
+            }
+
+            /* Near-me row stacks vertically on tiny screens */
+            .near-me-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .card-shell.card h2 {
+                padding-right: 56px;
+                font-size: 0.95rem;
+            }
+
+            .filter-chip {
+                font-size: 11px;
+                padding: 6px 10px !important;
+            }
+
+            .recent-chip {
+                font-size: 11px;
+                padding: 6px 10px;
+            }
+
+            #searchInput {
+                padding-left: 36px;
+            }
+        }
+
+        /* ============================
+           360px — small Android phones
+           ============================ */
+        @media (min-width: 360px) and (max-width: 374px) {
+            header.sun-theme {
+                padding-left: calc(20px + env(safe-area-inset-left));
+                padding-right: calc(20px + env(safe-area-inset-right));
+            }
+
+            .card-shell.card {
+                padding: 20px;
+            }
+
+            .navigate-btn {
+                font-size: 13px;
+                padding: 12px 16px;
+            }
+
+            .navigate-btn-small {
+                font-size: 10px;
+                padding: 8px 12px;
+            }
+
+            .modal-panel {
+                padding: 20px;
+            }
+
+            #installBanner,
+            #iosInstallTip {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .install-cta-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* ============================
+           375px — iPhone SE / older iPhones
+           ============================ */
+        @media (min-width: 375px) and (max-width: 389px) {
+            .card-shell.card {
+                padding: 20px;
+            }
+
+            .navigate-btn {
+                font-size: 13px;
+                padding: 12px 20px;
+            }
+
+            .modal-panel {
+                padding: 24px;
+            }
+        }
+
+        /* ============================
+           390px+ — modern iPhones / mid Androids
+           ============================ */
+        @media (min-width: 390px) and (max-width: 429px) {
+            .card-shell.card {
+                padding: 24px;
+            }
+
+            .navigate-btn {
+                font-size: 14px;
+                padding: 16px 24px;
+            }
+
+            .modal-panel {
+                padding: 24px;
+            }
+        }
+
+        /* ============================
+           430px+ — large phones (iPhone Pro Max, Galaxy Ultra)
+           ============================ */
+        @media (min-width: 430px) {
+            .card-shell.card {
+                padding: 24px;
+            }
+
+            header.sun-theme {
+                padding-top: calc(48px + env(safe-area-inset-top));
+            }
+        }
+
+        /* ============================
+           Tall / short viewport adjustments
+           ============================ */
+        @media (max-height: 667px) {
+            /* iPhone SE height / short Android */
+            #listViewport {
+                max-height: min(65dvh, calc(100vh - 250px));
+            }
+
+            .modal-scroll-body {
+                max-height: calc(80dvh - 64px);
+            }
+
+            header.sun-theme {
+                padding-top: calc(32px + env(safe-area-inset-top));
+                padding-bottom: 40px;
+            }
+        }
+
+        /* ============================
+           Landscape phone — prevent overflow
+           ============================ */
+        @media (orientation: landscape) and (max-height: 500px) {
+            header.sun-theme {
+                padding-top: calc(16px + env(safe-area-inset-top));
+                padding-bottom: 24px;
+            }
+
+            #listViewport {
+                max-height: min(55dvh, calc(100vh - 180px));
+            }
+
+            .modal-scroll-body {
+                max-height: calc(90dvh - 48px);
+            }
+
+            .modal-panel {
+                max-height: 95dvh;
+            }
+        }
+
+        /* ============================
+           Safe-area hardening — standalone PWA + notch
+           ============================ */
+        @supports (padding: max(0px)) {
+            .sticky-search-wrap {
+                padding-left: max(8px, env(safe-area-inset-left));
+                padding-right: max(8px, env(safe-area-inset-right));
+            }
+
+            main {
+                padding-left: max(16px, env(safe-area-inset-left));
+                padding-right: max(16px, env(safe-area-inset-right));
+            }
+
+            #installBanner,
+            #iosInstallTip {
+                left: max(8px, env(safe-area-inset-left));
+                right: max(8px, env(safe-area-inset-right));
+            }
+
+            body {
+                padding-bottom: max(48px, calc(48px + env(safe-area-inset-bottom)));
+            }
+        }
+
+        /* ============================
+           Touch target enforcement
+           All interactive elements must be >= 44x44
+           ============================ */
+        button, [role="button"], a, input, select, textarea {
+            min-height: 44px;
+        }
+
+        /* Exceptions: certain inline elements sized differently */
+        .card-favorite-btn,
+        .chip,
+        .navigate-btn-small,
+        span[class*="bg-rose-50"] {
+            min-height: auto;
+        }
+
+        /* Keep card-favorite-btn at proper touch size */
+        .card-favorite-btn {
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        /* ==========================================================================
+           TABLET LAYOUTS — target: 600px / 768px / 800px / 834px / 1024px
+           These rules only activate above mobile breakpoints.
+           ========================================================================== */
+
+        /* ============================
+           600px — small tablets / large phones in landscape
+           ============================ */
+        @media (min-width: 600px) {
+            /* --- Content width --- */
+            .max-w-md {
+                max-width: 580px;
+            }
+
+            main.max-w-md {
+                max-width: 580px;
+            }
+
+            /* --- Card grid: 2 columns --- */
+            #locationList {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            #loader {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* --- Header --- */
+            header.sun-theme {
+                padding-top: calc(48px + env(safe-area-inset-top));
+                padding-bottom: 56px;
+                padding-left: calc(32px + env(safe-area-inset-left));
+                padding-right: calc(32px + env(safe-area-inset-right));
+            }
+
+            /* --- Search bar wider --- */
+            .glass-nav {
+                padding: 20px;
+            }
+
+            #searchInput {
+                font-size: 14px;
+                padding: 14px 16px 14px 44px;
+            }
+
+            /* --- Filters: show more chips inline --- */
+            #filterContainer {
+                flex-wrap: wrap;
+                overflow-x: visible;
+            }
+
+            /* --- Modal: centered dialog, wider --- */
+            .modal-panel {
+                max-width: 520px;
+                max-height: 80vh;
+                border-radius: 24px;
+                margin: auto;
+            }
+
+            #detailModal {
+                align-items: center !important;
+            }
+
+            .modal-scroll-body {
+                max-height: calc(80vh - 80px);
+            }
+
+            /* --- List viewport taller --- */
+            #listViewport {
+                max-height: min(78dvh, 900px);
+            }
+
+            /* --- About panel: 2-column stats --- */
+            #mostViewedList,
+            #topSearchesList {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* --- Install banners centered --- */
+            #installBanner,
+            #iosInstallTip {
+                max-width: 520px;
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%) translateY(120%);
+            }
+
+            #installBanner.banner-shown,
+            #iosInstallTip.banner-shown {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            /* --- Toast wider --- */
+            #toast {
+                max-width: 400px;
+            }
+
+            /* --- Language picker cards side-by-side --- */
+            .lang-picker-inner {
+                max-width: 520px;
+            }
+
+            /* --- Share button: not full-width on tablet --- */
+            .share-btn {
+                width: auto;
+            }
+
+            /* --- Near-me button: not full-width on tablet --- */
+            .near-me-btn {
+                width: auto;
+            }
+        }
+
+        /* ============================
+           768px — standard tablets (iPad Mini, most Android tablets)
+           ============================ */
+        @media (min-width: 768px) {
+            /* --- Content width --- */
+            .max-w-md {
+                max-width: 672px;
+            }
+
+            main.max-w-md {
+                max-width: 672px;
+            }
+
+            /* --- Header --- */
+            header.sun-theme {
+                padding-top: calc(56px + env(safe-area-inset-top));
+                padding-bottom: 64px;
+                border-radius: 0 0 48px 48px;
+            }
+
+            #appTitle {
+                font-size: 1.75rem;
+            }
+
+            #appSubtitle {
+                font-size: 0.8125rem;
+                margin-top: 8px;
+            }
+
+            /* --- Search bar --- */
+            .glass-nav {
+                padding: 24px;
+                border-radius: 20px;
+            }
+
+            /* --- Modal wider --- */
+            .modal-panel {
+                max-width: 580px;
+                padding: 32px;
+            }
+
+            /* --- About panel --- */
+            .about-panel {
+                padding: 24px;
+            }
+
+            /* --- Language picker --- */
+            .lang-picker-inner {
+                max-width: 560px;
+            }
+
+            /* --- Cards: more breathing room --- */
+            .card-shell.card {
+                padding: 24px;
+            }
+
+            .card-shell.card h2 {
+                font-size: 1.25rem;
+            }
+
+            /* --- Install banners --- */
+            #installBanner,
+            #iosInstallTip {
+                max-width: 560px;
+                flex-wrap: nowrap;
+            }
+
+            .install-cta-btn {
+                width: auto;
+            }
+        }
+
+        /* ============================
+           800px — wider tablets
+           ============================ */
+        @media (min-width: 800px) {
+            .max-w-md {
+                max-width: 720px;
+            }
+
+            main.max-w-md {
+                max-width: 720px;
+            }
+
+            /* --- Cards: slightly larger gap --- */
+            #locationList {
+                gap: 20px;
+            }
+
+            #loader {
+                gap: 20px;
+            }
+
+            /* --- Modal --- */
+            .modal-panel {
+                max-width: 600px;
+            }
+        }
+
+        /* ============================
+           834px — iPad Air / iPad 10th gen
+           ============================ */
+        @media (min-width: 834px) {
+            .max-w-md {
+                max-width: 760px;
+            }
+
+            main.max-w-md {
+                max-width: 760px;
+            }
+
+            /* --- Header larger text --- */
+            #appTitle {
+                font-size: 2rem;
+            }
+
+            /* --- Search bar container --- */
+            .sticky-search-wrap {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+            /* --- List viewport --- */
+            #listViewport {
+                max-height: min(80dvh, 1000px);
+            }
+
+            /* --- About panel: wider stats --- */
+            .about-panel {
+                padding: 32px;
+            }
+
+            /* --- Language picker wider --- */
+            .lang-picker-inner {
+                max-width: 600px;
+            }
+        }
+
+        /* ============================
+           1024px — large tablets (iPad Pro 11", landscape tablets)
+           ============================ */
+        @media (min-width: 1024px) {
+            .max-w-md {
+                max-width: 900px;
+            }
+
+            main.max-w-md {
+                max-width: 900px;
+            }
+
+            /* --- Header --- */
+            header.sun-theme {
+                padding-top: calc(64px + env(safe-area-inset-top));
+                padding-bottom: 72px;
+                border-radius: 0 0 56px 56px;
+            }
+
+            #appTitle {
+                font-size: 2.25rem;
+            }
+
+            #appSubtitle {
+                font-size: 0.875rem;
+                letter-spacing: 0.25em;
+            }
+
+            /* --- Card grid: can show 3 columns --- */
+            #locationList {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+            }
+
+            #loader {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+            }
+
+            /* --- Search bar --- */
+            .glass-nav {
+                padding: 24px 32px;
+                border-radius: 24px;
+            }
+
+            #searchInput {
+                padding: 16px 20px 16px 48px;
+            }
+
+            /* --- Search icon position for wider input --- */
+            .sticky-search-wrap i[data-lucide="search"] {
+                left: 16px;
+                top: 16px;
+            }
+
+            /* --- Modal --- */
+            .modal-panel {
+                max-width: 640px;
+                padding: 32px;
+                border-radius: 28px;
+            }
+
+            .modal-scroll-body {
+                max-height: calc(78vh - 80px);
+            }
+
+            /* --- Filter chips --- */
+            .filter-chip {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+
+            /* --- Navigate buttons --- */
+            .navigate-btn {
+                font-size: 15px;
+                padding: 16px 32px;
+                border-radius: 20px;
+            }
+
+            .navigate-btn-small {
+                font-size: 12px;
+                padding: 10px 20px;
+            }
+
+            /* --- About panel two-column layout for sections --- */
+            #aboutPanel > .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            /* --- List viewport taller --- */
+            #listViewport {
+                max-height: min(82dvh, 1100px);
+            }
+
+            /* --- Install banners --- */
+            #installBanner,
+            #iosInstallTip {
+                max-width: 600px;
+            }
+
+            /* --- Language picker --- */
+            .lang-picker-inner {
+                max-width: 640px;
+            }
+
+            /* --- Cards: larger text --- */
+            .card-shell.card h2 {
+                font-size: 1.35rem;
+            }
+
+            /* --- Usage pills larger --- */
+            .usage-pill {
+                font-size: 13px;
+                padding: 8px 20px;
+            }
+        }
+
+        /* ============================
+           Tablet landscape height fix
+           ============================ */
+        @media (min-width: 600px) and (orientation: landscape) {
+            header.sun-theme {
+                padding-bottom: 40px;
+            }
+
+            #listViewport {
+                max-height: min(70dvh, calc(100vh - 200px));
+            }
+
+            .modal-panel {
+                max-height: 90vh;
+            }
+
+            .modal-scroll-body {
+                max-height: calc(88vh - 80px);
+            }
+        }
+
+        /* ==========================================================================
+           DESKTOP LAYOUTS — target: 1280px / 1440px / 1600px / 1920px
+           Two-column layout (sidebar + main grid)
+           ========================================================================== */
+
+        /* ============================
+           1280px — Standard Desktop
+           ============================ */
+        @media (min-width: 1280px) {
+            body {
+                display: grid;
+                /* Create centered layout with auto margins */
+                grid-template-columns: 1fr 380px minmax(700px, 860px) 1fr;
+                grid-template-rows: auto 1fr;
+                grid-template-areas:
+                    ". header header ."
+                    ". sidebar main .";
+                column-gap: 40px;
+                row-gap: 32px;
+                align-items: start;
+                padding-bottom: 64px;
+            }
+
+            header.sun-theme {
+                grid-area: header;
+                margin-top: 40px;
+                padding: 64px 48px;
+                border-radius: 40px;
+                background: linear-gradient(135deg, #0f172a 0%, #9f1239 60%, #e11d48 100%);
+            }
+
+            #appTitle { font-size: 2.75rem; }
+            #appSubtitle { font-size: 1rem; margin-top: 12px; }
+
+            .sticky-search-wrap {
+                grid-area: sidebar;
+                position: sticky;
+                top: 40px;
+                margin-top: 0;
+                padding: 0;
+            }
+
+            .glass-nav {
+                max-width: 100%;
+                margin: 0;
+                padding: 32px;
+                border-radius: 32px;
+            }
+
+            #searchInput {
+                font-size: 15px;
+                padding: 16px 20px 16px 48px;
+            }
+
+            #filterContainer {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                padding-bottom: 8px;
+            }
+            
+            .filter-chip {
+                flex: 1 1 auto;
+                justify-content: center;
+                font-size: 14px;
+                padding: 12px 24px;
+            }
+
+            main.max-w-md {
+                grid-area: main;
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #locationList, #loader {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+            }
+
+            #listViewport {
+                max-height: calc(100vh - 120px);
+            }
+
+            /* About panel */
+            #aboutPanel {
+                margin-top: 40px;
+                padding: 40px;
+            }
+            #aboutPanel > .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            /* Modal wider for desktop */
+            .modal-panel {
+                max-width: 720px;
+                padding: 48px;
+                border-radius: 32px;
+            }
+            .modal-scroll-body {
+                max-height: calc(85vh - 120px);
+            }
+        }
+
+        /* ============================
+           1440px — Large Desktop
+           ============================ */
+        @media (min-width: 1440px) {
+            body {
+                grid-template-columns: 1fr 400px 920px 1fr;
+                column-gap: 48px;
+            }
+
+            header.sun-theme {
+                padding: 80px 64px;
+                border-radius: 48px;
+            }
+
+            #appTitle { font-size: 3rem; }
+
+            .card-shell.card {
+                padding: 32px;
+                border-radius: 32px;
+            }
+            .card-shell.card h2 {
+                font-size: 1.5rem;
+            }
+
+            #locationList, #loader {
+                gap: 32px;
+            }
+        }
+
+        /* ============================
+           1600px — Extra Large Desktop
+           ============================ */
+        @media (min-width: 1600px) {
+            body {
+                grid-template-columns: 1fr 420px 1100px 1fr;
+                column-gap: 64px;
+            }
+
+            header.sun-theme {
+                padding: 96px 80px;
+                border-radius: 56px;
+            }
+
+            #appTitle { font-size: 3.5rem; }
+
+            #locationList, #loader {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .modal-panel {
+                max-width: 800px;
+            }
+        }
+
+        /* ============================
+           1920px — Ultrawide Desktop
+           ============================ */
+        @media (min-width: 1920px) {
+            body {
+                grid-template-columns: 1fr 480px 1280px 1fr;
+                column-gap: 80px;
+            }
+
+            header.sun-theme {
+                padding: 120px 96px;
+                border-radius: 64px;
+            }
+
+            #appTitle { font-size: 4rem; }
+
+            #locationList, #loader {
+                gap: 40px;
+            }
+            
+            .card-shell.card {
+                padding: 40px;
+            }
+        }
+
+        /* ==========================================================================
+           VISUAL POLISH & ANIMATIONS
+           ========================================================================== */
+
+        /* 1. Card hover animations */
+        .card {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, background-color 0.4s ease;
+            will-change: transform, box-shadow;
+        }
+        .card:hover {
+            transform: translateY(-4px) scale(1.015);
+            box-shadow: 0 20px 40px -12px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(225, 29, 72, 0.1);
+            z-index: 10;
+        }
+        html.dark .card:hover {
+            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(225, 29, 72, 0.3);
+        }
+
+        /* 2. Button transitions & Active states */
+        .tap-shrink {
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background-color 0.25s ease, opacity 0.25s ease !important;
+        }
+        .tap-shrink:active {
+            transform: scale(0.94) !important;
+        }
+
+        /* Better shadows for main CTAs */
+        .navigate-btn {
+            box-shadow: 0 8px 20px -6px rgba(225, 29, 72, 0.4) !important;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        .navigate-btn:hover:not(:disabled) {
+            box-shadow: 0 14px 28px -8px rgba(225, 29, 72, 0.6) !important;
+            transform: translateY(-2px);
+        }
+        .navigate-btn:active:not(:disabled) {
+            box-shadow: 0 4px 12px -4px rgba(225, 29, 72, 0.4) !important;
+            transform: translateY(1px) scale(0.96) !important;
+        }
+
+        /* 3. Search animations */
+        #searchInput {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #searchInput:focus {
+            box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.15), 0 8px 24px rgba(15, 23, 42, 0.08);
+            transform: translateY(-1px);
+        }
+        html.dark #searchInput:focus {
+            box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.25), 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 4. Loading skeletons */
+        @keyframes shimmerEnhance {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton-line, .skeleton-card {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%) !important;
+            background-size: 200% 100% !important;
+            animation: shimmerEnhance 2s infinite cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        html.dark .skeleton-line, html.dark .skeleton-card {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%) !important;
+        }
+
+        /* 5. Dialog animations */
+        #detailModal {
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+        }
+        #detailModal:not(.hidden) .modal-panel {
+            animation: modalSlideUpBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes modalSlideUpBounce {
+            0% { opacity: 0; transform: translateY(60px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* 6. Empty state illustrations */
+        @keyframes floatEmpty {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        .empty-illustration {
+            animation: floatEmpty 4s ease-in-out infinite;
+            filter: drop-shadow(0 12px 20px rgba(15, 23, 42, 0.08));
+        }
+        html.dark .empty-illustration {
+            filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.4));
+        }
+
+        /* 7. Theme transitions */
+        body, .glass-nav, .modal-panel, .sun-theme {
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* 8. Focus states & Accessibility */
+        *:focus-visible {
+            outline: 3px solid rgba(225, 29, 72, 0.6) !important;
+            outline-offset: 2px !important;
+            border-radius: 4px;
+        }
+        .card:focus-visible, button:focus-visible, input:focus-visible {
+            border-radius: inherit;
+        }
+
+        /* 9. Better Icon Spacing */
+        .lucide {
+            margin-bottom: 1px; /* Optical alignment for icons next to text */
+        }
+
+        /* ==========================================================================
+           ACCESSIBILITY (WCAG AA)
+           ========================================================================== */
+        
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #e11d48;
+            color: white;
+            padding: 8px 16px;
+            z-index: 100;
+            transition: top 0.2s ease;
+            border-radius: 0 0 8px 0;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .skip-link:focus {
+            top: 0;
+            outline: 3px solid #000;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        @media (forced-colors: active) {
+            .card, .modal-panel, button, input {
+                border: 1px solid CanvasText !important;
+            }
+        }
     </style>
 </head>
 
 <body class="bg-slate-50 text-slate-900 pb-10">
+    <a href="#mainContent" class="skip-link" data-i18n="skipToMainContent">Skip to main content</a>
 
-    <header class="sun-theme text-white py-10 px-6 text-center rounded-b-[40px] shadow-xl relative">
+    <header class="sun-theme text-white py-12 px-6 text-center rounded-b-[40px] shadow-xl relative">
         <div class="absolute top-4 right-4 flex items-center gap-2">
-            <button id="langToggleBtn" onclick="openLangPicker(true)" aria-label="Change language"
+            <button id="langToggleBtn" onclick="openLangPicker(true)" aria-label="Change language" data-i18n-aria="langPickerTitle"
                 class="lang-toggle-btn">
                 <span style="font-size:18px;line-height:1;">🌐</span>
             </button>
@@ -995,17 +2243,17 @@
                 <i data-lucide="moon" class="w-5 h-5 hidden" id="themeIconMoon"></i>
             </button>
         </div>
-        <h1 class="text-2xl font-black tracking-tight italic" id="appTitle">SANDIP UNIVERSITY</h1>
-        <p class="text-rose-200 text-xs font-bold tracking-[0.2em] mt-1" id="appSubtitle">CAMPUS NAVIGATION</p>
+        <h1 class="text-2xl font-black tracking-tight italic" id="appTitle" data-i18n="appTitle">SANDIP UNIVERSITY</h1>
+        <p class="text-rose-200 text-xs font-bold tracking-[0.2em] mt-2" id="appSubtitle" data-i18n="appSubtitle">CAMPUS NAVIGATION</p>
     </header>
 
     <!-- Full-screen language picker (first launch, and re-openable via the globe toggle) -->
-    <div id="langPickerOverlay" role="dialog" aria-modal="true" aria-label="Choose your language">
+    <div id="langPickerOverlay" role="dialog" aria-modal="true" aria-label="Choose your language" data-i18n-aria="langPickerTitle">
         <div class="lang-picker-inner">
             <div class="text-center mb-8">
-                <p style="font-size:36px;line-height:1;" class="mb-3">🌐</p>
-                <h2 class="text-xl font-black text-white" id="langPickerTitle">Choose your language</h2>
-                <p class="text-rose-200 text-xs font-bold tracking-wide mt-1" id="langPickerSubtitle">भाषा चुनें · भाषा निवडा</p>
+                <p style="font-size:36px;line-height:1;" class="mb-4">🌐</p>
+                <h2 class="text-xl font-black text-white" id="langPickerTitle" data-i18n="langPickerTitle">Choose your language</h2>
+                <p class="text-rose-200 text-xs font-bold tracking-wide mt-2" id="langPickerSubtitle" data-i18n="langPickerSubtitle">भाषा चुनें · भाषा निवडा</p>
             </div>
             <button class="lang-card tap-shrink" onclick="selectLanguage('en')" aria-label="English">
                 <span>
@@ -1028,40 +2276,68 @@
                 </span>
                 <i data-lucide="chevron-right" class="w-5 h-5 opacity-70"></i>
             </button>
-            <p class="text-center text-[11px] font-semibold text-rose-200/70 mt-8 leading-relaxed" id="langPickerNote">
+            <button class="lang-card tap-shrink" onclick="selectLanguage('mai')" aria-label="Maithili">
+                <span>
+                    <span class="lang-card-native">मैथिली</span>
+                    <span class="lang-card-sub block">Maithili</span>
+                </span>
+                <i data-lucide="chevron-right" class="w-5 h-5 opacity-70"></i>
+            </button>
+            <button class="lang-card tap-shrink" onclick="selectLanguage('te')" aria-label="Telugu">
+                <span>
+                    <span class="lang-card-native">తెలుగు</span>
+                    <span class="lang-card-sub block">Telugu</span>
+                </span>
+                <i data-lucide="chevron-right" class="w-5 h-5 opacity-70"></i>
+            </button>
+            <button class="lang-card tap-shrink" onclick="selectLanguage('ta')" aria-label="Tamil">
+                <span>
+                    <span class="lang-card-native">தமிழ்</span>
+                    <span class="lang-card-sub block">Tamil</span>
+                </span>
+                <i data-lucide="chevron-right" class="w-5 h-5 opacity-70"></i>
+            </button>
+            <button class="lang-card tap-shrink" onclick="selectLanguage('pt')" aria-label="Portuguese">
+                <span>
+                    <span class="lang-card-native">Português</span>
+                    <span class="lang-card-sub block">Portuguese</span>
+                </span>
+                <i data-lucide="chevron-right" class="w-5 h-5 opacity-70"></i>
+            </button>
+            <p class="text-center text-[11px] font-semibold text-rose-200/70 mt-8 leading-relaxed" id="langPickerNote" data-i18n="langPickerNote">
                 Place names stay in English. You can change this anytime from the 🌐 icon.
             </p>
         </div>
     </div>
 
     <div class="sticky top-0 z-40 px-4 -mt-6 sticky-search-wrap">
-        <div class="max-w-md mx-auto glass-nav rounded-2xl shadow-lg border border-white/50 p-4 space-y-3">
+        <div class="max-w-md mx-auto glass-nav rounded-2xl shadow-lg border border-white/50 p-4 space-y-4">
             <div class="relative">
-                <i data-lucide="search" class="absolute left-3 top-3.5 w-5 h-5 text-slate-400"></i>
-                <input type="text" id="searchInput"
-                    placeholder="Search building, department, hostel..."
-                    class="w-full pl-10 pr-4 py-3.5 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-rose-500 outline-none text-sm font-medium">
+                <i data-lucide="search" class="absolute left-3 top-3 w-5 h-5 text-slate-500"></i>
+                <input type="text" id="searchInput" aria-label="Search locations"
+                    placeholder="Search building, department, hostel..." data-i18n-placeholder="searchPlaceholder" data-i18n-aria="searchPlaceholder"
+                    class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-rose-500 outline-none text-sm font-medium">
             </div>
             <div id="recentSearchesWrap" class="recent-searches-wrap" aria-live="polite"></div>
             <div class="flex gap-2 overflow-x-auto no-scrollbar" id="filterContainer"></div>
-            <div class="flex items-center justify-between gap-2 flex-wrap pt-1">
-                <button id="nearMeBtn" onclick="toggleNearMe()" class="near-me-btn tap-shrink" aria-pressed="false" aria-label="Show nearby locations">
+            <div class="flex items-center justify-between gap-2 flex-wrap pt-2">
+                <button id="nearMeBtn" onclick="toggleNearMe()" class="near-me-btn tap-shrink" aria-pressed="false" aria-label="Show nearby locations" data-i18n-aria="nearMeLabel">
                     <i data-lucide="navigation-2" class="w-4 h-4"></i>
-                    <span id="nearMeBtnText">Near Me</span>
+                    <span id="nearMeBtnText" data-i18n="nearMeLabel">Near Me</span>
                 </button>
                 <p id="nearMeStatus" class="near-me-status text-slate-500 flex-1 min-w-0 text-right" aria-live="polite"></p>
             </div>
         </div>
     </div>
 
-    <main class="max-w-md mx-auto p-4 mt-2">
+    <main id="mainContent" class="max-w-md mx-auto p-4 mt-4" role="main">
         <div id="dataErrorBanner" class="hidden mb-4 rounded-3xl p-4 shadow-sm" role="alert" aria-live="assertive">
             <div class="flex items-start gap-3">
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-black" id="dataErrorTitle">Unable to load campus data</p>
-                    <p class="text-xs font-medium leading-relaxed mt-1" id="dataErrorText">The app could not load either the online dataset or the embedded fallback.</p>
+                    <p class="text-sm font-black" id="dataErrorTitle" data-i18n="dataLoadErrorTitle">Unable to load campus data</p>
+                    <p class="text-xs font-medium leading-relaxed mt-2" id="dataErrorText" data-i18n="dataLoadErrorText">The app could not load either the online dataset or the embedded fallback.</p>
                 </div>
-                <button id="retryLoadBtn" onclick="retryLoadData()" class="tap-shrink inline-flex items-center justify-center px-4 py-3 rounded-2xl text-sm font-black bg-rose-600 text-white shadow-sm" style="min-width:44px;min-height:44px;">Retry</button>
+                <button id="retryLoadBtn" onclick="retryLoadData()" data-i18n="retry" class="tap-shrink inline-flex items-center justify-center px-4 py-3 rounded-2xl text-sm font-black bg-rose-600 text-white shadow-sm" style="min-width:44px;min-height:44px;">Retry</button>
             </div>
         </div>
         <div id="loader" class="grid gap-4" aria-hidden="true">
@@ -1106,7 +2382,7 @@
                 </div>
             </div>
         </div>
-        <div id="emptyState" class="hidden text-center py-16 text-slate-400">
+        <div id="emptyState" class="hidden text-center py-16 text-slate-500">
             <svg class="empty-illustration w-28 h-28 mx-auto mb-3" viewBox="0 0 100 100" fill="none"
                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <path d="M50 15 C35 15 24 26 24 40 C24 56 50 82 50 82 C50 82 76 56 76 40 C76 26 65 15 50 15 Z"
@@ -1115,47 +2391,47 @@
                 <circle cx="63" cy="63" r="14" stroke-width="3" />
                 <line x1="73" y1="73" x2="85" y2="85" stroke-width="3" stroke-linecap="round" />
             </svg>
-            <p class="text-sm font-bold" id="emptyStateText">No matching locations found</p>
+            <p class="text-sm font-bold" id="emptyStateText" data-i18n="emptyStateText">No matching locations found</p>
         </div>
-        <div id="listViewport" class="rounded-[28px] gesture-scroll-none">
-            <div id="pullRefreshBanner" class="pull-refresh-banner mb-2 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 px-4 py-3 shadow-sm">
+        <div id="listViewport" class="rounded-[24px] gesture-scroll-none">
+            <div id="pullRefreshBanner" class="pull-refresh-banner mb-2 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 px-4 py-4 shadow-sm">
                 <div class="flex items-center gap-2">
                     <i data-lucide="refresh-ccw" class="w-4 h-4"></i>
-                    <span id="pullRefreshText" class="text-xs font-bold">Pull to refresh</span>
+                    <span id="pullRefreshText" class="text-xs font-bold" data-i18n="pullToRefresh">Pull to refresh</span>
                 </div>
             </div>
             <div id="listSpacerTop" class="virtual-spacer" aria-hidden="true"></div>
-            <div id="locationList" class="grid gap-4"></div>
+            <div id="locationList" class="grid gap-4" role="list"></div>
             <div id="listSpacerBottom" class="virtual-spacer" aria-hidden="true"></div>
         </div>
 
-        <div class="flex items-center justify-between gap-3 mt-4 px-1">
+        <div class="flex items-center justify-between gap-4 mt-6 px-1">
             <div>
-                <p class="text-[10px] uppercase tracking-[0.28em] font-black text-slate-400" id="aboutRowLabel">About</p>
-                <p class="text-sm font-bold text-slate-700" id="aboutRowSubtitle">Dataset metadata and local-only usage stats</p>
+                <p class="text-[10px] uppercase tracking-[0.28em] font-black text-slate-500" id="aboutRowLabel" data-i18n="aboutRowLabel">About</p>
+                <p class="text-sm font-bold text-slate-700" id="aboutRowSubtitle" data-i18n="aboutRowSubtitle">Dataset metadata and local-only usage stats</p>
             </div>
-            <button id="aboutToggleBtn" class="about-toggle-btn tap-shrink" onclick="toggleAboutPanel()" aria-expanded="false" aria-controls="aboutPanel" aria-label="Open dataset details">
+            <button id="aboutToggleBtn" class="about-toggle-btn tap-shrink" onclick="toggleAboutPanel()" aria-expanded="false" aria-controls="aboutPanel" aria-label="Open dataset details" data-i18n-aria="openDatasetDetails">
                 <i data-lucide="info" class="w-5 h-5"></i>
             </button>
         </div>
 
-        <section id="aboutPanel" class="hidden about-panel rounded-[28px] p-4 mt-3 shadow-sm" aria-label="Dataset details">
-            <div class="grid gap-3">
+        <section id="aboutPanel" class="hidden about-panel rounded-[24px] p-6 mt-4 shadow-sm" aria-label="Dataset details" data-i18n-aria="aboutPanelTitle">
+            <div class="grid gap-4">
                 <div class="flex flex-wrap items-center gap-2">
                     <span class="usage-pill" id="aboutInstitutionPill">Institution</span>
                     <span class="usage-pill" id="aboutVersionPill">Version</span>
                     <span class="usage-pill" id="aboutTotalPill">79 locations</span>
                 </div>
                 <div>
-                    <p class="text-[10px] uppercase tracking-[0.28em] font-black text-slate-400 mb-1" id="localAnalyticsLabel">Local-only analytics</p>
-                    <p class="text-xs font-medium text-slate-600 leading-relaxed" id="localAnalyticsNote">Counts are stored only in this browser's localStorage. Nothing is transmitted anywhere.</p>
+                    <p class="text-[10px] uppercase tracking-[0.28em] font-black text-slate-500 mb-2" id="localAnalyticsLabel" data-i18n="localAnalyticsLabel">Local-only analytics</p>
+                    <p class="text-xs font-medium text-slate-600 leading-relaxed" id="localAnalyticsNote" data-i18n="localAnalyticsNote">Counts are stored only in this browser's localStorage. Nothing is transmitted anywhere.</p>
                 </div>
                 <div>
-                    <p class="text-[10px] uppercase tracking-[0.28em] font-black text-slate-400 mb-2" id="mostViewedLabel">Most viewed</p>
+                    <p class="text-[10px] uppercase tracking-[0.28em] font-black text-slate-500 mb-2" id="mostViewedLabel" data-i18n="mostViewedLabel">Most viewed</p>
                     <div id="mostViewedList" class="grid gap-2"></div>
                 </div>
                 <div>
-                    <p class="text-[10px] uppercase tracking-[0.28em] font-black text-slate-400 mb-2" id="topSearchesLabel">Top searches</p>
+                    <p class="text-[10px] uppercase tracking-[0.28em] font-black text-slate-500 mb-2" id="topSearchesLabel" data-i18n="topSearchesLabel">Top searches</p>
                     <div id="topSearchesList" class="grid gap-2"></div>
                 </div>
             </div>
@@ -1166,13 +2442,13 @@
     <div id="detailModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center modal-overlay gesture-scroll-none"
         role="dialog" aria-modal="true" aria-labelledby="modalTitleRegion"
         onclick="if(event.target === this) closeModal();">
-        <div class="modal-panel w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl max-h-[85vh] p-6 relative shadow-2xl flex flex-col"
+        <div class="modal-panel w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl p-6 relative shadow-2xl flex flex-col"
             id="modalPanel">
-            <button id="modalCloseBtn" onclick="closeModal()" aria-label="Close details"
+            <button id="modalCloseBtn" onclick="closeModal()" aria-label="Close details" data-i18n-aria="closeDetails"
                 class="absolute top-4 right-4 bg-slate-100 rounded-full p-2 tap-shrink z-10" style="min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;">
                 <i data-lucide="x" class="w-4 h-4 text-slate-600"></i>
             </button>
-            <div class="modal-scroll-body gesture-pan-y" id="modalScrollBody">
+            <div class="modal-scroll-body gesture-pan-y overflow-y-auto" id="modalScrollBody">
                 <div id="modalContent"></div>
             </div>
         </div>
@@ -1183,17 +2459,17 @@
     <!-- Offline reassurance banner -->
     <div id="offlineBanner" role="status" aria-live="polite">
         <i data-lucide="wifi-off" class="w-3.5 h-3.5"></i>
-        <span id="offlineBannerText">You're offline — showing saved data</span>
+        <span id="offlineBannerText" data-i18n="offlineBannerText">You're offline — showing saved data</span>
     </div>
 
     <!-- Android/Chrome install banner -->
     <div id="installBanner" role="dialog" aria-label="Install CampusCompass">
         <i data-lucide="download" class="w-6 h-6 text-rose-600 flex-shrink-0"></i>
         <div class="flex-1 min-w-0">
-            <p class="text-sm font-black leading-tight" id="installBannerTitle">Install CampusCompass</p>
-            <p class="text-[11px] font-medium opacity-70 leading-tight mt-0.5" id="installBannerSubtitle">Add to your home screen for quick, offline access.</p>
+            <p class="text-sm font-black leading-tight" id="installBannerTitle" data-i18n="installBannerTitle">Install CampusCompass</p>
+            <p class="text-[11px] font-medium opacity-70 leading-tight mt-1" id="installBannerSubtitle" data-i18n="installBannerSubtitle">Add to your home screen for quick, offline access.</p>
         </div>
-        <button onclick="handleInstallClick()" class="install-cta-btn" id="installBannerBtn" aria-label="Install CampusCompass app">Install</button>
+        <button onclick="handleInstallClick()" class="install-cta-btn" id="installBannerBtn" aria-label="Install CampusCompass app" data-i18n="installBannerBtn">Install</button>
         <button onclick="dismissInstallBanner()" class="install-dismiss-btn" aria-label="Dismiss install prompt">
             <i data-lucide="x" class="w-4 h-4"></i>
         </button>
@@ -1203,8 +2479,8 @@
     <div id="iosInstallTip" role="dialog" aria-label="Add CampusCompass to Home Screen">
         <i data-lucide="share" class="w-6 h-6 text-rose-600 flex-shrink-0"></i>
         <div class="flex-1 min-w-0">
-            <p class="text-sm font-black leading-tight" id="iosInstallTipTitle">Install this app</p>
-            <p class="text-[11px] font-medium opacity-70 leading-tight mt-0.5" id="iosInstallTipSubtitle">Tap the Share icon, then "Add to Home Screen".</p>
+            <p class="text-sm font-black leading-tight" id="iosInstallTipTitle" data-i18n="iosInstallTipTitle">Install this app</p>
+            <p class="text-[11px] font-medium opacity-70 leading-tight mt-1" id="iosInstallTipSubtitle" data-i18n="iosInstallTipSubtitle">Tap the Share icon, then "Add to Home Screen".</p>
         </div>
         <button onclick="dismissIosInstallTip()" class="install-dismiss-btn" aria-label="Dismiss install tip">
             <i data-lucide="x" class="w-4 h-4"></i>
@@ -1239,9 +2515,24 @@
         const SEARCH_DEBOUNCE_MS = 200;
 
         /** @type {number} */
+        /** @type {number} */
         const VIRTUAL_OVERSCAN = 4;
 
-        /** @type {number} */
+        // ===== MODULE: utils.js (DOM and general utilities) =====
+        const DOMUtils = {
+            /** @param {string} id @returns {HTMLElement|null} */
+            get: (id) => document.getElementById(id),
+            /** @param {HTMLElement|null} el */
+            hide: (el) => { if (el) el.classList.add("hidden"); },
+            /** @param {HTMLElement|null} el */
+            show: (el) => { if (el) el.classList.remove("hidden"); },
+            /** @param {HTMLElement|null} el @param {boolean} force */
+            toggle: (el, force) => { if (el) el.classList.toggle("hidden", !force); },
+            /** @param {HTMLElement|null} el @param {string} text */
+            text: (el, text) => { if (el) el.textContent = text; },
+            /** @param {HTMLElement|null} el @param {string} html */
+            html: (el, html) => { if (el) el.innerHTML = html; }
+        };
         const DEFAULT_VIRTUAL_ROW_HEIGHT = 228;
 
         /** @type {string} */
@@ -1607,11 +2898,24 @@
                 resetDataConfirm: "अॅप डेटा रीसेट करायचा? यामुळे साठवलेल्या प्राधान्ये आणि स्थानिक आकडे हटतील.",
                 resetDataDone: "अॅप डेटा साफ केले",
                 privacyNote: "गोपनीयता: स्थान, शोध आणि दृश्यमान मोजमाप फक्त या उपकरणावर राहतात."
+            },
+            mai: {
+                // Maithili translations will go here
+            },
+            te: {
+                // Telugu translations will go here
+            },
+            ta: {
+                // Tamil translations will go here
+            },
+            pt: {
+                // Portuguese translations will go here
             }
         };
 
         /** @type {string[]} */
-        const SUPPORTED_LANGS = ["en", "hi", "mr"];
+        const SUPPORTED_LANGS = ["en", "hi", "mr", "mai", "te", "ta", "pt"];
+        const RTL_LANGUAGES = ["ar", "he", "ur", "fa"]; // Configured for future RTL scaling
 
         /** @type {string} */
         const FAVORITES_FILTER = "Favorites";
@@ -1792,7 +3096,7 @@
                 ids.unshift(locationId);
             }
             setFavoriteLocationIds(ids);
-            applyAll(false);
+            applyFiltersAndSearch(false);
             renderAboutPanel();
             updateOpenModalFavoriteButton();
         }
@@ -1854,7 +3158,7 @@
             } else {
                 currentQuery = normalizeText(query);
             }
-            applyAll(true);
+            applyFiltersAndSearch(true);
             renderRecentSearches();
         }
 
@@ -1866,7 +3170,7 @@
             const searchInput = getEl("searchInput");
             if (searchInput) searchInput.value = "";
             currentQuery = "";
-            applyAll(true);
+            applyFiltersAndSearch(true);
             renderRecentSearches();
         }
 
@@ -2209,10 +3513,8 @@
          */
         function applyThemeIcons() {
             const isDark = document.documentElement.classList.contains("dark");
-            const sun = getEl("themeIconSun");
-            const moon = getEl("themeIconMoon");
-            if (sun) sun.classList.toggle("hidden", isDark);
-            if (moon) moon.classList.toggle("hidden", !isDark);
+            DOMUtils.toggle(DOMUtils.get("themeIconSun"), !isDark);
+            DOMUtils.toggle(DOMUtils.get("themeIconMoon"), isDark);
         }
 
         /**
@@ -2283,50 +3585,25 @@
          * @returns {void}
          */
         function applyLanguageToStaticText() {
-            const setText = (id, key) => {
-                const element = getEl(id);
-                if (element) element.textContent = t(key);
-            };
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (key) el.textContent = t(key);
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (key) el.setAttribute('placeholder', t(key));
+            });
+            document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+                const key = el.getAttribute('data-i18n-aria');
+                if (key) el.setAttribute('aria-label', t(key));
+            });
 
-            setText("appTitle", "appTitle");
-            setText("appSubtitle", "appSubtitle");
-            setText("emptyStateText", "emptyStateText");
-            setText("offlineBannerText", "offlineBannerText");
-            setText("installBannerTitle", "installBannerTitle");
-            setText("installBannerSubtitle", "installBannerSubtitle");
-            setText("installBannerBtn", "installBannerBtn");
-            setText("iosInstallTipTitle", "iosInstallTipTitle");
-            setText("iosInstallTipSubtitle", "iosInstallTipSubtitle");
-            setText("langPickerTitle", "langPickerTitle");
-            setText("langPickerSubtitle", "langPickerSubtitle");
-            setText("langPickerNote", "langPickerNote");
-            setText("aboutRowLabel", "aboutRowLabel");
-            setText("aboutRowSubtitle", "aboutRowSubtitle");
-            setText("aboutRowSubtitle", "aboutRowSubtitle");
-            setText("dataErrorTitle", "dataLoadErrorTitle");
-            setText("dataErrorText", "dataLoadErrorText");
-            setText("retryLoadBtn", "retry");
-            setText("aboutRowLabel", "aboutRowLabel");
-            setText("aboutRowSubtitle", "aboutRowSubtitle");
-            setText("localAnalyticsLabel", "localAnalyticsLabel");
-            setText("localAnalyticsNote", "localAnalyticsNote");
-            setText("mostViewedLabel", "mostViewedLabel");
-            setText("topSearchesLabel", "topSearchesLabel");
-
-            const searchInput = getEl("searchInput");
-            if (searchInput) searchInput.placeholder = t("searchPlaceholder");
-
-            const closeBtn = getEl("modalCloseBtn");
-            if (closeBtn) closeBtn.setAttribute("aria-label", t("closeDetails"));
-
-            const langToggle = getEl("langToggleBtn");
-            if (langToggle) langToggle.setAttribute("aria-label", t("langPickerTitle"));
-
-            const aboutToggle = getEl("aboutToggleBtn");
-            if (aboutToggle) aboutToggle.setAttribute("aria-label", t("openDatasetDetails"));
-
-            const aboutPanel = getEl("aboutPanel");
-            if (aboutPanel) aboutPanel.setAttribute("aria-label", t("aboutPanelTitle"));
+            // Handle RTL layouts seamlessly
+            if (RTL_LANGUAGES.includes(currentLang)) {
+                document.documentElement.setAttribute("dir", "rtl");
+            } else {
+                document.documentElement.setAttribute("dir", "ltr");
+            }
         }
 
         /**
@@ -2400,7 +3677,7 @@
 
             if (allLocations.length > 0) {
                 renderFilters();
-                applyAll(true);
+                applyFiltersAndSearch(true);
             }
 
             const modal = getEl("detailModal");
@@ -2452,7 +3729,7 @@
                 const label = category === ALL_FILTER ? t("filterAll") : formatCategoryLabel(category);
                 return `
                     <button onclick='setFilter(${JSON.stringify(category)})' aria-pressed="${isActive}"
-                        class="filter-chip tap-shrink inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-xs font-bold border whitespace-nowrap transition-all
+                        class="filter-chip tap-shrink inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold border whitespace-nowrap transition-all
                         ${isActive ? "bg-slate-900 text-white border-slate-900" : "bg-white filter-chip-inactive text-slate-500 border-slate-200"}"
                         style="min-height:44px;">
                         <i data-lucide="${icon}" class="w-3.5 h-3.5"></i>
@@ -2490,14 +3767,14 @@
             `).join("");
             const clearButton = items.length > 0
                 ? `<button class="clear-recent-btn tap-shrink" onclick="clearRecentSearches()" aria-label="${escapeHtml(t("clearRecent"))}">${escapeHtml(t("clearRecent"))}</button>`
-                : `<p class="text-xs font-medium text-slate-400 italic">${escapeHtml(t("usageEmpty"))}</p>`;
+                : `<p class="text-xs font-medium text-slate-500 italic">${escapeHtml(t("usageEmpty"))}</p>`;
 
             wrap.innerHTML = `
-                <div class="flex items-center justify-between gap-2">
-                    <p class="text-[10px] uppercase tracking-[0.22em] font-black text-slate-400">${escapeHtml(t("recentSearchesLabel"))}</p>
+                <div class="flex items-center justify-between gap-4">
+                    <p class="text-[10px] uppercase tracking-[0.22em] font-black text-slate-500">${escapeHtml(t("recentSearchesLabel"))}</p>
                     ${clearButton}
                 </div>
-                <div class="flex flex-wrap gap-2">${chips || `<p class="text-xs font-medium text-slate-400 italic">${escapeHtml(t("usageEmpty"))}</p>`}</div>
+                <div class="flex flex-wrap gap-2">${chips || `<p class="text-xs font-medium text-slate-500 italic">${escapeHtml(t("usageEmpty"))}</p>`}</div>
             `;
             initIconsForRoot(wrap);
         }
@@ -2655,28 +3932,28 @@
             mostViewedList.innerHTML = mostViewed.length
                 ? mostViewed.map((entry) => {
                     const locationName = entry.location.name || t("unnamedLocation");
-                    return `<div class="flex items-center justify-between gap-3 rounded-2xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600">
+                    return `<div class="flex items-center justify-between gap-4 rounded-2xl bg-slate-100 px-4 py-2 text-xs font-bold text-slate-600">
                         <span class="min-w-0 truncate">${escapeHtml(locationName)}</span>
                         <span class="shrink-0">${entry.count}</span>
                     </div>`;
                 }).join("")
-                : `<p class="text-xs font-medium text-slate-400 italic">${escapeHtml(t("usageEmpty"))}</p>`;
+                : `<p class="text-xs font-medium text-slate-500 italic">${escapeHtml(t("usageEmpty"))}</p>`;
 
             topSearchesList.innerHTML = topSearches.length
                 ? topSearches.map((entry) => {
-                    return `<div class="flex items-center justify-between gap-3 rounded-2xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-600">
+                    return `<div class="flex items-center justify-between gap-4 rounded-2xl bg-slate-100 px-4 py-2 text-xs font-bold text-slate-600">
                         <span class="min-w-0 truncate">${escapeHtml(entry.term)}</span>
                         <span class="shrink-0">${entry.count}</span>
                     </div>`;
                 }).join("")
-                : `<p class="text-xs font-medium text-slate-400 italic">${escapeHtml(t("usageEmpty"))}</p>`;
+                : `<p class="text-xs font-medium text-slate-500 italic">${escapeHtml(t("usageEmpty"))}</p>`;
 
             // Add privacy note and reset button
             const privacyNote = document.createElement('div');
-            privacyNote.className = 'text-xs text-slate-500 mt-2';
+            privacyNote.className = 'text-xs text-slate-500 mt-4';
             privacyNote.textContent = t('privacyNote');
             const resetBtn = document.createElement('button');
-            resetBtn.className = 'clear-recent-btn tap-shrink mt-3';
+            resetBtn.className = 'clear-recent-btn tap-shrink mt-4';
             resetBtn.textContent = t('resetData');
             resetBtn.onclick = () => {
                 if (!confirm(t('resetDataConfirm'))) return;
@@ -2826,9 +4103,9 @@
          */
         function renderChipList(items, emptyLabel) {
             if (!Array.isArray(items) || items.length === 0) {
-                return `<p class="text-xs font-medium text-slate-400 italic">${escapeHtml(emptyLabel)}</p>`;
+                return `<p class="text-xs font-medium text-slate-500 italic">${escapeHtml(emptyLabel)}</p>`;
             }
-            return `<div class="flex flex-wrap gap-2">${items.map((item) => `<span class="chip bg-slate-100 text-slate-600 text-[11px] font-bold px-3 py-1.5 rounded-full">${escapeHtml(item)}</span>`).join("")}</div>`;
+            return `<div class="flex flex-wrap gap-2">${items.map((item) => `<span class="chip bg-slate-100 text-slate-600 text-[11px] font-bold px-4 py-2 rounded-full">${escapeHtml(item)}</span>`).join("")}</div>`;
         }
 
         /**
@@ -2849,7 +4126,7 @@
             const shareHandler = mapUrl ? `shareLocation(${JSON.stringify(locationName)}, ${JSON.stringify(mapUrl)})` : "";
 
             return `
-                <p class="text-xs font-bold text-slate-700 mb-3">${escapeHtml(coordsText)}</p>
+                <p class="text-xs font-bold text-slate-700 mb-4">${escapeHtml(coordsText)}</p>
                 <div class="modal-footer-sticky">
                     <button onclick='${navigateHandler}' aria-label="${escapeHtml(t("navigateToLocation"))}" class="navigate-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
                         <span class="navigate-btn-icon">📍</span>
@@ -2862,7 +4139,7 @@
                     <button onclick='${copyHandler}' aria-label="${escapeHtml(t("copyLink"))}" class="copy-link-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
                         <span>📋</span> ${escapeHtml(t("copyLink"))}
                     </button>
-                    ${!mapUrl ? `<p class="text-[11px] font-semibold text-slate-400 italic mt-2 text-center">${escapeHtml(t("locationNotAvailable"))}</p>` : ""}
+                    ${!mapUrl ? `<p class="text-[11px] font-semibold text-slate-500 italic mt-2 text-center">${escapeHtml(t("locationNotAvailable"))}</p>` : ""}
                 </div>
             `;
         }
@@ -2877,7 +4154,7 @@
             const crumbs = [location.school, location.parent, location.name || t("unnamedLocation")].filter(Boolean);
             if (crumbs.length <= 1) return "";
             return `
-                <nav aria-label="Breadcrumb" class="breadcrumb text-[11px] font-bold text-slate-400 mb-2">
+                <nav aria-label="Breadcrumb" class="breadcrumb text-[11px] font-bold text-slate-500">
                     ${crumbs.map((crumb, index) => `
                         ${index > 0 ? '<i data-lucide="chevron-right" class="w-3 h-3"></i>' : ""}
                         <span class="${index === crumbs.length - 1 ? "text-rose-600" : ""}">${escapeHtml(crumb)}</span>
@@ -2893,60 +4170,76 @@
          * @param {number} originalIndex
          * @returns {string}
          */
+        function getCardActions(isFavorite, locationId, navHandler, locationName) {
+            const favoriteLabel = isFavorite ? t("favoriteOn") : t("favoriteOff");
+            return `
+                <button class="card-favorite-btn tap-shrink" data-favorited="${isFavorite}" onclick='event.stopPropagation(); toggleFavorite(${JSON.stringify(locationId)})'
+                    aria-label="${escapeHtml(favoriteLabel)}">
+                    <i data-lucide="${isFavorite ? "heart" : "star"}" class="w-4 h-4"></i>
+                </button>
+                <div class="card-quick-action">
+                    <button onclick='event.stopPropagation(); ${navHandler}' class="tap-shrink inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/15 text-white font-black text-xs" aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}">
+                        <i data-lucide="navigation-2" class="w-4 h-4"></i>
+                        <span>${escapeHtml(t("navigate"))}</span>
+                    </button>
+                </div>
+            `;
+        }
+
+        function getCardHeader(location, locationName, icon) {
+            const parentLine = location.parent
+                ? `<p class="text-sm font-bold text-rose-600 flex items-center gap-2 mb-4 min-w-0 truncate"><i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i> ${escapeHtml(location.parent)}</p>`
+                : `<div class="mb-4"></div>`;
+            return `
+                <div class="absolute top-0 right-0 p-4">
+                    <span class="bg-rose-50 text-rose-700 text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-tighter">
+                        ${escapeHtml(formatCategoryLabel(location.category))}
+                    </span>
+                </div>
+                <div class="flex items-center gap-2 mb-2 min-w-0">
+                    <i data-lucide="${icon}" class="w-4 h-4 text-rose-600 flex-shrink-0"></i>
+                    <h2 class="text-xl font-black text-slate-800 truncate">${escapeHtml(locationName)}</h2>
+                </div>
+                ${parentLine}
+            `;
+        }
+
         function renderCard(location, originalIndex) {
             const locationId = getLocationStorageKey(location);
             const icon = CATEGORY_ICONS[location.category] || DEFAULT_ICON;
             const description = location.description && location.description.trim() !== "" ? location.description : t("noDescription");
-            const parentLine = location.parent
-                ? `<i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i> ${escapeHtml(location.parent)}`
-                : "";
+            
             const mapUrl = getMapUrl(location);
             const navHandler = mapUrl ? `navigateToLocation(${JSON.stringify(mapUrl)})` : `navigateToLocation(null)`;
             const locationName = location.name || t("unnamedLocation");
             const isFavorite = isFavoriteLocation(location);
             const distanceMeters = currentNearMeActive ? distanceByLocationIndex.get(originalIndex) : null;
             const distanceLabel = currentNearMeActive && Number.isFinite(distanceMeters) ? formatDistanceLabel(distanceMeters) : "";
-            const favoriteLabel = isFavorite ? t("favoriteOn") : t("favoriteOff");
+            
             return `
                 <div class="card-shell card tap-shrink bg-white rounded-3xl p-6 shadow-sm border border-slate-100 relative overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-500 gesture-pan-y"
                     data-location-id="${escapeHtml(locationId)}" data-quick-reveal="false"
                     onclick='handleCardActivate(event, ${originalIndex}, ${JSON.stringify(locationId)})'
-                    onkeydown='handleCardActivate(event, ${originalIndex}, ${JSON.stringify(locationId)})'
-                    tabindex="0" role="button" aria-label="${escapeHtml(t("viewDetails"))} ${escapeHtml(locationName)}">
-                    <button class="card-favorite-btn tap-shrink" data-favorited="${isFavorite}" onclick='event.stopPropagation(); toggleFavorite(${JSON.stringify(locationId)})'
-                        aria-label="${escapeHtml(favoriteLabel)}">
-                        <i data-lucide="${isFavorite ? "heart" : "star"}" class="w-4 h-4"></i>
-                    </button>
-                    <div class="card-quick-action">
-                        <button onclick='event.stopPropagation(); ${navHandler}' class="tap-shrink inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/15 text-white font-black text-xs" aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}">
-                            <i data-lucide="navigation-2" class="w-4 h-4"></i>
-                            <span>${escapeHtml(t("navigate"))}</span>
-                        </button>
-                    </div>
+                    onkeydown='if(event.key==="Enter"||event.key===" ") { event.preventDefault(); handleCardActivate(event, ${originalIndex}, ${JSON.stringify(locationId)}); }'
+                    tabindex="0" role="listitem" aria-label="${escapeHtml(t("viewDetails"))} ${escapeHtml(locationName)}">
+                    
+                    ${getCardActions(isFavorite, locationId, navHandler, locationName)}
+                    
                     <div class="card-main">
-                    <div class="absolute top-0 right-0 p-4">
-                        <span class="bg-rose-50 text-rose-700 text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-tighter">
-                            ${escapeHtml(formatCategoryLabel(location.category))}
-                        </span>
-                    </div>
-                    <div class="flex items-center gap-2 mb-1">
-                        <i data-lucide="${icon}" class="w-4 h-4 text-rose-600"></i>
-                        <h2 class="text-xl font-black text-slate-800">${escapeHtml(locationName)}</h2>
-                    </div>
-                    ${parentLine ? `<p class="text-sm font-bold text-rose-600 flex items-center gap-1 mb-3">${parentLine}</p>` : `<div class="mb-3"></div>`}
-                    <p class="text-xs font-medium text-slate-500 line-clamp-2">${escapeHtml(description)}</p>
-                    ${distanceLabel ? `<p class="card-distance-pill"><i data-lucide="navigation-2" class="w-3.5 h-3.5"></i><span>${escapeHtml(distanceLabel)}</span></p>` : ""}
-                    <div class="flex items-center justify-between mt-4">
-                        <div class="flex items-center gap-1 text-slate-400">
-                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                            <span class="text-[10px] font-bold uppercase tracking-wide">${escapeHtml(t("viewDetails"))}</span>
+                        ${getCardHeader(location, locationName, icon)}
+                        <p class="text-xs font-medium text-slate-500 line-clamp-2">${escapeHtml(description)}</p>
+                        ${distanceLabel ? `<p class="card-distance-pill"><i data-lucide="navigation-2" class="w-3.5 h-3.5"></i><span>${escapeHtml(distanceLabel)}</span></p>` : ""}
+                        <div class="flex items-center justify-between mt-4">
+                            <div class="flex items-center gap-1 text-slate-500">
+                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                                <span class="text-[10px] font-bold uppercase tracking-wide">${escapeHtml(t("viewDetails"))}</span>
+                            </div>
+                            <button onclick='event.stopPropagation(); ${navHandler}' aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}"
+                                class="navigate-btn-small tap-shrink" style="min-height:44px;" ${mapUrl ? "" : "disabled"}>
+                                <span>📍</span> ${escapeHtml(t("navigate"))}
+                            </button>
                         </div>
-                        <button onclick='event.stopPropagation(); ${navHandler}' aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}"
-                            class="navigate-btn-small tap-shrink" style="min-height:32px;" ${mapUrl ? "" : "disabled"}>
-                            <span>📍</span> ${escapeHtml(t("navigate"))}
-                        </button>
-                    </div>
-                    <p class="inline-gesture-hint mt-3">${escapeHtml(t("swipeNavigateHint"))}</p>
+                        <p class="inline-gesture-hint mt-4">${escapeHtml(t("swipeNavigateHint"))}</p>
                     </div>
                 </div>
             `;
@@ -3225,7 +4518,7 @@
                 currentNearMeStatus = "";
                 currentNearMeError = false;
                 renderNearMeState();
-                applyAll(false);
+                applyFiltersAndSearch(false);
                 return;
             }
 
@@ -3250,7 +4543,7 @@
                 currentNearMeError = false;
                 currentNearMeStatus = t("nearMeActive");
                 renderNearMeState();
-                applyAll(false);
+                applyFiltersAndSearch(false);
             }, (error) => {
                 currentNearMeActive = false;
                 currentNearMeCoords = null;
@@ -3279,6 +4572,14 @@
             }
         }
 
+        function getVirtualCols() {
+            const list = getEl("locationList");
+            if (!list) return 1;
+            const gridCols = window.getComputedStyle(list).gridTemplateColumns;
+            if (!gridCols || gridCols === "none") return 1;
+            return Math.max(1, gridCols.split(' ').length);
+        }
+
         /**
          * Compute the current virtualized slice for the scroll position.
          * Pure function: no DOM access.
@@ -3286,12 +4587,14 @@
          * @param {number} scrollTop
          * @param {number} viewportHeight
          * @param {number} estimatedRowHeight
+         * @param {number} cols
          * @returns {{start:number,end:number}}
          */
-        function getVirtualWindow(total, scrollTop, viewportHeight, estimatedRowHeight) {
+        function getVirtualWindow(total, scrollTop, viewportHeight, estimatedRowHeight, cols) {
             const rowsPerViewport = Math.max(1, Math.ceil(viewportHeight / estimatedRowHeight));
-            const start = Math.max(0, Math.floor(scrollTop / estimatedRowHeight) - VIRTUAL_OVERSCAN);
-            const end = Math.min(total, start + rowsPerViewport + (VIRTUAL_OVERSCAN * 2));
+            const startRow = Math.max(0, Math.floor(scrollTop / estimatedRowHeight) - VIRTUAL_OVERSCAN);
+            const start = Math.min(total, startRow * cols);
+            const end = Math.min(total, start + ((rowsPerViewport + (VIRTUAL_OVERSCAN * 2)) * cols));
             return { start, end };
         }
 
@@ -3327,15 +4630,20 @@
 
             if (resetScroll) viewport.scrollTop = 0;
 
-            const { start, end } = getVirtualWindow(total, viewport.scrollTop, Math.max(1, viewport.clientHeight), virtualState.estimatedRowHeight);
-            const signature = `${start}:${end}:${total}:${Math.round(virtualState.estimatedRowHeight)}`;
+            const cols = getVirtualCols();
+            const { start, end } = getVirtualWindow(total, viewport.scrollTop, Math.max(1, viewport.clientHeight), virtualState.estimatedRowHeight, cols);
+            const signature = `${start}:${end}:${total}:${Math.round(virtualState.estimatedRowHeight)}:${cols}`;
             if (signature === virtualState.lastSignature) return;
             virtualState.start = start;
             virtualState.end = end;
             virtualState.lastSignature = signature;
 
-            topSpacer.style.height = `${start * virtualState.estimatedRowHeight}px`;
-            bottomSpacer.style.height = `${Math.max(0, total - end) * virtualState.estimatedRowHeight}px`;
+            const startRow = Math.floor(start / cols);
+            const endRow = Math.ceil(end / cols);
+            const totalRows = Math.ceil(total / cols);
+
+            topSpacer.style.height = `${startRow * virtualState.estimatedRowHeight}px`;
+            bottomSpacer.style.height = `${Math.max(0, totalRows - endRow) * virtualState.estimatedRowHeight}px`;
 
             list.innerHTML = displayIndexes.slice(start, end).map((originalIndex) => renderCard(allLocations[originalIndex], originalIndex)).join("");
             initIconsForRoot(list);
@@ -3355,66 +4663,86 @@
          * DOM-coupled helper: writes modal content and updates focus.
          * @param {number} index
          * @returns {void}
-         */
-        function openModal(index) {
-            const location = allLocations[index];
-            if (!location) return;
-            const locationId = getLocationStorageKey(location);
+        function getModalDepartmentSection(location) {
+            if (location.category !== "department") return "";
+            return `
+                <div class="mt-4">
+                    <p class="text-[10px] uppercase font-bold text-slate-500 mb-2">${escapeHtml(t("fieldSchool"))}</p>
+                    <p class="text-sm font-bold text-slate-700 mb-4">${escapeHtml(location.school || location.parent || t("notSpecified"))}</p>
+                    <p class="text-[10px] uppercase font-bold text-slate-500 mb-2">${escapeHtml(t("fieldParentBuilding"))}</p>
+                    <p class="text-sm font-bold text-slate-700 mb-4">${escapeHtml(location.parent || t("notSpecified"))}</p>
+                    <p class="text-[10px] uppercase font-bold text-slate-500 mb-2">${escapeHtml(t("fieldCoursesOffered"))}</p>
+                    ${renderChipList(location.courses, t("noCourses"))}
+                </div>
+            `;
+        }
 
-            lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-            recordLocationView(location);
-
-            const icon = CATEGORY_ICONS[location.category] || DEFAULT_ICON;
-            const isDepartment = location.category === "department";
-            const departmentSection = isDepartment
-                ? `
-                    <div class="mt-5">
-                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${escapeHtml(t("fieldSchool"))}</p>
-                        <p class="text-sm font-bold text-slate-700 mb-4">${escapeHtml(location.school || location.parent || t("notSpecified"))}</p>
-                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${escapeHtml(t("fieldParentBuilding"))}</p>
-                        <p class="text-sm font-bold text-slate-700 mb-4">${escapeHtml(location.parent || t("notSpecified"))}</p>
-                        <p class="text-[10px] uppercase font-bold text-slate-400 mb-2">${escapeHtml(t("fieldCoursesOffered"))}</p>
-                        ${renderChipList(location.courses, t("noCourses"))}
-                    </div>
-                `
-                : "";
-
-            const modalContent = getEl("modalContent");
-            if (!modalContent) return;
-
-            modalContent.innerHTML = `
-                ${isDepartment ? renderBreadcrumb(location) : ""}
-                <div class="modal-header-actions mb-2 pr-8">
+        function getModalHeaderActions(location, locationId, icon) {
+            const isFavorite = isFavoriteLocation(location);
+            return `
+                <div class="modal-header-actions mb-4 pr-8">
                     <div class="modal-header-meta" id="modalTitleRegion">
-                        <div class="flex items-center gap-2 mb-1">
-                            <i data-lucide="${icon}" class="w-5 h-5 text-rose-600"></i>
-                            <h2 class="text-xl font-black text-slate-800">${escapeHtml(location.name || t("unnamedLocation"))}</h2>
+                        <div class="flex items-center gap-2 mb-2 min-w-0">
+                            <i data-lucide="${icon}" class="w-5 h-5 text-rose-600 flex-shrink-0"></i>
+                            <h2 class="text-xl font-black text-slate-800 break-words">${escapeHtml(location.name || t("unnamedLocation"))}</h2>
                         </div>
                         <span class="inline-block bg-rose-50 text-rose-700 text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-tighter">
                             ${escapeHtml(formatCategoryLabel(location.category))}
                         </span>
                     </div>
-                    <button id="modalFavoriteBtn" data-location-id="${escapeHtml(locationId)}" data-favorited="${isFavoriteLocation(location)}"
-                        onclick='toggleFavorite(${JSON.stringify(locationId)})' class="modal-favorite-btn tap-shrink" aria-label="${escapeHtml(isFavoriteLocation(location) ? t("favoriteOn") : t("favoriteOff"))}">
-                        <i data-lucide="${isFavoriteLocation(location) ? "heart" : "star"}" class="w-4 h-4"></i>
+                    <button id="modalFavoriteBtn" data-location-id="${escapeHtml(locationId)}" data-favorited="${isFavorite}"
+                        onclick='toggleFavorite(${JSON.stringify(locationId)})' class="modal-favorite-btn tap-shrink" aria-label="${escapeHtml(isFavorite ? t("favoriteOn") : t("favoriteOff"))}">
+                        <i data-lucide="${isFavorite ? "heart" : "star"}" class="w-4 h-4"></i>
                     </button>
                 </div>
-                <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${escapeHtml(t("fieldParent"))}</p>
+            `;
+        }
+
+        function getModalBody(location) {
+            return `
+                <p class="text-[10px] uppercase font-bold text-slate-500 mb-2">${escapeHtml(t("fieldParent"))}</p>
                 <p class="text-sm font-bold text-slate-700 mb-4">${escapeHtml(location.parent || t("fieldParentTopLevel"))}</p>
-                <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">${escapeHtml(t("fieldDescription"))}</p>
+                <p class="text-[10px] uppercase font-bold text-slate-500 mb-2">${escapeHtml(t("fieldDescription"))}</p>
                 <p class="text-sm font-medium text-slate-600 mb-4">${escapeHtml(location.description && location.description.trim() !== "" ? location.description : t("noDescription"))}</p>
-                <p class="text-[10px] uppercase font-bold text-slate-400 mb-2">${escapeHtml(t("fieldKeywords"))}</p>
+                <p class="text-[10px] uppercase font-bold text-slate-500 mb-2">${escapeHtml(t("fieldKeywords"))}</p>
                 <div class="mb-4">${renderChipList(location.keywords, t("noKeywords"))}</div>
-                <p class="text-[10px] uppercase font-bold text-slate-400 mb-2">${escapeHtml(t("fieldAliases"))}</p>
+                <p class="text-[10px] uppercase font-bold text-slate-500 mb-2">${escapeHtml(t("fieldAliases"))}</p>
                 <div class="mb-4">${renderChipList(location.aliases, t("noAliases"))}</div>
-                ${departmentSection}
-                <p class="text-[10px] uppercase font-bold text-slate-400 mb-2 mt-4">${escapeHtml(t("fieldCoordinates"))}</p>
+                ${getModalDepartmentSection(location)}
+                <p class="text-[10px] uppercase font-bold text-slate-500 mb-2 mt-8">${escapeHtml(t("fieldCoordinates"))}</p>
                 ${renderCoordinates(location)}
             `;
+        }
 
-            const modal = getEl("detailModal");
+        /**
+         * Open the detail modal for a specific location index.
+         * DOM-coupled helper: mutates modal visibility and scroll.
+         * @param {number} index
+         * @returns {void}
+         */
+        function openModal(index) {
+            const location = allLocations[index];
+            if (!location) return;
+            
+            const locationId = getLocationStorageKey(location);
+            lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+            recordLocationView(location);
+
+            const modalContent = DOMUtils.get("modalContent");
+            if (!modalContent) return;
+
+            const icon = CATEGORY_ICONS[location.category] || DEFAULT_ICON;
+            const breadcrumb = location.category === "department" ? renderBreadcrumb(location) : "";
+
+            modalContent.innerHTML = `
+                ${breadcrumb}
+                ${getModalHeaderActions(location, locationId, icon)}
+                ${getModalBody(location)}
+            `;
+
+            const modal = DOMUtils.get("detailModal");
             if (!modal) return;
-            modal.classList.remove("hidden");
+            DOMUtils.show(modal);
             modal.classList.add("flex");
             initIconsForRoot(modalContent);
             bindModalGesture();
@@ -3441,7 +4769,7 @@
             if (!modal) return;
             const panel = getEl("modalPanel");
             const finish = () => {
-                modal.classList.add("hidden");
+                DOMUtils.hide(modal);
                 modal.classList.remove("flex");
                 if (panel) panel.style.transform = "";
                 if (lastFocusedElement && typeof lastFocusedElement.focus === "function" && document.contains(lastFocusedElement)) {
@@ -3641,11 +4969,8 @@
          * @returns {void}
          */
         function setDataErrorVisible(visible) {
-            const banner = getEl("dataErrorBanner");
-            const loader = getEl("loader");
-            if (!banner || !loader) return;
-            banner.classList.toggle("hidden", !visible);
-            loader.classList.toggle("hidden", visible);
+            DOMUtils.toggle(DOMUtils.get("dataErrorBanner"), visible);
+            DOMUtils.toggle(DOMUtils.get("loader"), !visible);
         }
 
         /**
@@ -3702,7 +5027,7 @@
             buildSearchIndex();
             buildCategoryList();
             renderFilters();
-            applyAll(true);
+            applyFiltersAndSearch(true);
             renderAboutPanel();
             initIconsForRoot(document.body);
             getEl("loader")?.classList.add("hidden");
@@ -3716,7 +5041,7 @@
          * @param {boolean} [resetScroll=true]
          * @returns {void}
          */
-        function applyAll(resetScroll = true) {
+        function applyFiltersAndSearch(resetScroll = true) {
             const query = currentQuery;
             filteredIndexes = filterLocationIndexes(allLocations, searchIndex, query, currentFilter);
             recordSearchUsage(query);
@@ -3755,7 +5080,7 @@
             currentFilter = category;
             recordFilterUsage(category);
             renderFilters();
-            applyAll(true);
+            applyFiltersAndSearch(true);
             renderAboutPanel();
         }
 
@@ -3774,7 +5099,7 @@
          * @returns {void}
          */
         function debouncedApplyAllHandler() {
-            applyAll(true);
+            applyFiltersAndSearch(true);
         }
 
         /**
@@ -3806,22 +5131,41 @@
          * @returns {void}
          */
         function handleGlobalKeydown(event) {
-            const modal = getEl("detailModal");
-            if (!modal || modal.classList.contains("hidden")) return;
+            const detailModal = getEl("detailModal");
+            const langOverlay = getEl("langPickerOverlay");
+            
+            let activeModal = null;
+            let activePanel = null;
+            
+            if (detailModal && !detailModal.classList.contains("hidden")) {
+                activeModal = detailModal;
+                activePanel = getEl("modalPanel");
+            } else if (langOverlay && !langOverlay.classList.contains("hidden")) {
+                activeModal = langOverlay;
+                activePanel = langOverlay.querySelector(".lang-picker-inner");
+            }
+
+            if (!activeModal || !activePanel) return;
 
             if (event.key === "Escape") {
                 event.preventDefault();
-                closeModal();
+                if (activeModal === detailModal) closeModal();
+                if (activeModal === langOverlay) closeLangPicker();
                 return;
             }
 
             if (event.key === "Tab") {
-                const panel = getEl("modalPanel");
-                if (!panel) return;
-                const focusable = panel.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                const focusable = activePanel.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
                 if (focusable.length === 0) return;
                 const first = focusable[0];
                 const last = focusable[focusable.length - 1];
+
+                if (!activePanel.contains(document.activeElement)) {
+                    event.preventDefault();
+                    first.focus();
+                    return;
+                }
+
                 if (event.shiftKey && document.activeElement === first) {
                     event.preventDefault();
                     last.focus();
