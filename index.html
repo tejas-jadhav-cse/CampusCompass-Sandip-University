@@ -86,6 +86,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         html[lang="hi"] body,
         html[lang="mr"] body {
@@ -170,9 +171,6 @@
             transform: translateX(0);
         }
 
-        .card-favorite-btn,
-        .modal-favorite-btn,
-        .near-me-btn,
         .recent-chip,
         .clear-recent-btn,
         .share-btn {
@@ -180,42 +178,7 @@
             min-height: 44px;
         }
 
-        .card-favorite-btn {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            z-index: 11;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            border-radius: 999px;
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.92);
-            color: #e11d48;
-            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
-        }
-
-        .card-favorite-btn[data-favorited="true"],
-        .modal-favorite-btn[data-favorited="true"] {
-            background: #ffe4e6;
-            color: #be123c;
-        }
-
-        html.dark .card-favorite-btn {
-            background: rgba(15, 23, 42, 0.92);
-            color: #fb7185;
-        }
-
-        html.dark .card-favorite-btn[data-favorited="true"],
-        html.dark .modal-favorite-btn[data-favorited="true"] {
-            background: rgba(159, 18, 57, 0.25);
-            color: #fecdd3;
-        }
-
-        .modal-favorite-btn,
         .share-btn,
-        .near-me-btn,
         .clear-recent-btn {
             display: inline-flex;
             align-items: center;
@@ -230,22 +193,13 @@
             padding: 8px 16px;
         }
 
-        html.dark .modal-favorite-btn,
         html.dark .share-btn,
-        html.dark .near-me-btn,
         html.dark .clear-recent-btn {
             background: #131c2f;
             color: #e2e8f0;
             border-color: rgba(255, 255, 255, 0.08);
         }
 
-        .near-me-btn[data-active="true"] {
-            background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
-            color: #fff;
-            border-color: transparent;
-        }
-
-        .near-me-status,
         .recent-searches-wrap,
         .location-inline-note {
             font-size: 12px;
@@ -278,32 +232,6 @@
             background: #1e293b;
             color: #cbd5e1;
             border-color: rgba(255, 255, 255, 0.08);
-        }
-
-        .card-distance-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 8px;
-            padding: 4px 8px;
-            border-radius: 999px;
-            background: #eef2ff;
-            color: #4338ca;
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        html.dark .card-distance-pill {
-            background: rgba(67, 56, 202, 0.22);
-            color: #c7d2fe;
-        }
-
-        .near-me-status[data-error="true"] {
-            color: #b91c1c;
-        }
-
-        html.dark .near-me-status[data-error="true"] {
-            color: #fca5a5;
         }
 
         .pull-refresh-banner {
@@ -1122,12 +1050,6 @@
             max-height: min(74dvh, calc(100vh - 220px));
         }
 
-        /* ---------- Near-me status responsive ---------- */
-        .near-me-status {
-            font-size: 11px;
-            word-break: break-word;
-            overflow-wrap: anywhere;
-        }
 
         /* ---------- Modal footer buttons responsive ---------- */
         .modal-footer-sticky {
@@ -1204,16 +1126,6 @@
 
             .card-shell {
                 border-radius: 20px;
-            }
-
-            .card-favorite-btn {
-                top: 8px;
-                left: 8px;
-                padding: 6px;
-            }
-
-            .card-distance-pill {
-                font-size: 10px;
             }
 
             .navigate-btn {
@@ -1296,18 +1208,10 @@
                 font-size: 10px;
             }
 
-            .modal-favorite-btn,
             .share-btn,
-            .near-me-btn,
             .clear-recent-btn {
                 font-size: 11px;
                 padding: 8px 12px;
-            }
-
-            /* Near-me row stacks vertically on tiny screens */
-            .near-me-btn {
-                width: 100%;
-                justify-content: center;
             }
 
             .card-shell.card h2 {
@@ -1493,17 +1397,10 @@
         }
 
         /* Exceptions: certain inline elements sized differently */
-        .card-favorite-btn,
         .chip,
         .navigate-btn-small,
         span[class*="bg-rose-50"] {
             min-height: auto;
-        }
-
-        /* Keep card-favorite-btn at proper touch size */
-        .card-favorite-btn {
-            min-width: 44px;
-            min-height: 44px;
         }
 
         /* ==========================================================================
@@ -1613,10 +1510,6 @@
                 width: auto;
             }
 
-            /* --- Near-me button: not full-width on tablet --- */
-            .near-me-btn {
-                width: auto;
-            }
         }
 
         /* ============================
@@ -2189,27 +2082,6 @@
             margin-bottom: 1px; /* Optical alignment for icons next to text */
         }
 
-        /* ==========================================================================
-           ACCESSIBILITY (WCAG AA)
-           ========================================================================== */
-        
-        .skip-link {
-            position: absolute;
-            top: -40px;
-            left: 0;
-            background: #e11d48;
-            color: white;
-            padding: 8px 16px;
-            z-index: 100;
-            transition: top 0.2s ease;
-            border-radius: 0 0 8px 0;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        .skip-link:focus {
-            top: 0;
-            outline: 3px solid #000;
-        }
 
         @media (prefers-reduced-motion: reduce) {
             *, ::before, ::after {
@@ -2225,17 +2097,534 @@
                 border: 1px solid CanvasText !important;
             }
         }
+
+        /* ---------- Go To Top Button ---------- */
+        .go-to-top-btn {
+            position: fixed;
+            bottom: max(24px, env(safe-area-inset-bottom));
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 999px;
+            background: #e11d48;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.4);
+            z-index: 40;
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid white;
+        }
+        
+        .go-to-top-btn:focus-visible {
+            outline: 3px solid #000;
+        }
+
+        .go-to-top-btn.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        html.dark .go-to-top-btn {
+            border-color: #0f172a;
+        }
+
+        /* ==========================================================================
+           CAMPUSCOMPASS v2 — PRODUCTION-GRADE REDESIGN
+           Brand: Sandip University · Red #DC2626 · White · Black
+           ========================================================================== */
+
+        /* ---------- Design Tokens ---------- */
+        :root {
+            --cc-brand-50: #fef2f2;
+            --cc-brand-100: #fee2e2;
+            --cc-brand-200: #fecaca;
+            --cc-brand-500: #ef4444;
+            --cc-brand-600: #dc2626;
+            --cc-brand-700: #b91c1c;
+            --cc-brand-800: #991b1b;
+            --cc-brand-900: #7f1d1d;
+            --cc-surface: #f8fafc;
+            --cc-surface-raised: #ffffff;
+            --cc-surface-overlay: rgba(10, 10, 10, 0.55);
+            --cc-text-1: #0f172a;
+            --cc-text-2: #475569;
+            --cc-text-3: #94a3b8;
+            --cc-border: #e2e8f0;
+            --cc-border-subtle: rgba(0,0,0,0.05);
+            --cc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+            --cc-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --cc-shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.04);
+            --cc-shadow-card-up: 0 12px 32px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.04);
+            --cc-shadow-sheet: 0 -8px 32px rgba(0,0,0,0.12);
+        }
+        html.dark {
+            --cc-surface: #0b1120;
+            --cc-surface-raised: #131c2f;
+            --cc-surface-overlay: rgba(0, 0, 0, 0.7);
+            --cc-text-1: #f1f5f9;
+            --cc-text-2: #cbd5e1;
+            --cc-text-3: #64748b;
+            --cc-border: rgba(255,255,255,0.08);
+            --cc-border-subtle: rgba(255,255,255,0.04);
+            --cc-shadow-card: 0 1px 3px rgba(0,0,0,0.2), 0 6px 16px rgba(0,0,0,0.15);
+            --cc-shadow-card-up: 0 12px 32px rgba(0,0,0,0.35);
+            --cc-shadow-sheet: 0 -8px 32px rgba(0,0,0,0.4);
+        }
+
+        /* ---------- Base Typography ---------- */
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: var(--cc-surface) !important;
+            color: var(--cc-text-1) !important;
+        }
+        html.dark body {
+            background-color: var(--cc-surface) !important;
+            color: var(--cc-text-1) !important;
+        }
+
+        /* ---------- Header Redesign ---------- */
+        .sun-theme {
+            background: linear-gradient(155deg, #0a0a0a 0%, #1a1a2e 45%, #dc2626 100%) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        .sun-theme::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 80% 20%, rgba(220,38,38,0.2) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* ---------- Frosted Search Bar ---------- */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.78) !important;
+            backdrop-filter: blur(24px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04) !important;
+            border: 1px solid rgba(255,255,255,0.6) !important;
+        }
+        html.dark .glass-nav {
+            background: rgba(15, 23, 42, 0.85) !important;
+            border-color: rgba(255,255,255,0.06) !important;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25) !important;
+        }
+        #searchInput {
+            border-radius: 14px !important;
+            background: var(--cc-surface) !important;
+            border: 1.5px solid transparent !important;
+            transition: all 0.25s cubic-bezier(0.16,1,0.3,1) !important;
+            padding-right: 44px !important;
+        }
+        #searchInput:focus {
+            border-color: var(--cc-brand-600) !important;
+            box-shadow: 0 0 0 4px rgba(220,38,38,0.1), 0 4px 16px rgba(0,0,0,0.05) !important;
+            background: var(--cc-surface-raised) !important;
+            transform: none !important;
+        }
+        html.dark #searchInput {
+            background: rgba(30,41,59,0.8) !important;
+        }
+        html.dark #searchInput:focus {
+            border-color: var(--cc-brand-600) !important;
+            box-shadow: 0 0 0 4px rgba(220,38,38,0.2), 0 4px 16px rgba(0,0,0,0.2) !important;
+            background: #1e293b !important;
+        }
+
+        /* Search Clear Button */
+        .search-clear-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 28px;
+            min-height: 28px !important;
+            border-radius: 9999px;
+            background: #e2e8f0;
+            color: #64748b;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s ease;
+            padding: 0;
+        }
+        .search-clear-btn:hover { background: #cbd5e1; color: #334155; }
+        .search-clear-btn.visible { display: flex; }
+        html.dark .search-clear-btn { background: #334155; color: #94a3b8; }
+        html.dark .search-clear-btn:hover { background: #475569; color: #e2e8f0; }
+
+        /* ---------- Filter Chips ---------- */
+        .filter-chip {
+            transition: all 0.2s cubic-bezier(0.16,1,0.3,1) !important;
+            border-radius: 12px !important;
+        }
+        .filter-chip-active {
+            background: var(--cc-brand-600) !important;
+            color: white !important;
+            border-color: var(--cc-brand-600) !important;
+            box-shadow: 0 2px 8px rgba(220,38,38,0.25) !important;
+        }
+
+        /* ---------- Premium Cards ---------- */
+        .card-shell.card {
+            background: var(--cc-surface-raised) !important;
+            border: 1px solid var(--cc-border-subtle) !important;
+            box-shadow: var(--cc-shadow-card) !important;
+            border-radius: 20px !important;
+            transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
+                        box-shadow 0.3s cubic-bezier(0.16,1,0.3,1),
+                        border-color 0.3s ease !important;
+            will-change: transform;
+            position: relative;
+        }
+        .card-shell.card:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: var(--cc-shadow-card-up) !important;
+            border-color: rgba(220,38,38,0.1) !important;
+            z-index: 5;
+        }
+        .card-shell.card:active {
+            transform: translateY(0) scale(0.985) !important;
+            box-shadow: var(--cc-shadow-card) !important;
+        }
+        /* Card accent bar */
+        .card-shell.card::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 16px;
+            bottom: 16px;
+            width: 3px;
+            background: var(--cc-brand-600);
+            border-radius: 0 3px 3px 0;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            z-index: 5;
+        }
+        .card-shell.card:hover::after {
+            opacity: 1;
+        }
+        /* Card stagger entrance */
+        @keyframes cc-card-enter {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        #locationList .card-shell.card {
+            animation: cc-card-enter 0.5s cubic-bezier(0.16,1,0.3,1) both;
+        }
+        #locationList .card-shell.card:nth-child(1) { animation-delay: 0s; }
+        #locationList .card-shell.card:nth-child(2) { animation-delay: 0.05s; }
+        #locationList .card-shell.card:nth-child(3) { animation-delay: 0.1s; }
+        #locationList .card-shell.card:nth-child(4) { animation-delay: 0.15s; }
+        #locationList .card-shell.card:nth-child(5) { animation-delay: 0.2s; }
+        #locationList .card-shell.card:nth-child(6) { animation-delay: 0.25s; }
+        #locationList .card-shell.card:nth-child(n+7) { animation-delay: 0.3s; }
+
+        /* ---------- Bottom Sheet Modal ---------- */
+        #detailModal {
+            align-items: flex-end !important;
+            transition: opacity 0.35s ease, visibility 0.35s !important;
+        }
+        #detailModal.modal-overlay {
+            background: var(--cc-surface-overlay) !important;
+            backdrop-filter: blur(6px) !important;
+            -webkit-backdrop-filter: blur(6px) !important;
+        }
+        .modal-panel {
+            border-radius: 24px 24px 0 0 !important;
+            max-height: 92vh !important;
+            max-height: 92dvh !important;
+            background: var(--cc-surface-raised) !important;
+            box-shadow: var(--cc-shadow-sheet) !important;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.16,1,0.3,1) !important;
+            opacity: 1 !important;
+        }
+        #detailModal.modal-visible .modal-panel,
+        #detailModal:not(.hidden) .modal-panel {
+            transform: translateY(0) !important;
+            animation: none !important;
+        }
+        #detailModal.hidden .modal-panel {
+            transform: translateY(100%) !important;
+        }
+        /* Drag handle */
+        .modal-panel::before {
+            content: '';
+            display: block;
+            width: 36px;
+            height: 4px;
+            background: #d1d5db;
+            border-radius: 2px;
+            margin: 4px auto 8px;
+            flex-shrink: 0;
+        }
+        html.dark .modal-panel::before {
+            background: #4b5563;
+        }
+        /* Modal close button refinement */
+        #modalCloseBtn {
+            background: var(--cc-surface) !important;
+            border: 1px solid var(--cc-border) !important;
+            border-radius: 9999px !important;
+            transition: all 0.2s ease !important;
+        }
+        #modalCloseBtn:hover {
+            background: var(--cc-brand-50) !important;
+            border-color: var(--cc-brand-200) !important;
+        }
+
+        /* ---------- Bottom Sheet Language Picker ---------- */
+        #langPickerOverlay {
+            background: var(--cc-surface-overlay) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+            justify-content: flex-end !important;
+        }
+        .lang-picker-inner {
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            background: var(--cc-surface-raised) !important;
+            border-radius: 24px 24px 0 0 !important;
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+            box-shadow: var(--cc-shadow-sheet) !important;
+            transform: translateY(100%);
+            transition: transform 0.32s cubic-bezier(0.16,1,0.3,1);
+            padding-top: 8px !important;
+        }
+        #langPickerOverlay.picker-visible .lang-picker-inner {
+            transform: translateY(0);
+        }
+        /* Drag handle */
+        .lang-picker-inner::before {
+            content: '';
+            display: block;
+            width: 36px;
+            height: 4px;
+            background: #d1d5db;
+            border-radius: 2px;
+            margin: 8px auto 16px;
+        }
+        html.dark .lang-picker-inner::before {
+            background: #4b5563;
+        }
+        /* Override text for light bg */
+        #langPickerOverlay .lang-picker-inner .text-white {
+            color: var(--cc-text-1) !important;
+        }
+        #langPickerOverlay .lang-picker-inner .text-rose-200 {
+            color: var(--cc-text-2) !important;
+        }
+        #langPickerOverlay .lang-picker-inner [class*="text-rose-200"] {
+            color: var(--cc-text-3) !important;
+        }
+        #langPickerOverlay .lang-picker-inner i.text-white {
+            color: var(--cc-brand-600) !important;
+        }
+        #langPickerOverlay .lang-picker-inner i[class*="opacity-90"] {
+            opacity: 1 !important;
+            color: var(--cc-brand-600) !important;
+        }
+        .lang-card {
+            background: var(--cc-surface) !important;
+            border: 1px solid var(--cc-border) !important;
+            color: var(--cc-text-1) !important;
+            border-radius: 16px !important;
+            transition: all 0.15s ease !important;
+        }
+        .lang-card:hover {
+            border-color: var(--cc-brand-200) !important;
+            background: var(--cc-brand-50) !important;
+        }
+        .lang-card:active {
+            transform: scale(0.98) !important;
+            background: var(--cc-brand-100) !important;
+        }
+        .lang-card i[data-lucide="chevron-right"] {
+            color: var(--cc-text-3) !important;
+            opacity: 1 !important;
+        }
+        .lang-card-native { color: var(--cc-text-1) !important; }
+        .lang-card-sub { color: var(--cc-text-3) !important; }
+
+        /* ---------- Navigate Buttons — Brand Red ---------- */
+        .navigate-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+            box-shadow: 0 4px 16px -4px rgba(220,38,38,0.45) !important;
+        }
+        .navigate-btn:hover:not(:disabled) {
+            box-shadow: 0 8px 28px -6px rgba(220,38,38,0.55) !important;
+            transform: translateY(-2px) !important;
+        }
+        .navigate-btn:active:not(:disabled) {
+            transform: translateY(1px) scale(0.97) !important;
+            box-shadow: 0 2px 8px rgba(220,38,38,0.3) !important;
+        }
+        .navigate-btn-small {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+            box-shadow: 0 2px 8px rgba(220,38,38,0.3) !important;
+        }
+        .navigate-btn-small:hover:not(:disabled) {
+            box-shadow: 0 4px 14px rgba(220,38,38,0.4) !important;
+        }
+        .card-quick-action {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
+        }
+
+        /* ---------- Install / Go-Top / Toast ---------- */
+        .install-cta-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+            border-radius: 14px !important;
+        }
+        .go-to-top-btn {
+            background: #dc2626 !important;
+            box-shadow: 0 6px 20px -4px rgba(220,38,38,0.45) !important;
+            border: 2px solid rgba(255,255,255,0.9) !important;
+        }
+        .go-to-top-btn:active { transform: scale(0.9) !important; }
+        #toast {
+            background: #0f172a !important;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.2) !important;
+            border-radius: 14px !important;
+            padding: 10px 20px !important;
+        }
+        #offlineBanner {
+            background: rgba(15,23,42,0.92) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            border-radius: 14px !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15) !important;
+        }
+
+        /* ---------- Focus Visible ---------- */
+        *:focus-visible {
+            outline: 2.5px solid rgba(220, 38, 38, 0.5) !important;
+            outline-offset: 2px !important;
+        }
+
+        /* ---------- Enhanced Skeletons ---------- */
+        @keyframes cc-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .skeleton-line {
+            background: linear-gradient(90deg, #f1f5f9 0%, #e8ecf1 20%, #f8fafc 40%, #e8ecf1 60%, #f1f5f9 100%) !important;
+            background-size: 200% 100% !important;
+            animation: cc-shimmer 2s ease-in-out infinite !important;
+            border-radius: 8px;
+        }
+        html.dark .skeleton-line {
+            background: linear-gradient(90deg, #1e293b 0%, #293548 20%, #1e293b 40%, #293548 60%, #1e293b 100%) !important;
+            background-size: 200% 100% !important;
+        }
+        .skeleton-card {
+            border-radius: 20px !important;
+            border: 1px solid var(--cc-border-subtle) !important;
+            box-shadow: var(--cc-shadow-card) !important;
+        }
+
+        /* ---------- About Panel ---------- */
+        .about-panel {
+            background: var(--cc-surface-raised) !important;
+            border: 1px solid var(--cc-border) !important;
+            border-radius: 20px !important;
+            box-shadow: var(--cc-shadow-card) !important;
+        }
+        .about-toggle-btn {
+            border: 1px solid var(--cc-border) !important;
+            border-radius: 14px !important;
+            transition: all 0.2s ease !important;
+        }
+        .about-toggle-btn:hover {
+            background: var(--cc-brand-50) !important;
+            border-color: var(--cc-brand-200) !important;
+            color: var(--cc-brand-600) !important;
+        }
+        .usage-pill {
+            border-radius: 12px !important;
+            background: var(--cc-surface) !important;
+            border: 1px solid var(--cc-border) !important;
+            font-weight: 600 !important;
+        }
+
+        /* ---------- Misc Polish ---------- */
+        .copy-link-btn {
+            border-radius: 14px !important;
+            border: 1px solid var(--cc-border) !important;
+        }
+        .share-btn, .clear-recent-btn {
+            border-radius: 12px !important;
+            border: 1px solid var(--cc-border) !important;
+        }
+        .recent-chip {
+            border-radius: 12px !important;
+            border: 1px solid var(--cc-border) !important;
+            transition: all 0.15s ease !important;
+        }
+        .recent-chip:hover {
+            border-color: var(--cc-brand-200) !important;
+            background: var(--cc-brand-50) !important;
+        }
+        .chip { border-radius: 8px !important; }
+        .theme-toggle-btn, .lang-toggle-btn {
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), background 0.2s ease !important;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .theme-toggle-btn:active, .lang-toggle-btn:active {
+            transform: scale(0.85) rotate(-10deg) !important;
+        }
+        #installBanner, #iosInstallTip {
+            border-radius: 20px !important;
+            border: 1px solid var(--cc-border) !important;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.12) !important;
+        }
+        #dataErrorBanner { border-radius: 20px !important; }
+
+        /* ---------- Modal Responsive Override ---------- */
+        @media (min-width: 600px) {
+            #detailModal { align-items: center !important; }
+            .modal-panel {
+                border-radius: 24px !important;
+                max-height: 85vh !important;
+                max-width: 520px !important;
+                margin: auto !important;
+            }
+            .lang-picker-inner {
+                max-width: 480px !important;
+                margin: 0 auto !important;
+                border-radius: 24px 24px 0 0 !important;
+            }
+        }
+
+        /* ---------- Reduced Motion ---------- */
+        @media (prefers-reduced-motion: reduce) {
+            #locationList .card-shell.card { animation: none !important; }
+            .modal-panel, .lang-picker-inner { transition-duration: 0.01ms !important; }
+        }
     </style>
 </head>
 
 <body class="bg-slate-50 text-slate-900 pb-10">
-    <a href="#mainContent" class="skip-link" data-i18n="skipToMainContent">Skip to main content</a>
 
     <header class="sun-theme text-white py-12 px-6 text-center rounded-b-[40px] shadow-xl relative">
         <div class="absolute top-4 right-4 flex items-center gap-2">
             <button id="langToggleBtn" onclick="openLangPicker(true)" aria-label="Change language" data-i18n-aria="langPickerTitle"
                 class="lang-toggle-btn">
-                <span style="font-size:18px;line-height:1;">🌐</span>
+                <i data-lucide="globe" class="w-5 h-5"></i>
             </button>
             <button id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle dark mode"
                 class="theme-toggle-btn">
@@ -2244,14 +2633,14 @@
             </button>
         </div>
         <h1 class="text-2xl font-black tracking-tight italic" id="appTitle" data-i18n="appTitle">SANDIP UNIVERSITY</h1>
-        <p class="text-rose-200 text-xs font-bold tracking-[0.2em] mt-2" id="appSubtitle" data-i18n="appSubtitle">CAMPUS NAVIGATION</p>
+        <p class="text-red-200 text-xs font-bold tracking-[0.2em] mt-2" id="appSubtitle" data-i18n="appSubtitle">CAMPUS NAVIGATION</p>
     </header>
 
     <!-- Full-screen language picker (first launch, and re-openable via the globe toggle) -->
     <div id="langPickerOverlay" role="dialog" aria-modal="true" aria-label="Choose your language" data-i18n-aria="langPickerTitle">
         <div class="lang-picker-inner">
             <div class="text-center mb-8">
-                <p style="font-size:36px;line-height:1;" class="mb-4">🌐</p>
+                <p class="mb-4 flex justify-center"><i data-lucide="globe" class="w-10 h-10 text-white opacity-90"></i></p>
                 <h2 class="text-xl font-black text-white" id="langPickerTitle" data-i18n="langPickerTitle">Choose your language</h2>
                 <p class="text-rose-200 text-xs font-bold tracking-wide mt-2" id="langPickerSubtitle" data-i18n="langPickerSubtitle">भाषा चुनें · भाषा निवडा</p>
             </div>
@@ -2305,7 +2694,7 @@
                 <i data-lucide="chevron-right" class="w-5 h-5 opacity-70"></i>
             </button>
             <p class="text-center text-[11px] font-semibold text-rose-200/70 mt-8 leading-relaxed" id="langPickerNote" data-i18n="langPickerNote">
-                Place names stay in English. You can change this anytime from the 🌐 icon.
+                Place names stay in English. You can change this anytime from the globe icon.
             </p>
         </div>
     </div>
@@ -2316,17 +2705,13 @@
                 <i data-lucide="search" class="absolute left-3 top-3 w-5 h-5 text-slate-500"></i>
                 <input type="text" id="searchInput" aria-label="Search locations"
                     placeholder="Search building, department, hostel..." data-i18n-placeholder="searchPlaceholder" data-i18n-aria="searchPlaceholder"
-                    class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-rose-500 outline-none text-sm font-medium">
+                    class="w-full pl-10 pr-12 py-3 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-red-500 outline-none text-sm font-medium">
+                <button id="searchClearBtn" class="search-clear-btn" onclick="clearSearch()" aria-label="Clear search">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                </button>
             </div>
             <div id="recentSearchesWrap" class="recent-searches-wrap" aria-live="polite"></div>
             <div class="flex gap-2 overflow-x-auto no-scrollbar" id="filterContainer"></div>
-            <div class="flex items-center justify-between gap-2 flex-wrap pt-2">
-                <button id="nearMeBtn" onclick="toggleNearMe()" class="near-me-btn tap-shrink" aria-pressed="false" aria-label="Show nearby locations" data-i18n-aria="nearMeLabel">
-                    <i data-lucide="navigation-2" class="w-4 h-4"></i>
-                    <span id="nearMeBtnText" data-i18n="nearMeLabel">Near Me</span>
-                </button>
-                <p id="nearMeStatus" class="near-me-status text-slate-500 flex-1 min-w-0 text-right" aria-live="polite"></p>
-            </div>
         </div>
     </div>
 
@@ -2454,6 +2839,11 @@
         </div>
     </div>
 
+    <!-- Go To Top Button -->
+    <button id="goToTopBtn" onclick="scrollToTop()" class="go-to-top-btn tap-shrink" aria-label="Go to top" title="Go to top">
+        <i data-lucide="arrow-up" class="w-6 h-6"></i>
+    </button>
+
     <div id="toast" role="status" aria-live="polite"></div>
 
     <!-- Offline reassurance banner -->
@@ -2464,7 +2854,7 @@
 
     <!-- Android/Chrome install banner -->
     <div id="installBanner" role="dialog" aria-label="Install CampusCompass">
-        <i data-lucide="download" class="w-6 h-6 text-rose-600 flex-shrink-0"></i>
+        <i data-lucide="download" class="w-6 h-6 text-red-600 flex-shrink-0"></i>
         <div class="flex-1 min-w-0">
             <p class="text-sm font-black leading-tight" id="installBannerTitle" data-i18n="installBannerTitle">Install CampusCompass</p>
             <p class="text-[11px] font-medium opacity-70 leading-tight mt-1" id="installBannerSubtitle" data-i18n="installBannerSubtitle">Add to your home screen for quick, offline access.</p>
@@ -2477,7 +2867,7 @@
 
     <!-- iOS Safari "Add to Home Screen" tip (no beforeinstallprompt support on iOS) -->
     <div id="iosInstallTip" role="dialog" aria-label="Add CampusCompass to Home Screen">
-        <i data-lucide="share" class="w-6 h-6 text-rose-600 flex-shrink-0"></i>
+        <i data-lucide="share" class="w-6 h-6 text-red-600 flex-shrink-0"></i>
         <div class="flex-1 min-w-0">
             <p class="text-sm font-black leading-tight" id="iosInstallTipTitle" data-i18n="iosInstallTipTitle">Install this app</p>
             <p class="text-[11px] font-medium opacity-70 leading-tight mt-1" id="iosInstallTipSubtitle" data-i18n="iosInstallTipSubtitle">Tap the Share icon, then "Add to Home Screen".</p>
@@ -2619,7 +3009,6 @@
                 appSubtitle: "CAMPUS NAVIGATION",
                 searchPlaceholder: "Search building, department, hostel...",
                 filterAll: "All",
-                favoritesFilter: "Favorites",
                 categoryLabels: {
                     admission_cell: "Admission Cell",
                     gate: "Gate",
@@ -2670,23 +3059,13 @@
                 langPickerSubtitle: "भाषा चुनें · भाषा निवडा",
                 langPickerNote: "Place names stay in English. You can change this anytime from the globe icon.",
                 closeDetails: "Close details",
-                favoritesEmptyStateText: "No favorites yet",
                 recentSearchesLabel: "Recent searches",
                 clearRecent: "Clear recent",
-                nearMeLabel: "Near Me",
-                nearMeLoading: "Finding your location...",
-                nearMeUnavailable: "Near Me is unavailable on this device.",
-                nearMePermissionDenied: "Location permission was denied.",
-                nearMeTimedOut: "Location request timed out.",
-                nearMeErrorGeneric: "Could not get your location.",
-                nearMeActive: "Sorted by nearest locations",
                 share: "Share",
                 shareFallbackCopied: "Link copied - Web Share not supported on this browser",
                 upToDate: "Up to date",
                 pullToRefresh: "Pull to refresh",
                 swipeNavigateHint: "Swipe left for quick Navigate",
-                favoriteOn: "Remove from favorites",
-                favoriteOff: "Add to favorites",
                 aboutRowLabel: "About",
                 aboutRowSubtitle: "Dataset metadata and local-only usage stats",
                 aboutPanelTitle: "Dataset details",
@@ -2714,7 +3093,6 @@
                 appSubtitle: "कैंपस नेविगेशन",
                 searchPlaceholder: "भवन, विभाग, छात्रावास खोजें...",
                 filterAll: "सभी",
-                favoritesFilter: "पसंदीदा",
                 categoryLabels: {
                     admission_cell: "प्रवेश प्रकोष्ठ",
                     gate: "प्रवेश द्वार",
@@ -2765,23 +3143,13 @@
                 langPickerSubtitle: "Choose your language · भाषा निवडा",
                 langPickerNote: "स्थानों के नाम अंग्रेज़ी में ही रहेंगे। आप इसे ग्लोब आइकन से कभी भी बदल सकते हैं।",
                 closeDetails: "विवरण बंद करें",
-                favoritesEmptyStateText: "अभी कोई पसंदीदा नहीं",
                 recentSearchesLabel: "हाल की खोजें",
                 clearRecent: "हाल की साफ़ करें",
-                nearMeLabel: "मेरे पास",
-                nearMeLoading: "आपका स्थान ढूंढा जा रहा है...",
-                nearMeUnavailable: "इस डिवाइस पर Near Me उपलब्ध नहीं है।",
-                nearMePermissionDenied: "स्थान अनुमति अस्वीकार की गई।",
-                nearMeTimedOut: "स्थान अनुरोध समय समाप्त हो गया।",
-                nearMeErrorGeneric: "आपका स्थान प्राप्त नहीं हो सका।",
-                nearMeActive: "निकटतम स्थानों के अनुसार क्रमित",
                 share: "साझा करें",
                 shareFallbackCopied: "लिंक कॉपी हो गया - इस ब्राउज़र पर Web Share समर्थित नहीं है",
                 upToDate: "अप-टू-डेट",
                 pullToRefresh: "रीफ्रेश के लिए खींचें",
                 swipeNavigateHint: "त्वरित नेविगेट के लिए बाईं ओर स्वाइप करें",
-                favoriteOn: "पसंदीदा से हटाएँ",
-                favoriteOff: "पसंदीदा में जोड़ें",
                 aboutRowLabel: "परिचय",
                 aboutRowSubtitle: "डेटासेट मेटाडेटा और केवल स्थानीय उपयोग आंकड़े",
                 aboutPanelTitle: "डेटासेट विवरण",
@@ -2809,7 +3177,6 @@
                 appSubtitle: "कॅम्पस नेव्हिगेशन",
                 searchPlaceholder: "इमारत, विभाग, वसतिगृह शोधा...",
                 filterAll: "सर्व",
-                favoritesFilter: "आवडते",
                 categoryLabels: {
                     admission_cell: "प्रवेश कक्ष",
                     gate: "प्रवेशद्वार",
@@ -2860,23 +3227,13 @@
                 langPickerSubtitle: "Choose your language · भाषा चुनें",
                 langPickerNote: "स्थानांची नावे इंग्रजीतच राहतील. तुम्ही हे ग्लोब आयकॉनवरून कधीही बदलू शकता.",
                 closeDetails: "तपशील बंद करा",
-                favoritesEmptyStateText: "अजून कोणतेही आवडते नाहीत",
                 recentSearchesLabel: "अलीकडील शोध",
                 clearRecent: "अलीकडील साफ करा",
-                nearMeLabel: "माझ्या जवळ",
-                nearMeLoading: "तुमचे स्थान शोधले जात आहे...",
-                nearMeUnavailable: "या डिव्हाइसवर Near Me उपलब्ध नाही.",
-                nearMePermissionDenied: "स्थानाची परवानगी नाकारली गेली.",
-                nearMeTimedOut: "स्थान विनंतीची वेळ संपली.",
-                nearMeErrorGeneric: "तुमचे स्थान मिळवता आले नाही.",
-                nearMeActive: "सर्वात जवळच्या स्थानांनुसार क्रमित",
                 share: "शेअर",
                 shareFallbackCopied: "लिंक कॉपी झाली - या ब्राउझरवर Web Share समर्थित नाही",
                 upToDate: "अद्ययावत आहे",
                 pullToRefresh: "रीफ्रेशसाठी खाली ओढा",
                 swipeNavigateHint: "जलद नेव्हिगेटसाठी डावीकडे स्वाइप करा",
-                favoriteOn: "आवडीमधून काढा",
-                favoriteOff: "आवडीमध्ये जोडा",
                 aboutRowLabel: "माहिती",
                 aboutRowSubtitle: "डेटासेट मेटाडेटा आणि फक्त स्थानिक वापर आकडे",
                 aboutPanelTitle: "डेटासेट तपशील",
@@ -2900,16 +3257,332 @@
                 privacyNote: "गोपनीयता: स्थान, शोध आणि दृश्यमान मोजमाप फक्त या उपकरणावर राहतात."
             },
             mai: {
-                // Maithili translations will go here
+                appTitle: "संदीप विश्वविद्यालय",
+                appSubtitle: "परिसर नेविगेशन",
+                searchPlaceholder: "भवन, विभाग, छात्रावास खोजू...",
+                filterAll: "सब",
+                categoryLabels: {
+                    admission_cell: "प्रवेश कक्ष",
+                    gate: "गेट",
+                    building: "भवन",
+                    department: "विभाग",
+                    hostel: "छात्रावास",
+                    parking: "पार्किंग",
+                    food_court: "फूड कोर्ट",
+                    canteen: "कैंटीन",
+                    stationery: "स्टेशनरी",
+                    sports: "खेल",
+                    landmark: "सीमाचिह्न",
+                    sections: "खंड",
+                    uncategorized: "अवर्गीकृत"
+                },
+                viewDetails: "विवरण देखू",
+                navigate: "नेविगेट करू",
+                navigateToLocation: "स्थान पर नेविगेट करू",
+                copyLink: "लिंक कॉपी करू",
+                linkCopied: "लिंक कॉपी भेल!",
+                copyFailed: "लिंक कॉपी नहि भ सकल",
+                copyUnsupported: "कॉपी समर्थित नहि अछि",
+                locationNotAvailable: "स्थान उपलब्ध नहि अछि",
+                coordinatesNotAvailable: "कोऑर्डिनेट उपलब्ध नहि अछि",
+                noDescription: "कोनो विवरण उपलब्ध नहि अछि।",
+                noKeywords: "कोनो कीवर्ड उपलब्ध नहि अछि",
+                noAliases: "कोनो उपनाम उपलब्ध नहि अछि",
+                noCourses: "कोनो पाठ्यक्रम सूचीबद्ध नहि अछि",
+                fieldParent: "मूल",
+                fieldParentTopLevel: "किछु नहि (शीर्ष स्तर)",
+                fieldDescription: "विवरण",
+                fieldKeywords: "कीवर्ड",
+                fieldAliases: "उपनाम",
+                fieldSchool: "स्कूल",
+                fieldParentBuilding: "मूल भवन",
+                fieldCoordinates: "कोऑर्डिनेट",
+                fieldCategory: "श्रेणी",
+                fieldCourses: "पाठ्यक्रम",
+                emptyStateText: "कोनो मेल खायत स्थान नहि भेटल",
+                offlineBannerText: "अहाँ ऑफलाइन छी — सहेजल गेल डेटा देखा रहल अछि",
+                installBannerTitle: "कैंपसकंपास इंस्टॉल करू",
+                installBannerSubtitle: "त्वरित, ऑफलाइन पहुंच लेल अपन होम स्क्रीन मे जोड़ू।",
+                installBannerBtn: "इंस्टॉल करू",
+                iosInstallTipTitle: "ई ऐप इंस्टॉल करू",
+                iosInstallTipSubtitle: 'शेयर आइकन पर टैप करू, फेर "होम स्क्रीन मे जोड़ू" पर टैप करू।',
+                langPickerTitle: "अपन भाषा चुनू",
+                langPickerSubtitle: "अपन भाषा चुनू",
+                langPickerNote: "स्थान क नाम अंग्रेजी मे रहत। अहाँ एकरा ग्लोब आइकन सँ कोनो भी समय बदलि सकैत छी।",
+                closeDetails: "विवरण बंद करू",
+                recentSearchesLabel: "हालक खोज",
+                clearRecent: "हालक साफ करू",
+                share: "साझा करू",
+                shareFallbackCopied: "लिंक कॉपी भेल - एहि ब्राउज़र पर वेब शेयर समर्थित नहि अछि",
+                upToDate: "अप-टू-डेट",
+                pullToRefresh: "रीफ्रेश करय लेल खींचू",
+                swipeNavigateHint: "त्वरित नेविगेट लेल बामा दिस स्वाइप करू",
+                aboutRowLabel: "परिचय",
+                aboutRowSubtitle: "डेटासेट मेटाडेटा आ केवल स्थानीय उपयोगक आंकड़े",
+                aboutPanelTitle: "डेटासेट विवरण",
+                institutionLabel: "संस्था",
+                versionLabel: "संस्करण",
+                totalLocationsLabel: "कुल स्थान",
+                localAnalyticsLabel: "केवल स्थानीय आंकड़े",
+                localAnalyticsNote: "गिनती केवल एहि ब्राउज़र क localStorage मे रहैत अछि। कतहु किछु नहि भेजल जाइत अछि।",
+                mostViewedLabel: "सबसँ बेसी देखल गेल",
+                topSearchesLabel: "शीर्ष खोज",
+                usageEmpty: "अखन कोनो स्थानीय उपयोग नहि अछि।",
+                dataLoadErrorTitle: "कैंपस डेटा लोड नहि भ सकल",
+                dataLoadErrorText: "ऐप ऑनलाइन डेटासेट आ एम्बेडेड फॉलबैक, दुनू लोड करय मे विफल रहल।",
+                retry: "पुनः प्रयास करू",
+                openDatasetDetails: "डेटासेट विवरण खोलू",
+                closeDatasetDetails: "डेटासेट विवरण बंद करू",
+                resetData: "ऐप डेटा रीसेट करू",
+                resetDataConfirm: "ऐप डेटा रीसेट करू? अहि सँ सहेजल गेल पसंद आ स्थानीय आंकड़े साफ़ भ जायत।",
+                resetDataDone: "ऐप डेटा साफ भेल",
+                privacyNote: "गोपनीयता: स्थान, खोज आ दृश्य गणना केवल एहि डिवाइस पर रहैत अछि।"
             },
             te: {
-                // Telugu translations will go here
+                appTitle: "సందీప్ యూనివర్సిటీ",
+                appSubtitle: "క్యాంపస్ నావిగేషన్",
+                searchPlaceholder: "భవనం, విభాగం, హాస్టల్ కోసం వెతకండి...",
+                filterAll: "అన్నీ",
+                categoryLabels: {
+                    admission_cell: "అడ్మిషన్ సెల్",
+                    gate: "గేట్",
+                    building: "భవనం",
+                    department: "విభాగం",
+                    hostel: "హాస్టల్",
+                    parking: "పార్కింగ్",
+                    food_court: "ఫుడ్ కోర్ట్",
+                    canteen: "క్యాంటీన్",
+                    stationery: "స్టేషనరీ",
+                    sports: "క్రీడలు",
+                    landmark: "ల్యాండ్‌మార్క్",
+                    sections: "సెక్షన్లు",
+                    uncategorized: "వర్గీకరించబడనివి"
+                },
+                viewDetails: "వివరాలు చూడండి",
+                navigate: "నావిగేట్ చేయండి",
+                navigateToLocation: "ప్రదేశానికి నావిగేట్ చేయండి",
+                copyLink: "లింక్‌ని కాపీ చేయండి",
+                linkCopied: "లింక్ కాపీ చేయబడింది!",
+                copyFailed: "లింక్‌ని కాపీ చేయడం సాధ్యపడలేదు",
+                copyUnsupported: "కాపీకి మద్దతు లేదు",
+                locationNotAvailable: "ప్రదేశం అందుబాటులో లేదు",
+                coordinatesNotAvailable: "కోఆర్డినేట్‌లు అందుబాటులో లేవు",
+                noDescription: "వివరణ అందుబాటులో లేదు.",
+                noKeywords: "కీవర్డ్‌లు అందుబాటులో లేవు",
+                noAliases: "మారుపేర్లు అందుబాటులో లేవు",
+                noCourses: "కోర్సులు ఏవీ జాబితా చేయబడలేదు",
+                fieldParent: "మూలం",
+                fieldParentTopLevel: "ఏదీ లేదు (అత్యున్నత స్థాయి)",
+                fieldDescription: "వివరణ",
+                fieldKeywords: "కీవర్డ్‌లు",
+                fieldAliases: "మారుపేర్లు",
+                fieldSchool: "పాఠశాల",
+                fieldParentBuilding: "ప్రధాన భవనం",
+                fieldCoordinates: "కోఆర్డినేట్‌లు",
+                fieldCategory: "వర్గం",
+                fieldCourses: "కోర్సులు",
+                emptyStateText: "సరిపోలే ప్రదేశాలు ఏవీ కనుగొనబడలేదు",
+                offlineBannerText: "మీరు ఆఫ్‌లైన్‌లో ఉన్నారు — సేవ్ చేసిన డేటా చూపబడుతోంది",
+                installBannerTitle: "క్యాంపస్‌కంపాస్‌ని ఇన్‌స్టాల్ చేయండి",
+                installBannerSubtitle: "వేగవంతమైన, ఆఫ్‌లైన్ యాక్సెస్ కోసం మీ హోమ్ స్క్రీన్‌కు జోడించండి.",
+                installBannerBtn: "ఇన్‌స్టాల్ చేయండి",
+                iosInstallTipTitle: "ఈ యాప్‌ని ఇన్‌స్టాల్ చేయండి",
+                iosInstallTipSubtitle: 'షేర్ చిహ్నాన్ని నొక్కి, ఆపై "హోమ్ స్క్రీన్‌కు జోడించు" నొక్కండి.',
+                langPickerTitle: "మీ భాషను ఎంచుకోండి",
+                langPickerSubtitle: "మీ భాషను ఎంచుకోండి",
+                langPickerNote: "ప్రదేశాల పేర్లు ఆంగ్లంలోనే ఉంటాయి. గ్లోబ్ చిహ్నం నుండి మీరు దీన్ని ఎప్పుడైనా మార్చవచ్చు.",
+                closeDetails: "వివరాలను మూసివేయండి",
+                recentSearchesLabel: "ఇటీవలి శోధనలు",
+                clearRecent: "ఇటీవలివి క్లియర్ చేయండి",
+                share: "షేర్ చేయండి",
+                shareFallbackCopied: "లింక్ కాపీ చేయబడింది - ఈ బ్రౌజర్‌లో వెబ్ షేర్‌కు మద్దతు లేదు",
+                upToDate: "అప్‌డేట్ చేయబడింది",
+                pullToRefresh: "రిఫ్రెష్ చేయడానికి లాగండి",
+                swipeNavigateHint: "త్వరిత నావిగేషన్ కోసం ఎడమవైపుకు స్వైప్ చేయండి",
+                aboutRowLabel: "గురించి",
+                aboutRowSubtitle: "డేటాసెట్ మెటాడేటా మరియు స్థానిక వినియోగ గణాంకాలు మాత్రమే",
+                aboutPanelTitle: "డేటాసెట్ వివరాలు",
+                institutionLabel: "సంస్థ",
+                versionLabel: "వెర్షన్",
+                totalLocationsLabel: "మొత్తం ప్రదేశాలు",
+                localAnalyticsLabel: "స్థానిక విశ్లేషణలు మాత్రమే",
+                localAnalyticsNote: "గణాంకాలు ఈ బ్రౌజర్ localStorageలో మాత్రమే నిల్వ చేయబడతాయి. మరెక్కడికీ పంపబడవు.",
+                mostViewedLabel: "ఎక్కువగా చూసినవి",
+                topSearchesLabel: "అగ్ర శోధనలు",
+                usageEmpty: "ఇంకా స్థానిక వినియోగం లేదు.",
+                dataLoadErrorTitle: "క్యాంపస్ డేటాను లోడ్ చేయడం సాధ్యపడలేదు",
+                dataLoadErrorText: "ఆన్‌లైన్ డేటాసెట్ మరియు పొందుపరిచిన ఫాల్‌బ్యాక్ రెండింటినీ యాప్ లోడ్ చేయలేకపోయింది.",
+                retry: "మళ్లీ ప్రయత్నించండి",
+                openDatasetDetails: "డేటాసెట్ వివరాలను తెరవండి",
+                closeDatasetDetails: "డేటాసెట్ వివరాలను మూసివేయండి",
+                resetData: "యాప్ డేటాను రీసెట్ చేయండి",
+                resetDataConfirm: "యాప్ డేటాను రీసెట్ చేయాలా? ఇది సేవ్ చేయబడిన ప్రాధాన్యతలు మరియు స్థానిక గణాంకాలను క్లియర్ చేస్తుంది.",
+                resetDataDone: "యాప్ డేటా క్లియర్ చేయబడింది",
+                privacyNote: "గోప్యత: ప్రదేశం, శోధనలు మరియు వీక్షణల సంఖ్య ఈ పరికరంలో మాత్రమే ఉంటాయి."
             },
             ta: {
-                // Tamil translations will go here
+                appTitle: "சந்திப் பல்கலைக்கழகம்",
+                appSubtitle: "வளாக வழிகாட்டல்",
+                searchPlaceholder: "கட்டடம், துறை, விடுதியைத் தேடுக...",
+                filterAll: "அனைத்தும்",
+                categoryLabels: {
+                    admission_cell: "சேர்க்கை பிரிவு",
+                    gate: "நுழைவாயில்",
+                    building: "கட்டடம்",
+                    department: "துறை",
+                    hostel: "விடுதி",
+                    parking: "வாகன நிறுத்துமிடம்",
+                    food_court: "உணவுக் கூடம்",
+                    canteen: "உணவகம்",
+                    stationery: "எழுதுபொருள்",
+                    sports: "விளையாட்டு",
+                    landmark: "அடையாளம்",
+                    sections: "பிரிவுகள்",
+                    uncategorized: "வகைப்படுத்தப்படாதவை"
+                },
+                viewDetails: "விவரங்களைக் காண்",
+                navigate: "வழிசெலுத்து",
+                navigateToLocation: "இடத்திற்குச் செல்",
+                copyLink: "இணைப்பை நகலெடு",
+                linkCopied: "இணைப்பு நகலெடுக்கப்பட்டது!",
+                copyFailed: "இணைப்பை நகலெடுக்க முடியவில்லை",
+                copyUnsupported: "நகலெடுப்பது ஆதரிக்கப்படவில்லை",
+                locationNotAvailable: "இடம் கிடைக்கவில்லை",
+                coordinatesNotAvailable: "ஆயத்தொலைவுகள் கிடைக்கவில்லை",
+                noDescription: "விவரம் எதுவும் கிடைக்கவில்லை.",
+                noKeywords: "முக்கிய வார்த்தைகள் எதுவும் கிடைக்கவில்லை",
+                noAliases: "மாற்றுப் பெயர்கள் எதுவும் கிடைக்கவில்லை",
+                noCourses: "படிப்புகள் எதுவும் பட்டியலிடப்படவில்லை",
+                fieldParent: "மூலம்",
+                fieldParentTopLevel: "எதுவுமில்லை (உயர் நிலை)",
+                fieldDescription: "விவரம்",
+                fieldKeywords: "முக்கிய வார்த்தைகள்",
+                fieldAliases: "மாற்றுப் பெயர்கள்",
+                fieldSchool: "பள்ளி",
+                fieldParentBuilding: "பிரதான கட்டடம்",
+                fieldCoordinates: "ஆயத்தொலைவுகள்",
+                fieldCategory: "வகை",
+                fieldCourses: "படிப்புகள்",
+                emptyStateText: "பொருத்தமான இடங்கள் எதுவும் கிடைக்கவில்லை",
+                offlineBannerText: "நீங்கள் ஆஃப்லைனில் உள்ளீர்கள் — சேமிக்கப்பட்ட தரவு காட்டப்படுகிறது",
+                installBannerTitle: "கேம்பஸ்காம்பஸ் நிறுவவும்",
+                installBannerSubtitle: "விரைவான, ஆஃப்லைன் அணுகலுக்கு உங்கள் முகப்புத் திரையில் சேர்க்கவும்.",
+                installBannerBtn: "நிறுவு",
+                iosInstallTipTitle: "இந்தச் செயலியை நிறுவவும்",
+                iosInstallTipSubtitle: 'பகிர் ஐகானைத் தட்டி, "முகப்புத் திரையில் சேர்" என்பதைத் தட்டவும்.',
+                langPickerTitle: "உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்",
+                langPickerSubtitle: "உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்",
+                langPickerNote: "இடங்களின் பெயர்கள் ஆங்கிலத்திலேயே இருக்கும். குளோப் ஐகானிலிருந்து எப்போது வேண்டுமானாலும் இதை மாற்றலாம்.",
+                closeDetails: "விவரங்களை மூடு",
+                recentSearchesLabel: "சமீபத்திய தேடல்கள்",
+                clearRecent: "சமீபத்தியதை அழி",
+                share: "பகிர்",
+                shareFallbackCopied: "இணைப்பு நகலெடுக்கப்பட்டது - இந்த உலாவியில் Web Share ஆதரிக்கப்படவில்லை",
+                upToDate: "புதுப்பிக்கப்பட்டது",
+                pullToRefresh: "புதுப்பிக்க இழுக்கவும்",
+                swipeNavigateHint: "விரைவாக வழிசெலுத்த இடதுபுறமாக ஸ்வைப் செய்யவும்",
+                aboutRowLabel: "பற்றி",
+                aboutRowSubtitle: "தரவுத்தொகுப்பு மெட்டாடேட்டா மற்றும் உள்ளூர் பயன்பாட்டு புள்ளிவிவரங்கள்",
+                aboutPanelTitle: "தரவுத்தொகுப்பு விவரங்கள்",
+                institutionLabel: "நிறுவனம்",
+                versionLabel: "பதிப்பு",
+                totalLocationsLabel: "மொத்த இடங்கள்",
+                localAnalyticsLabel: "உள்ளூர் பகுப்பாய்வு",
+                localAnalyticsNote: "எண்ணிக்கைகள் இந்த உலாவியின் localStorage இல் மட்டுமே சேமிக்கப்படும். எங்கும் பகிரப்படாது.",
+                mostViewedLabel: "அதிகம் பார்க்கப்பட்டவை",
+                topSearchesLabel: "சிறந்த தேடல்கள்",
+                usageEmpty: "உள்ளூர் பயன்பாடு எதுவும் இன்னும் இல்லை.",
+                dataLoadErrorTitle: "வளாகத் தரவை ஏற்ற முடியவில்லை",
+                dataLoadErrorText: "ஆன்லைன் தரவுத்தொகுப்பு மற்றும் உள்ளமைக்கப்பட்ட தரவு இரண்டையும் செயலால் ஏற்ற முடியவில்லை.",
+                retry: "மீண்டும் முயற்சிக்கவும்",
+                openDatasetDetails: "தரவுத்தொகுப்பு விவரங்களைத் திற",
+                closeDatasetDetails: "தரவுத்தொகுப்பு விவரங்களை மூடு",
+                resetData: "பயன்பாட்டுத் தரவை மீட்டமை",
+                resetDataConfirm: "பயன்பாட்டுத் தரவை மீட்டமைக்கவா? இது சேமிக்கப்பட்ட விருப்பத்தேர்வுகள் மற்றும் உள்ளூர் புள்ளிவிவரங்களை அழிக்கும்.",
+                resetDataDone: "பயன்பாட்டுத் தரவு அழிக்கப்பட்டது",
+                privacyNote: "தனியுரிமை: இருப்பிடம், தேடல்கள் மற்றும் பார்வை எண்ணிக்கைகள் இந்தச் சாதனத்தில் மட்டுமே இருக்கும்."
             },
             pt: {
-                // Portuguese translations will go here
+                appTitle: "UNIVERSIDADE SANDIP",
+                appSubtitle: "NAVEGAÇÃO DO CAMPUS",
+                searchPlaceholder: "Pesquisar prédio, departamento, albergue...",
+                filterAll: "Todos",
+                categoryLabels: {
+                    admission_cell: "Célula de Admissão",
+                    gate: "Portão",
+                    building: "Prédio",
+                    department: "Departamento",
+                    hostel: "Albergue",
+                    parking: "Estacionamento",
+                    food_court: "Praça de Alimentação",
+                    canteen: "Cantina",
+                    stationery: "Papelaria",
+                    sports: "Esportes",
+                    landmark: "Ponto de Referência",
+                    sections: "Seções",
+                    uncategorized: "Sem Categoria"
+                },
+                viewDetails: "Ver Detalhes",
+                navigate: "Navegar",
+                navigateToLocation: "Navegar para o Local",
+                copyLink: "Copiar Link",
+                linkCopied: "Link copiado!",
+                copyFailed: "Não foi possível copiar o link",
+                copyUnsupported: "Cópia não suportada",
+                locationNotAvailable: "Local não disponível",
+                coordinatesNotAvailable: "Coordenadas não disponíveis",
+                noDescription: "Nenhuma descrição disponível.",
+                noKeywords: "Nenhuma palavra-chave disponível",
+                noAliases: "Nenhum apelido disponível",
+                noCourses: "Nenhum curso listado",
+                fieldParent: "Pai",
+                fieldParentTopLevel: "Nenhum (Nível Superior)",
+                fieldDescription: "Descrição",
+                fieldKeywords: "Palavras-chave",
+                fieldAliases: "Apelidos",
+                fieldSchool: "Escola",
+                fieldParentBuilding: "Prédio Principal",
+                fieldCoordinates: "Coordenadas",
+                fieldCategory: "Categoria",
+                fieldCourses: "Cursos",
+                emptyStateText: "Nenhum local correspondente encontrado",
+                offlineBannerText: "Você está offline — mostrando dados salvos",
+                installBannerTitle: "Instalar CampusCompass",
+                installBannerSubtitle: "Adicione à sua tela inicial para acesso rápido e offline.",
+                installBannerBtn: "Instalar",
+                iosInstallTipTitle: "Instale este aplicativo",
+                iosInstallTipSubtitle: 'Toque no ícone Compartilhar e depois em "Adicionar à Tela de Início".',
+                langPickerTitle: "Escolha seu idioma",
+                langPickerSubtitle: "Escolha seu idioma",
+                langPickerNote: "Os nomes dos locais permanecem em inglês. Você pode alterar isso a qualquer momento no ícone do globo.",
+                closeDetails: "Fechar detalhes",
+                recentSearchesLabel: "Pesquisas recentes",
+                clearRecent: "Limpar recentes",
+                share: "Compartilhar",
+                shareFallbackCopied: "Link copiado - Web Share não suportado neste navegador",
+                upToDate: "Atualizado",
+                pullToRefresh: "Puxe para atualizar",
+                swipeNavigateHint: "Deslize para a esquerda para navegar rapidamente",
+                aboutRowLabel: "Sobre",
+                aboutRowSubtitle: "Metadados do conjunto de dados e estatísticas de uso apenas local",
+                aboutPanelTitle: "Detalhes do conjunto de dados",
+                institutionLabel: "Instituição",
+                versionLabel: "Versão",
+                totalLocationsLabel: "Total de locais",
+                localAnalyticsLabel: "Análise apenas local",
+                localAnalyticsNote: "As contagens são armazenadas apenas no localStorage deste navegador. Nada é transmitido para nenhum lugar.",
+                mostViewedLabel: "Mais visualizados",
+                topSearchesLabel: "Principais pesquisas",
+                usageEmpty: "Sem uso local ainda.",
+                dataLoadErrorTitle: "Não foi possível carregar os dados do campus",
+                dataLoadErrorText: "O aplicativo falhou ao carregar tanto o conjunto de dados online quanto o fallback incorporado.",
+                retry: "Tentar novamente",
+                openDatasetDetails: "Abrir detalhes do conjunto de dados",
+                closeDatasetDetails: "Fechar detalhes do conjunto de dados",
+                resetData: "Redefinir dados do aplicativo",
+                resetDataConfirm: "Redefinir dados do aplicativo? Isso limpará as preferências salvas e as estatísticas locais.",
+                resetDataDone: "Dados do aplicativo limpos",
+                privacyNote: "Privacidade: localização, pesquisas e contagens de visualizações permanecem apenas neste dispositivo."
             }
         };
 
@@ -2917,17 +3590,8 @@
         const SUPPORTED_LANGS = ["en", "hi", "mr", "mai", "te", "ta", "pt"];
         const RTL_LANGUAGES = ["ar", "he", "ur", "fa"]; // Configured for future RTL scaling
 
-        /** @type {string} */
-        const FAVORITES_FILTER = "Favorites";
-
         /** @type {number} */
         const RECENT_SEARCH_LIMIT = 5;
-
-        /** @type {number} */
-        const NEAR_ME_REFRESH_RADIUS = 0;
-
-        /** @type {string} */
-        const PREFERENCES_FAVORITES_KEY = "favorites";
 
         /** @type {string} */
         const PREFERENCES_RECENTS_KEY = "recentSearches";
@@ -2951,25 +3615,10 @@
         const defaultAnalytics = { views: {}, filters: {}, searches: {} };
 
         /** @type {Array<string>} */
-        let favoriteLocationIds = [];
-
-        /** @type {Array<string>} */
         let recentSearches = [];
 
         /** @type {boolean} */
         let searchInputFocused = false;
-
-        /** @type {boolean} */
-        let currentNearMeActive = false;
-
-        /** @type {{latitude:number, longitude:number} | null} */
-        let currentNearMeCoords = null;
-
-        /** @type {string} */
-        let currentNearMeStatus = "";
-
-        /** @type {boolean} */
-        let currentNearMeError = false;
 
         /** @type {number | null} */
         let currentDataVersionSignature = null;
@@ -2982,9 +3631,6 @@
 
         /** @type {{active:boolean,startX:number,startY:number,deltaX:number,deltaY:number,revealed:boolean,ignoreClick:boolean}|null} */
         let modalGestureState = null;
-
-        /** @type {Map<number, number>} */
-        let distanceByLocationIndex = new Map();
 
         /** @type {number | null} */
         let pullRefreshStartY = null;
@@ -3021,7 +3667,6 @@
         function readPreferenceArray(key) {
             const prefs = loadPreferences();
             const mapping = {
-                [PREFERENCES_FAVORITES_KEY]: 'favorites',
                 [PREFERENCES_RECENTS_KEY]: 'recentSearches'
             };
             const prop = mapping[key] || key;
@@ -3044,61 +3689,10 @@
                 }
             });
             const mapping = {
-                [PREFERENCES_FAVORITES_KEY]: 'favorites',
                 [PREFERENCES_RECENTS_KEY]: 'recentSearches'
             };
             const prop = mapping[key] || key;
             savePreferences({ [prop]: uniqueValues.slice(0, limit) });
-        }
-
-        /**
-         * Get the current list of favorite location ids.
-         * @returns {Array<string>}
-         */
-        function getFavoriteLocationIds() {
-            return readPreferenceArray(PREFERENCES_FAVORITES_KEY);
-        }
-
-        /**
-         * Persist the favorite location ids.
-         * @param {Array<string>} ids
-         * @returns {void}
-         */
-        function setFavoriteLocationIds(ids) {
-            favoriteLocationIds = Array.isArray(ids) ? ids.slice() : [];
-            writePreferenceArray(PREFERENCES_FAVORITES_KEY, favoriteLocationIds);
-        }
-
-        /**
-         * Check whether a location is favorited.
-         * Pure function: no DOM access.
-         * @param {Object} location
-         * @returns {boolean}
-         */
-        function isFavoriteLocation(location) {
-            const key = getLocationStorageKey(location);
-            return favoriteLocationIds.includes(key);
-        }
-
-        /**
-         * Toggle a favorite location id and refresh the current view.
-         * @param {string} locationId
-         * @returns {void}
-         */
-        function toggleFavorite(locationId) {
-            hapticTap();
-            if (!locationId) return;
-            const ids = getFavoriteLocationIds();
-            const existingIndex = ids.indexOf(locationId);
-            if (existingIndex >= 0) {
-                ids.splice(existingIndex, 1);
-            } else {
-                ids.unshift(locationId);
-            }
-            setFavoriteLocationIds(ids);
-            applyFiltersAndSearch(false);
-            renderAboutPanel();
-            updateOpenModalFavoriteButton();
         }
 
         /**
@@ -3175,60 +3769,6 @@
         }
 
         /**
-         * Calculate the straight-line distance between two points on Earth.
-         * Pure function: no DOM access.
-         * @param {number} latitudeA
-         * @param {number} longitudeA
-         * @param {number} latitudeB
-         * @param {number} longitudeB
-         * @returns {number}
-         */
-        function haversineDistanceMeters(latitudeA, longitudeA, latitudeB, longitudeB) {
-            const radiusMeters = 6371000;
-            const toRadians = (value) => value * Math.PI / 180;
-            const deltaLatitude = toRadians(latitudeB - latitudeA);
-            const deltaLongitude = toRadians(longitudeB - longitudeA);
-            const a = Math.sin(deltaLatitude / 2) ** 2
-                + Math.cos(toRadians(latitudeA)) * Math.cos(toRadians(latitudeB))
-                * Math.sin(deltaLongitude / 2) ** 2;
-            return 2 * radiusMeters * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        }
-
-        /**
-         * Compute the distance from the user's coordinates to a location.
-         * Pure function: no DOM access.
-         * @param {{latitude:number, longitude:number}} userCoords
-         * @param {Object} location
-         * @returns {number | null}
-         */
-        function distanceToLocation(userCoords, location) {
-            const coordinates = location && location.coordinates;
-            if (!userCoords || !coordinates || coordinates.latitude == null || coordinates.longitude == null) return null;
-            return haversineDistanceMeters(userCoords.latitude, userCoords.longitude, coordinates.latitude, coordinates.longitude);
-        }
-
-        /**
-         * Format a distance label for the current language.
-         * Pure function: no DOM access.
-         * @param {number} meters
-         * @param {string} [lang=currentLang]
-         * @returns {string}
-         */
-        function formatDistanceLabel(meters, lang = currentLang) {
-            if (!Number.isFinite(meters)) return "";
-            if (meters < 1000) {
-                const rounded = Math.max(1, Math.round(meters));
-                if (lang === "hi") return `${rounded} मीटर दूर`;
-                if (lang === "mr") return `${rounded} मीटर अंतरावर`;
-                return `${rounded} m away`;
-            }
-            const kilometers = (meters / 1000).toFixed(meters >= 10000 ? 0 : 1);
-            if (lang === "hi") return `${kilometers} किमी दूर`;
-            if (lang === "mr") return `${kilometers} किमी अंतरावर`;
-            return `${kilometers} km away`;
-        }
-
-        /**
          * Compare two numeric values and fall back to index order.
          * Pure function: no DOM access.
          * @param {number} left
@@ -3250,15 +3790,7 @@
          * @returns {Array<number>}
          */
         function sortFilteredIndexes(indexes) {
-            const ordered = indexes.slice();
-            if (!currentNearMeActive || !currentNearMeCoords) return ordered;
-            return ordered.sort((leftIndex, rightIndex) => {
-                const leftDistance = distanceByLocationIndex.get(leftIndex);
-                const rightDistance = distanceByLocationIndex.get(rightIndex);
-                const safeLeft = Number.isFinite(leftDistance) ? leftDistance : Number.POSITIVE_INFINITY;
-                const safeRight = Number.isFinite(rightDistance) ? rightDistance : Number.POSITIVE_INFINITY;
-                return compareWithIndexFallback(safeLeft, safeRight, leftIndex, rightIndex);
-            });
+            return indexes.slice();
         }
 
         /**
@@ -3272,7 +3804,6 @@
                 version: PREFS_SCHEMA_VERSION,
                 theme: null,
                 language: null,
-                favorites: [],
                 recentSearches: [],
                 viewedCounts: {},
             };
@@ -3287,14 +3818,11 @@
             }
             // possible legacy keys
             if (Array.isArray(old)) {
-                // legacy stored favorites as array
-                base.favorites = old.slice(0, 100);
                 return base;
             }
             // map known legacy keys
             base.theme = old.theme || old.ccTheme || base.theme;
             base.language = old.language || old.lang || base.language;
-            base.favorites = Array.isArray(old.favorites) ? old.favorites : (Array.isArray(old[PREFERENCES_FAVORITES_KEY]) ? old[PREFERENCES_FAVORITES_KEY] : base.favorites);
             base.recentSearches = Array.isArray(old.recentSearches) ? old.recentSearches : (Array.isArray(old[PREFERENCES_RECENTS_KEY]) ? old[PREFERENCES_RECENTS_KEY] : base.recentSearches);
             base.viewedCounts = old.viewedCounts || old.views || base.viewedCounts;
             return base;
@@ -3418,7 +3946,7 @@
             allLocations.forEach((location) => {
                 if (location && location.category) found.add(location.category);
             });
-            categories = [FAVORITES_FILTER, ALL_FILTER, ...Array.from(found).sort()];
+            categories = [ALL_FILTER, ...Array.from(found).sort()];
         }
 
         /**
@@ -3431,9 +3959,7 @@
          * @returns {boolean}
          */
         function matchesLocation(location, searchEntry, query, filter) {
-            if (filter === FAVORITES_FILTER) {
-                if (!isFavoriteLocation(location)) return false;
-            } else if (filter !== ALL_FILTER && location.category !== filter) {
+            if (filter !== ALL_FILTER && location.category !== filter) {
                 return false;
             }
             if (!query) return true;
@@ -3705,7 +4231,6 @@
          * @returns {string}
          */
         function formatCategoryLabel(category, lang = currentLang) {
-            if (category === FAVORITES_FILTER) return t("favoritesFilter", lang);
             if (!category) return t("categoryLabels.uncategorized", lang);
             const dict = TRANSLATIONS[lang] && TRANSLATIONS[lang].categoryLabels;
             const english = TRANSLATIONS.en.categoryLabels;
@@ -3724,7 +4249,7 @@
             if (!container) return;
 
             container.innerHTML = categories.map((category) => {
-                const icon = category === FAVORITES_FILTER ? "star" : (category === ALL_FILTER ? "layout-grid" : (CATEGORY_ICONS[category] || DEFAULT_ICON));
+                const icon = category === ALL_FILTER ? "layout-grid" : (CATEGORY_ICONS[category] || DEFAULT_ICON);
                 const isActive = currentFilter === category;
                 const label = category === ALL_FILTER ? t("filterAll") : formatCategoryLabel(category);
                 return `
@@ -3777,25 +4302,6 @@
                 <div class="flex flex-wrap gap-2">${chips || `<p class="text-xs font-medium text-slate-500 italic">${escapeHtml(t("usageEmpty"))}</p>`}</div>
             `;
             initIconsForRoot(wrap);
-        }
-
-        /**
-         * Update the near-me button and status line.
-         * DOM-coupled helper: writes button and status text only.
-         * @returns {void}
-         */
-        function renderNearMeState() {
-            const button = getEl("nearMeBtn");
-            const text = getEl("nearMeBtnText");
-            const status = getEl("nearMeStatus");
-            if (!button || !text || !status) return;
-
-            button.setAttribute("aria-pressed", String(currentNearMeActive));
-            button.setAttribute("data-active", String(currentNearMeActive));
-            text.textContent = t("nearMeLabel");
-            status.textContent = currentNearMeStatus || (currentNearMeActive ? t("nearMeActive") : "");
-            status.setAttribute("data-error", String(currentNearMeError));
-            initIconsForRoot(button);
         }
 
         /**
@@ -4129,7 +4635,7 @@
                 <p class="text-xs font-bold text-slate-700 mb-4">${escapeHtml(coordsText)}</p>
                 <div class="modal-footer-sticky">
                     <button onclick='${navigateHandler}' aria-label="${escapeHtml(t("navigateToLocation"))}" class="navigate-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
-                        <span class="navigate-btn-icon">📍</span>
+                        <span class="navigate-btn-icon"><i data-lucide="map-pin" class="w-4 h-4"></i></span>
                         ${escapeHtml(t("navigateToLocation"))}
                     </button>
                     <button onclick='${shareHandler}' aria-label="${escapeHtml(t("share"))}" class="share-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
@@ -4137,7 +4643,7 @@
                         ${escapeHtml(t("share"))}
                     </button>
                     <button onclick='${copyHandler}' aria-label="${escapeHtml(t("copyLink"))}" class="copy-link-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
-                        <span>📋</span> ${escapeHtml(t("copyLink"))}
+                        <i data-lucide="clipboard" class="w-4 h-4"></i> ${escapeHtml(t("copyLink"))}
                     </button>
                     ${!mapUrl ? `<p class="text-[11px] font-semibold text-slate-500 italic mt-2 text-center">${escapeHtml(t("locationNotAvailable"))}</p>` : ""}
                 </div>
@@ -4157,48 +4663,27 @@
                 <nav aria-label="Breadcrumb" class="breadcrumb text-[11px] font-bold text-slate-500">
                     ${crumbs.map((crumb, index) => `
                         ${index > 0 ? '<i data-lucide="chevron-right" class="w-3 h-3"></i>' : ""}
-                        <span class="${index === crumbs.length - 1 ? "text-rose-600" : ""}">${escapeHtml(crumb)}</span>
+                        <span class="${index === crumbs.length - 1 ? "text-red-600" : ""}">${escapeHtml(crumb)}</span>
                     `).join("")}
                 </nav>
             `;
         }
 
-        /**
-         * Render a single location card.
-         * DOM-coupled helper: returns HTML only.
-         * @param {Object} location
-         * @param {number} originalIndex
-         * @returns {string}
-         */
-        function getCardActions(isFavorite, locationId, navHandler, locationName) {
-            const favoriteLabel = isFavorite ? t("favoriteOn") : t("favoriteOff");
-            return `
-                <button class="card-favorite-btn tap-shrink" data-favorited="${isFavorite}" onclick='event.stopPropagation(); toggleFavorite(${JSON.stringify(locationId)})'
-                    aria-label="${escapeHtml(favoriteLabel)}">
-                    <i data-lucide="${isFavorite ? "heart" : "star"}" class="w-4 h-4"></i>
-                </button>
-                <div class="card-quick-action">
-                    <button onclick='event.stopPropagation(); ${navHandler}' class="tap-shrink inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/15 text-white font-black text-xs" aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}">
-                        <i data-lucide="navigation-2" class="w-4 h-4"></i>
-                        <span>${escapeHtml(t("navigate"))}</span>
-                    </button>
-                </div>
-            `;
-        }
-
         function getCardHeader(location, locationName, icon) {
             const parentLine = location.parent
-                ? `<p class="text-sm font-bold text-rose-600 flex items-center gap-2 mb-4 min-w-0 truncate"><i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i> ${escapeHtml(location.parent)}</p>`
-                : `<div class="mb-4"></div>`;
+                ? `<p class="text-sm font-semibold text-red-600 flex items-center gap-2 mb-3 min-w-0 truncate"><i data-lucide="corner-down-right" class="w-3.5 h-3.5"></i> ${escapeHtml(location.parent)}</p>`
+                : `<div class="mb-3"></div>`;
             return `
                 <div class="absolute top-0 right-0 p-4">
-                    <span class="bg-rose-50 text-rose-700 text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-tighter">
+                    <span class="bg-red-50 text-red-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-tight">
                         ${escapeHtml(formatCategoryLabel(location.category))}
                     </span>
                 </div>
-                <div class="flex items-center gap-2 mb-2 min-w-0">
-                    <i data-lucide="${icon}" class="w-4 h-4 text-rose-600 flex-shrink-0"></i>
-                    <h2 class="text-xl font-black text-slate-800 truncate">${escapeHtml(locationName)}</h2>
+                <div class="flex items-center gap-2.5 mb-2 min-w-0">
+                    <div class="w-8 h-8 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="${icon}" class="w-4 h-4 text-red-600"></i>
+                    </div>
+                    <h2 class="text-lg font-extrabold text-slate-800 truncate leading-tight">${escapeHtml(locationName)}</h2>
                 </div>
                 ${parentLine}
             `;
@@ -4208,57 +4693,40 @@
             const locationId = getLocationStorageKey(location);
             const icon = CATEGORY_ICONS[location.category] || DEFAULT_ICON;
             const description = location.description && location.description.trim() !== "" ? location.description : t("noDescription");
-            
             const mapUrl = getMapUrl(location);
             const navHandler = mapUrl ? `navigateToLocation(${JSON.stringify(mapUrl)})` : `navigateToLocation(null)`;
             const locationName = location.name || t("unnamedLocation");
-            const isFavorite = isFavoriteLocation(location);
-            const distanceMeters = currentNearMeActive ? distanceByLocationIndex.get(originalIndex) : null;
-            const distanceLabel = currentNearMeActive && Number.isFinite(distanceMeters) ? formatDistanceLabel(distanceMeters) : "";
-            
+
             return `
-                <div class="card-shell card tap-shrink bg-white rounded-3xl p-6 shadow-sm border border-slate-100 relative overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-500 gesture-pan-y"
+                <div class="card-shell card tap-shrink bg-white rounded-3xl p-6 shadow-sm border border-slate-100 relative overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 gesture-pan-y"
                     data-location-id="${escapeHtml(locationId)}" data-quick-reveal="false"
                     onclick='handleCardActivate(event, ${originalIndex}, ${JSON.stringify(locationId)})'
                     onkeydown='if(event.key==="Enter"||event.key===" ") { event.preventDefault(); handleCardActivate(event, ${originalIndex}, ${JSON.stringify(locationId)}); }'
                     tabindex="0" role="listitem" aria-label="${escapeHtml(t("viewDetails"))} ${escapeHtml(locationName)}">
-                    
-                    ${getCardActions(isFavorite, locationId, navHandler, locationName)}
-                    
+
+                    <div class="card-quick-action">
+                        <button onclick='event.stopPropagation(); ${navHandler}' class="tap-shrink inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/15 text-white font-black text-xs" aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}">
+                            <i data-lucide="navigation-2" class="w-4 h-4"></i>
+                            <span>${escapeHtml(t("navigate"))}</span>
+                        </button>
+                    </div>
+
                     <div class="card-main">
                         ${getCardHeader(location, locationName, icon)}
-                        <p class="text-xs font-medium text-slate-500 line-clamp-2">${escapeHtml(description)}</p>
-                        ${distanceLabel ? `<p class="card-distance-pill"><i data-lucide="navigation-2" class="w-3.5 h-3.5"></i><span>${escapeHtml(distanceLabel)}</span></p>` : ""}
-                        <div class="flex items-center justify-between mt-4">
-                            <div class="flex items-center gap-1 text-slate-500">
-                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                                <span class="text-[10px] font-bold uppercase tracking-wide">${escapeHtml(t("viewDetails"))}</span>
+                        <p class="text-xs font-medium text-slate-500 line-clamp-2 leading-relaxed">${escapeHtml(description)}</p>
+                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100 dark:border-white/5">
+                            <div class="flex items-center gap-1.5 text-slate-400">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                                <span class="text-[10px] font-bold uppercase tracking-wider">${escapeHtml(t("viewDetails"))}</span>
                             </div>
                             <button onclick='event.stopPropagation(); ${navHandler}' aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}"
                                 class="navigate-btn-small tap-shrink" style="min-height:44px;" ${mapUrl ? "" : "disabled"}>
-                                <span>📍</span> ${escapeHtml(t("navigate"))}
+                                <i data-lucide="map-pin" class="w-4 h-4"></i> ${escapeHtml(t("navigate"))}
                             </button>
                         </div>
-                        <p class="inline-gesture-hint mt-4">${escapeHtml(t("swipeNavigateHint"))}</p>
                     </div>
                 </div>
             `;
-        }
-
-        /**
-         * Update the distance cache for the current filtered results.
-         * @param {Array<number>} indexes
-         * @returns {void}
-         */
-        function updateDistanceCache(indexes) {
-            distanceByLocationIndex = new Map();
-            if (!currentNearMeActive || !currentNearMeCoords) return;
-            indexes.forEach((locationIndex) => {
-                const distance = distanceToLocation(currentNearMeCoords, allLocations[locationIndex]);
-                if (Number.isFinite(distance)) {
-                    distanceByLocationIndex.set(locationIndex, distance);
-                }
-            });
         }
 
         /**
@@ -4267,33 +4735,15 @@
          * @returns {Array<number>}
          */
         function getDisplayIndexes(indexes) {
-            updateDistanceCache(indexes);
             return sortFilteredIndexes(indexes);
         }
 
         /**
-         * Decide whether the empty state should show the favorites-specific copy.
+         * Decide the empty state copy.
          * @returns {string}
          */
         function getEmptyStateCopy() {
-            if (currentFilter === FAVORITES_FILTER && getFavoriteLocationIds().length === 0) {
-                return t("favoritesEmptyStateText");
-            }
             return t("emptyStateText");
-        }
-
-        /**
-         * Update the favorite state in the open modal, if present.
-         * @returns {void}
-         */
-        function updateOpenModalFavoriteButton() {
-            const button = getEl("modalFavoriteBtn");
-            const locationId = button && button.getAttribute("data-location-id");
-            if (!button || !locationId) return;
-            const isFavorite = favoriteLocationIds.includes(locationId);
-            button.setAttribute("data-favorited", String(isFavorite));
-            button.setAttribute("aria-label", isFavorite ? t("favoriteOn") : t("favoriteOff"));
-            initIconsForRoot(button);
         }
 
         /**
@@ -4466,7 +4916,7 @@
                 banner.setAttribute("data-visible", String(visible));
                 banner.style.transform = visible ? `translateY(${Math.min(progress, 72)}px)` : "";
                 const text = getEl("pullRefreshText");
-                if (text) text.textContent = isPullRefreshing ? t("nearMeLoading") : t("pullToRefresh");
+                if (text) text.textContent = t("pullToRefresh");
             };
 
             viewport.addEventListener("touchstart", (event) => {
@@ -4504,56 +4954,6 @@
 
             viewport.addEventListener("touchend", finishRefresh);
             viewport.addEventListener("touchcancel", finishRefresh);
-        }
-
-        /**
-         * Activate or deactivate the near-me mode.
-         * @returns {void}
-         */
-        function toggleNearMe() {
-            hapticTap();
-            if (currentNearMeActive) {
-                currentNearMeActive = false;
-                currentNearMeCoords = null;
-                currentNearMeStatus = "";
-                currentNearMeError = false;
-                renderNearMeState();
-                applyFiltersAndSearch(false);
-                return;
-            }
-
-            if (!navigator.geolocation) {
-                currentNearMeStatus = t("nearMeUnavailable");
-                currentNearMeError = true;
-                currentNearMeActive = false;
-                renderNearMeState();
-                return;
-            }
-
-            currentNearMeStatus = t("nearMeLoading");
-            currentNearMeError = false;
-            renderNearMeState();
-
-            navigator.geolocation.getCurrentPosition((position) => {
-                currentNearMeCoords = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                };
-                currentNearMeActive = true;
-                currentNearMeError = false;
-                currentNearMeStatus = t("nearMeActive");
-                renderNearMeState();
-                applyFiltersAndSearch(false);
-            }, (error) => {
-                currentNearMeActive = false;
-                currentNearMeCoords = null;
-                currentNearMeError = true;
-                currentNearMeStatus = error && error.code === error.PERMISSION_DENIED ? t("nearMePermissionDenied")
-                    : error && error.code === error.TIMEOUT ? t("nearMeTimedOut")
-                    : t("nearMeErrorGeneric");
-                renderNearMeState();
-                showToast(currentNearMeStatus);
-            }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 });
         }
 
         /**
@@ -4658,11 +5058,6 @@
             initIconsForRoot(getEl("aboutPanel"));
         }
 
-        /**
-         * Open the modal for a particular location index.
-         * DOM-coupled helper: writes modal content and updates focus.
-         * @param {number} index
-         * @returns {void}
         function getModalDepartmentSection(location) {
             if (location.category !== "department") return "";
             return `
@@ -4678,22 +5073,19 @@
         }
 
         function getModalHeaderActions(location, locationId, icon) {
-            const isFavorite = isFavoriteLocation(location);
             return `
                 <div class="modal-header-actions mb-4 pr-8">
                     <div class="modal-header-meta" id="modalTitleRegion">
-                        <div class="flex items-center gap-2 mb-2 min-w-0">
-                            <i data-lucide="${icon}" class="w-5 h-5 text-rose-600 flex-shrink-0"></i>
-                            <h2 class="text-xl font-black text-slate-800 break-words">${escapeHtml(location.name || t("unnamedLocation"))}</h2>
+                        <div class="flex items-center gap-3 mb-3 min-w-0">
+                            <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="${icon}" class="w-5 h-5 text-red-600"></i>
+                            </div>
+                            <h2 class="text-xl font-extrabold text-slate-800 break-words leading-tight">${escapeHtml(location.name || t("unnamedLocation"))}</h2>
                         </div>
-                        <span class="inline-block bg-rose-50 text-rose-700 text-[10px] font-black px-2 py-1 rounded-lg uppercase tracking-tighter">
+                        <span class="inline-block bg-red-50 text-red-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-tight">
                             ${escapeHtml(formatCategoryLabel(location.category))}
                         </span>
                     </div>
-                    <button id="modalFavoriteBtn" data-location-id="${escapeHtml(locationId)}" data-favorited="${isFavorite}"
-                        onclick='toggleFavorite(${JSON.stringify(locationId)})' class="modal-favorite-btn tap-shrink" aria-label="${escapeHtml(isFavorite ? t("favoriteOn") : t("favoriteOff"))}">
-                        <i data-lucide="${isFavorite ? "heart" : "star"}" class="w-4 h-4"></i>
-                    </button>
                 </div>
             `;
         }
@@ -4746,7 +5138,6 @@
             modal.classList.add("flex");
             initIconsForRoot(modalContent);
             bindModalGesture();
-            updateOpenModalFavoriteButton();
 
             const scrollBody = getEl("modalScrollBody");
             if (scrollBody) scrollBody.scrollTop = 0;
@@ -5092,6 +5483,27 @@
         function handleSearchInput(event) {
             currentQuery = normalizeText(event.target.value);
             debouncedApplyAll();
+            // Toggle clear button visibility
+            const clearBtn = getEl("searchClearBtn");
+            if (clearBtn) {
+                clearBtn.classList.toggle("visible", event.target.value.length > 0);
+            }
+        }
+
+        /**
+         * Clear the search input and reset results.
+         * @returns {void}
+         */
+        function clearSearch() {
+            const searchInput = getEl("searchInput");
+            if (searchInput) {
+                searchInput.value = "";
+                searchInput.focus();
+            }
+            currentQuery = "";
+            debouncedApplyAll();
+            const clearBtn = getEl("searchClearBtn");
+            if (clearBtn) clearBtn.classList.remove("visible");
         }
 
         /**
@@ -5224,6 +5636,39 @@
             window.addEventListener("offline", updateOnlineStatus);
             window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
             window.addEventListener("appinstalled", onAppInstalled);
+
+            // Scroll listener for Go To Top button
+            window.addEventListener("scroll", handleScrollForTopBtn, { passive: true });
+            const listViewport = getEl("listViewport");
+            if (listViewport) {
+                listViewport.addEventListener("scroll", handleScrollForTopBtn, { passive: true });
+            }
+        }
+
+        /**
+         * Toggles visibility of the Go To Top button based on scroll position.
+         */
+        function handleScrollForTopBtn() {
+            const btn = getEl("goToTopBtn");
+            if (!btn) return;
+            const scrollY = window.scrollY || (getEl("listViewport") ? getEl("listViewport").scrollTop : 0);
+            if (scrollY > 300) {
+                btn.classList.add("visible");
+            } else {
+                btn.classList.remove("visible");
+            }
+        }
+
+        /**
+         * Scrolls the window and listViewport to the top smoothly.
+         */
+        function scrollToTop() {
+            hapticTap();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            const listViewport = getEl("listViewport");
+            if (listViewport) {
+                listViewport.scrollTo({ top: 0, behavior: "smooth" });
+            }
         }
 
         /**
@@ -5233,7 +5678,6 @@
         function initApp() {
             firstLaunchPending = !initLanguage();
             // Load persisted UX preferences (favorites, recent searches)
-            favoriteLocationIds = getFavoriteLocationIds();
             recentSearches = getRecentSearches();
             initUI();
             wireInteractiveHandlers();
@@ -5271,6 +5715,8 @@
         window.retryLoadData = retryLoadData;
         window.toggleAboutPanel = toggleAboutPanel;
         window.loadData = loadData;
+        window.scrollToTop = scrollToTop;
+        window.clearSearch = clearSearch;
     </script>
 </body>
 
