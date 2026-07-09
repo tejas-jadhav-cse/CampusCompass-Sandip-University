@@ -1,7 +1,7 @@
 // CampusCompass Service Worker
 // Bump CACHE_VERSION whenever app-shell files change so clients pick up
 // the new versions instead of serving stale cached copies forever.
-const CACHE_VERSION = "v3";
+const CACHE_VERSION = "v4";
 const CACHE_NAME = `campuscompass-shell-${CACHE_VERSION}`;
 
 // The app shell: everything needed for the app to boot and run fully
@@ -11,8 +11,11 @@ const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./icon-192.png",
-  "./icon-512.png"
+  "./css/index.css",
+  "./js/app.js",
+  "./assets/icon-192.png",
+  "./assets/icon-512.png",
+  "./assets/campus_banner.png"
 ];
 
 // The external dataset file is optional (index.html falls back to its
@@ -62,13 +65,46 @@ self.addEventListener("activate", (event) => {
 // Stale-while-revalidate: serve the cached response immediately (if any)
 // while kicking off a network request in the background to refresh the
 // cache for next time.
+/**
+ * Helper to validate responses before caching them.
+ * Ensures we only cache safe content types and do not cache corrupted/unexpected payloads.
+ * @param {Response} response
+ * @param {Request} request
+ * @returns {boolean}
+ */
+function isValidResponseForCache(response, request) {
+  if (!response || !response.ok) return false;
+  const contentType = response.headers.get("content-type") || "";
+  const url = new URL(request.url);
+
+  // If caching the JSON dataset, ensure it actually is JSON
+  if (url.pathname.endsWith("sandip_university_campus.json")) {
+    return contentType.includes("application/json");
+  }
+
+  // If caching web pages or assets
+  if (url.pathname.endsWith(".html") || url.pathname.endsWith("/")) {
+    return contentType.includes("text/html");
+  }
+
+  if (url.pathname.endsWith(".json")) {
+    return contentType.includes("application/json");
+  }
+
+  if (url.pathname.endsWith(".png")) {
+    return contentType.includes("image/png");
+  }
+
+  return true; // Fallback allow for general app shell assets (svg, CSS, JS, etc.)
+}
+
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(CACHE_NAME);
   const cached = await cache.match(request);
 
   const networkFetch = fetch(request)
     .then((response) => {
-      if (response && response.ok) {
+      if (isValidResponseForCache(response, request)) {
         cache.put(request, response.clone());
       }
       return response;
@@ -88,7 +124,7 @@ async function cacheFirst(request) {
 
   try {
     const response = await fetch(request);
-    if (response && response.ok) {
+    if (isValidResponseForCache(response, request)) {
       cache.put(request, response.clone());
     }
     return response;

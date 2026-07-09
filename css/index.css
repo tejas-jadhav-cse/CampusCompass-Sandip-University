@@ -1,0 +1,2525 @@
+        html[lang="hi"] body,
+        html[lang="mr"] body {
+            font-family: "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", Roboto, "Nirmala UI", "Noto Sans", sans-serif;
+            line-height: 1.65;
+        }
+
+        html[lang="hi"] h1, html[lang="hi"] h2, html[lang="hi"] p, html[lang="hi"] span, html[lang="hi"] button, html[lang="hi"] input,
+        html[lang="mr"] h1, html[lang="mr"] h2, html[lang="mr"] p, html[lang="mr"] span, html[lang="mr"] button, html[lang="mr"] input {
+            letter-spacing: normal;
+        }
+
+        .sun-theme {
+            background: linear-gradient(135deg, #0f172a 0%, #9f1239 100%);
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE / Edge */
+        }
+
+        .modal-overlay {
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(2px);
+        }
+
+        #detailModal,
+        .modal-scroll-body {
+            overscroll-behavior: none;
+        }
+
+        .gesture-scroll-none {
+            overscroll-behavior: none;
+        }
+
+        .gesture-pan-y {
+            touch-action: pan-y;
+        }
+
+        .card-shell {
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+        }
+
+        .card-main {
+            position: relative;
+            z-index: 1;
+            transition: transform 0.22s ease;
+        }
+
+        .card-shell[data-quick-reveal="true"] .card-main {
+            transform: translateX(-5.25rem);
+        }
+
+        .card-quick-action {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 5.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
+            color: #fff;
+            transform: translateX(100%);
+            transition: transform 0.22s ease;
+            z-index: 0;
+        }
+
+        .card-shell[data-quick-reveal="true"] .card-quick-action {
+            transform: translateX(0);
+        }
+
+        .recent-chip,
+        .clear-recent-btn,
+        .share-btn {
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .share-btn,
+        .clear-recent-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 999px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #0f172a;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 8px 16px;
+        }
+
+        html.dark .share-btn,
+        html.dark .clear-recent-btn {
+            background: #131c2f;
+            color: #e2e8f0;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .recent-searches-wrap,
+        .location-inline-note {
+            font-size: 12px;
+        }
+
+        .recent-searches-wrap {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .recent-searches-wrap[data-visible="true"] {
+            display: flex;
+        }
+
+        .recent-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 999px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #334155;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        html.dark .recent-chip {
+            background: #1e293b;
+            color: #cbd5e1;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .pull-refresh-banner {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.18s ease, opacity 0.18s ease;
+            pointer-events: none;
+        }
+
+        .pull-refresh-banner[data-visible="true"] {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-header-actions {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .modal-header-meta {
+            min-width: 0;
+        }
+
+        .modal-action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .inline-gesture-hint {
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        html.dark .inline-gesture-hint {
+            color: #94a3b8;
+        }
+
+        .chip {
+            display: inline-block;
+        }
+
+        /* ---------- Navigate to Location button ---------- */
+        .navigate-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 16px 24px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: 0.01em;
+            color: #ffffff;
+            background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
+            background-size: 150% 150%;
+            background-position: 0% 50%;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background-position 0.4s ease;
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.28);
+        }
+
+        .navigate-btn:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.38);
+            background-position: 100% 50%;
+        }
+
+        .navigate-btn:active:not(:disabled) {
+            transform: translateY(0) scale(0.97);
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+
+        .navigate-btn:disabled {
+            background: #cbd5e1;
+            color: #64748b;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .navigate-btn-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .navigate-btn-small {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            color: #ffffff;
+            background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.28);
+            white-space: nowrap;
+        }
+
+        .navigate-btn-small:hover:not(:disabled) {
+            transform: translateY(-1px) scale(1.04);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+
+        .navigate-btn-small:active:not(:disabled) {
+            transform: translateY(0) scale(0.96);
+        }
+
+        .navigate-btn-small:disabled {
+            background: #cbd5e1;
+            color: #64748b;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+
+        /* ---------- Dark mode base ---------- */
+        html.dark body {
+            background-color: #0b1120;
+            color: #e2e8f0;
+        }
+
+        html.dark .glass-nav {
+            background: rgba(15, 23, 42, 0.92);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        html.dark #searchInput {
+            background-color: #1e293b;
+            color: #e2e8f0;
+        }
+
+        html.dark #searchInput::placeholder {
+            color: #64748b;
+        }
+
+        html.dark .card,
+        html.dark .modal-panel {
+            background-color: #131c2f;
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+
+        html.dark .modal-overlay {
+            background: rgba(0, 0, 0, 0.65);
+        }
+
+        html.dark .filter-chip-inactive {
+            background-color: #131c2f;
+            color: #94a3b8;
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        html.dark .text-slate-800,
+        html.dark .text-slate-900 {
+            color: #e2e8f0 !important;
+        }
+
+        html.dark .text-slate-700 {
+            color: #cbd5e1 !important;
+        }
+
+        html.dark .text-slate-600 {
+            color: #b7c2d0 !important;
+        }
+
+        html.dark .text-slate-500 {
+            color: #a3b0c2 !important;
+        }
+
+        html.dark .text-slate-500 {
+            color: #8b98ab !important;
+        }
+
+        html.dark .bg-slate-100 {
+            background-color: #1e293b !important;
+        }
+
+        html.dark .bg-rose-50 {
+            background-color: rgba(159, 18, 57, 0.25) !important;
+        }
+
+        html.dark .text-rose-700 {
+            color: #fda4af !important;
+        }
+
+        html.dark .text-rose-600 {
+            color: #fb7185 !important;
+        }
+
+        html.dark .chip {
+            background-color: #1e293b;
+        }
+
+        html.dark .empty-illustration path,
+        html.dark .empty-illustration circle {
+            stroke: #64748b;
+        }
+
+        /* ---------- Theme toggle button ---------- */
+        .theme-toggle-btn {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .theme-toggle-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* ---------- Language toggle button ---------- */
+        .lang-toggle-btn {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #fff;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .lang-toggle-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* ---------- Language picker overlay ---------- */
+        #langPickerOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0f172a 0%, #9f1239 100%);
+            overflow-y: auto;
+            opacity: 0;
+            transition: opacity 0.28s ease;
+        }
+
+        #langPickerOverlay.picker-shown {
+            display: flex;
+        }
+
+        #langPickerOverlay.picker-visible {
+            opacity: 1;
+        }
+
+        .lang-picker-inner {
+            margin: auto;
+            width: 100%;
+            max-width: 420px;
+            padding: 32px 24px calc(32px + env(safe-area-inset-bottom));
+            padding-top: calc(32px + env(safe-area-inset-top));
+        }
+
+        .lang-card {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 24px;
+            min-height: 44px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #fff;
+            text-align: left;
+            cursor: pointer;
+            transition: transform 0.15s ease, background 0.2s ease;
+        }
+
+        .lang-card:active {
+            transform: scale(0.97);
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        .lang-card + .lang-card {
+            margin-top: 16px;
+        }
+
+        .lang-card-native {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .lang-card-sub {
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.65);
+            margin-top: 4px;
+        }
+
+          /* Critical CSS: header, search bar, skeleton loader, and tap targets.
+              Deferred CSS: modal, dark variants, animation, about panel, and
+              virtualization scaffolding are grouped below so the above-the-fold
+              shell remains easy to find in this single-file app. */
+
+          /* ---------- Skeleton loaders ---------- */
+        .skeleton-card {
+            border-radius: 24px;
+            padding: 24px;
+            background: #fff;
+            border: 1px solid #f1f5f9;
+        }
+
+        html.dark .skeleton-card {
+            background: #131c2f;
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+
+        .skeleton-line {
+            border-radius: 8px;
+            background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 37%, #e2e8f0 63%);
+            background-size: 400% 100%;
+            animation: skeleton-shimmer 1.4s ease infinite;
+        }
+
+        html.dark .skeleton-line {
+            background: linear-gradient(90deg, #1e293b 25%, #263349 37%, #1e293b 63%);
+            background-size: 400% 100%;
+        }
+
+        @keyframes skeleton-shimmer {
+            0% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* ---------- Modal open/close animation ---------- */
+        .modal-panel {
+            background-color: #fff;
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.22s ease, transform 0.22s ease;
+        }
+
+        #detailModal.modal-visible .modal-panel {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .modal-overlay {
+            opacity: 0;
+            transition: opacity 0.22s ease;
+        }
+
+        #detailModal.modal-visible.modal-overlay-active {
+            opacity: 1;
+        }
+
+        /* ---------- Tappable active states ---------- */
+        .tap-shrink {
+            transition: transform 0.15s ease;
+        }
+
+        .tap-shrink:active {
+            transform: scale(0.96);
+        }
+
+        /* ---------- Reduced motion ---------- */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* ---------- Empty state illustration ---------- */
+        .empty-illustration path,
+        .empty-illustration circle {
+            stroke: #cbd5e1;
+        }
+
+        /* ---------- Breadcrumb ---------- */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        /* ---------- Toast ---------- */
+        #toast {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%) translateY(16px);
+            background: #0f172a;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 999px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        #toast.toast-visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ---------- Sticky modal footer ---------- */
+        .modal-scroll-body {
+            max-height: calc(85vh - 84px);
+            overflow-y: auto;
+        }
+
+        .modal-footer-sticky {
+            position: sticky;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding-top: 16px;
+            background: linear-gradient(to top, #fff 60%, rgba(255, 255, 255, 0));
+        }
+
+        html.dark .modal-footer-sticky {
+            background: linear-gradient(to top, #131c2f 60%, rgba(19, 28, 47, 0));
+        }
+
+        .copy-link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 16px 24px;
+            margin-top: 8px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 13px;
+            color: #334155;
+            background: #f1f5f9;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        html.dark .copy-link-btn {
+            background: #1e293b;
+            color: #cbd5e1;
+        }
+
+        .copy-link-btn:active:not(:disabled) {
+            transform: scale(0.97);
+        }
+
+        .copy-link-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ---------- Safe-area support (notched phones, standalone PWA) ---------- */
+        header.sun-theme {
+            padding-top: calc(48px + env(safe-area-inset-top));
+            padding-left: calc(24px + env(safe-area-inset-left));
+            padding-right: calc(24px + env(safe-area-inset-right));
+        }
+
+        .sticky-search-wrap {
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+
+        .modal-footer-sticky {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        #toast {
+            bottom: calc(24px + env(safe-area-inset-bottom));
+        }
+
+        body {
+            padding-bottom: calc(48px + env(safe-area-inset-bottom));
+        }
+
+        /* ---------- Offline banner ---------- */
+        #offlineBanner {
+            position: fixed;
+            top: calc(16px + env(safe-area-inset-top));
+            left: 50%;
+            transform: translateX(-50%) translateY(-16px);
+            z-index: 90;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #1e293b;
+            color: #fef2f2;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 999px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            max-width: calc(100% - 32px);
+        }
+
+        #offlineBanner.banner-visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ---------- Install banner ---------- */
+        #installBanner,
+        #iosInstallTip {
+            position: fixed;
+            left: 16px;
+            right: 16px;
+            bottom: calc(16px + env(safe-area-inset-bottom));
+            z-index: 95;
+            background: #fff;
+            color: #0f172a;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            padding: 16px;
+            display: none;
+            align-items: center;
+            gap: 16px;
+            transform: translateY(120%);
+            transition: transform 0.25s ease;
+        }
+
+        html.dark #installBanner,
+        html.dark #iosInstallTip {
+            background: #131c2f;
+            color: #e2e8f0;
+        }
+
+        #installBanner.banner-shown,
+        #iosInstallTip.banner-shown {
+            display: flex;
+            transform: translateY(0);
+        }
+
+        .install-cta-btn {
+            background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
+            color: #fff;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 8px 16px;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            min-height: 44px;
+        }
+
+        .install-dismiss-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* ---------- Virtualized list, about panel, and error boundary ---------- */
+        #listViewport {
+            max-height: min(74dvh, 820px);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .virtual-spacer {
+            width: 100%;
+            pointer-events: none;
+        }
+
+        #dataErrorBanner {
+            background: linear-gradient(135deg, #fef2f2 0%, #fff7ed 100%);
+            border: 1px solid #fecaca;
+            color: #7f1d1d;
+        }
+
+        html.dark #dataErrorBanner {
+            background: linear-gradient(135deg, rgba(69, 10, 10, 0.9) 0%, rgba(30, 41, 59, 0.98) 100%);
+            border-color: rgba(248, 113, 113, 0.35);
+            color: #fee2e2;
+        }
+
+        .about-panel {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+        }
+
+        html.dark .about-panel {
+            background: linear-gradient(180deg, #131c2f 0%, #0f172a 100%);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .about-toggle-btn {
+            min-width: 44px;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #0f172a;
+        }
+
+        html.dark .about-toggle-btn {
+            background: #131c2f;
+            border-color: rgba(255, 255, 255, 0.08);
+            color: #e2e8f0;
+        }
+
+        .usage-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: #e2e8f0;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        html.dark .usage-pill {
+            background: #1e293b;
+            color: #cbd5e1;
+        }
+
+        /* ==========================================================================
+           MOBILE RESPONSIVENESS — target: 320px / 360px / 375px / 390px / 412px / 430px
+           Mobile-first: base styles ARE mobile, media queries scale UP only where needed.
+           ========================================================================== */
+
+        /* ---------- Global mobile foundation ---------- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            overflow-x: hidden;
+            min-width: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        img, svg, video, canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* ---------- Responsive typography ---------- */
+        /* fluid title: 20px at 320px → 24px at 430px */
+        #appTitle {
+            font-size: clamp(1.25rem, 4.5vw, 1.5rem);
+            line-height: 1.2;
+            word-break: break-word;
+        }
+
+        /* fluid subtitle */
+        #appSubtitle {
+            font-size: clamp(0.625rem, 2.5vw, 0.75rem);
+        }
+
+        /* ---------- Header responsive ---------- */
+        header.sun-theme {
+            padding-bottom: 48px;
+        }
+
+        /* ---------- Search bar responsive ---------- */
+        .sticky-search-wrap {
+            padding-left: max(8px, env(safe-area-inset-left));
+            padding-right: max(8px, env(safe-area-inset-right));
+        }
+
+        .glass-nav {
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        #searchInput {
+            font-size: 16px; /* prevents iOS zoom on focus */
+            min-height: 44px;
+        }
+
+        /* ---------- Filter chips responsive ---------- */
+        .filter-chip {
+            flex-shrink: 0;
+        }
+
+        #filterContainer {
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 2px; /* prevents clipping of shadows */
+        }
+
+        #filterContainer > * {
+            scroll-snap-align: start;
+        }
+
+        /* ---------- Cards responsive ---------- */
+        .card-shell.card {
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        .card-shell.card h2 {
+            font-size: clamp(1rem, 4.2vw, 1.25rem);
+            line-height: 1.3;
+        }
+
+        /* ---------- Modal responsive ---------- */
+        .modal-panel {
+            max-height: calc(100dvh - env(safe-area-inset-top, 0px));
+            max-height: calc(100vh - env(safe-area-inset-top, 0px));
+        }
+
+        .modal-scroll-body {
+            max-height: calc(100dvh - 84px - env(safe-area-inset-top, 0px));
+            max-height: calc(100vh - 84px - env(safe-area-inset-top, 0px));
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .modal-panel h2 {
+            font-size: clamp(1rem, 4.2vw, 1.25rem);
+            line-height: 1.3;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        /* ---------- Language picker responsive ---------- */
+        .lang-picker-inner {
+            padding-left: max(16px, env(safe-area-inset-left));
+            padding-right: max(16px, env(safe-area-inset-right));
+        }
+
+        .lang-card-native {
+            font-size: clamp(1rem, 4.5vw, 1.25rem);
+        }
+
+        /* ---------- Install / iOS banners responsive ---------- */
+        #installBanner,
+        #iosInstallTip {
+            left: max(8px, env(safe-area-inset-left));
+            right: max(8px, env(safe-area-inset-right));
+        }
+
+        /* ---------- Main content responsive ---------- */
+        main {
+            padding-left: max(16px, env(safe-area-inset-left));
+            padding-right: max(16px, env(safe-area-inset-right));
+        }
+
+        /* ---------- Toast responsive ---------- */
+        #toast {
+            max-width: calc(100vw - 32px);
+            text-align: center;
+        }
+
+        /* ---------- Offline banner responsive ---------- */
+        #offlineBanner {
+            max-width: calc(100vw - 32px);
+            text-align: center;
+        }
+
+        /* ---------- Virtual list responsive height ---------- */
+        #listViewport {
+            max-height: min(74dvh, calc(100vh - 220px));
+        }
+
+
+        /* ---------- Modal footer buttons responsive ---------- */
+        .modal-footer-sticky {
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+        }
+
+        .share-btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* ---------- Card body overflow protection ---------- */
+        .card-main {
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .card-main p {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        /* ---------- About panel text wrapping ---------- */
+        .about-panel p,
+        .about-panel span {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        /* ---------- Chip overflow ---------- */
+        .chip {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ---------- Modal content text overflow ---------- */
+        #modalContent {
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        #modalContent p,
+        #modalContent h2,
+        #modalContent span {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        /* ============================
+           320px — smallest target
+           ============================ */
+        @media (max-width: 359px) {
+            header.sun-theme {
+                padding-left: calc(16px + env(safe-area-inset-left));
+                padding-right: calc(16px + env(safe-area-inset-right));
+                padding-top: calc(40px + env(safe-area-inset-top));
+                padding-bottom: 40px;
+            }
+
+            .sticky-search-wrap {
+                padding-left: max(4px, env(safe-area-inset-left));
+                padding-right: max(4px, env(safe-area-inset-right));
+            }
+
+            .glass-nav {
+                border-radius: 16px;
+            }
+
+            .card-shell.card {
+                padding: 16px;
+                border-radius: 20px;
+            }
+
+            .card-shell {
+                border-radius: 20px;
+            }
+
+            .navigate-btn {
+                font-size: 12px;
+                padding: 8px 16px;
+                border-radius: 12px;
+            }
+
+            .navigate-btn-small {
+                font-size: 9px;
+                padding: 4px 8px;
+                gap: 4px;
+            }
+
+            .modal-panel {
+                padding: 16px;
+                border-radius: 20px 20px 0 0;
+            }
+
+            .modal-panel h2 {
+                font-size: 1rem;
+            }
+
+            .modal-scroll-body {
+                max-height: calc(85dvh - 64px);
+            }
+
+            .skeleton-card {
+                padding: 16px;
+                border-radius: 20px;
+            }
+
+            .lang-card {
+                padding: 16px;
+                border-radius: 16px;
+            }
+
+            .lang-card-native {
+                font-size: 1rem;
+            }
+
+            .lang-picker-inner {
+                padding: 24px 16px calc(24px + env(safe-area-inset-bottom));
+                padding-top: calc(24px + env(safe-area-inset-top));
+            }
+
+            #installBanner,
+            #iosInstallTip {
+                flex-wrap: wrap;
+                padding: 12px;
+                gap: 8px;
+                border-radius: 16px;
+            }
+
+            .install-cta-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .about-panel {
+                border-radius: 20px;
+            }
+
+            .usage-pill {
+                font-size: 11px;
+                padding: 4px 8px;
+            }
+
+            main {
+                padding-left: max(8px, env(safe-area-inset-left));
+                padding-right: max(8px, env(safe-area-inset-right));
+            }
+
+            .copy-link-btn {
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+
+            .inline-gesture-hint {
+                font-size: 10px;
+            }
+
+            .share-btn,
+            .clear-recent-btn {
+                font-size: 11px;
+                padding: 8px 12px;
+            }
+
+            .card-shell.card h2 {
+                font-size: 0.95rem;
+            }
+
+            .filter-chip {
+                font-size: 11px;
+                padding: 6px 10px !important;
+            }
+
+            .recent-chip {
+                font-size: 11px;
+                padding: 6px 10px;
+            }
+
+            #searchInput {
+                padding-left: 36px;
+            }
+        }
+
+        /* ============================
+           360px — small Android phones
+           ============================ */
+        @media (min-width: 360px) and (max-width: 374px) {
+            header.sun-theme {
+                padding-left: calc(20px + env(safe-area-inset-left));
+                padding-right: calc(20px + env(safe-area-inset-right));
+            }
+
+            .card-shell.card {
+                padding: 20px;
+            }
+
+            .navigate-btn {
+                font-size: 13px;
+                padding: 12px 16px;
+            }
+
+            .navigate-btn-small {
+                font-size: 10px;
+                padding: 8px 12px;
+            }
+
+            .modal-panel {
+                padding: 20px;
+            }
+
+            #installBanner,
+            #iosInstallTip {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .install-cta-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* ============================
+           375px — iPhone SE / older iPhones
+           ============================ */
+        @media (min-width: 375px) and (max-width: 389px) {
+            .card-shell.card {
+                padding: 20px;
+            }
+
+            .navigate-btn {
+                font-size: 13px;
+                padding: 12px 20px;
+            }
+
+            .modal-panel {
+                padding: 24px;
+            }
+        }
+
+        /* ============================
+           390px+ — modern iPhones / mid Androids
+           ============================ */
+        @media (min-width: 390px) and (max-width: 429px) {
+            .card-shell.card {
+                padding: 24px;
+            }
+
+            .navigate-btn {
+                font-size: 14px;
+                padding: 16px 24px;
+            }
+
+            .modal-panel {
+                padding: 24px;
+            }
+        }
+
+        /* ============================
+           430px+ — large phones (iPhone Pro Max, Galaxy Ultra)
+           ============================ */
+        @media (min-width: 430px) {
+            .card-shell.card {
+                padding: 24px;
+            }
+
+            header.sun-theme {
+                padding-top: calc(48px + env(safe-area-inset-top));
+            }
+        }
+
+        /* ============================
+           Tall / short viewport adjustments
+           ============================ */
+        @media (max-height: 667px) {
+            /* iPhone SE height / short Android */
+            #listViewport {
+                max-height: min(65dvh, calc(100vh - 250px));
+            }
+
+            .modal-scroll-body {
+                max-height: calc(80dvh - 64px);
+            }
+
+            header.sun-theme {
+                padding-top: calc(32px + env(safe-area-inset-top));
+                padding-bottom: 40px;
+            }
+        }
+
+        /* ============================
+           Landscape phone — prevent overflow
+           ============================ */
+        @media (orientation: landscape) and (max-height: 500px) {
+            header.sun-theme {
+                padding-top: calc(16px + env(safe-area-inset-top));
+                padding-bottom: 24px;
+            }
+
+            #listViewport {
+                max-height: min(55dvh, calc(100vh - 180px));
+            }
+
+            .modal-scroll-body {
+                max-height: calc(90dvh - 48px);
+            }
+
+            .modal-panel {
+                max-height: 95dvh;
+            }
+        }
+
+        /* ============================
+           Safe-area hardening — standalone PWA + notch
+           ============================ */
+        @supports (padding: max(0px)) {
+            .sticky-search-wrap {
+                padding-left: max(8px, env(safe-area-inset-left));
+                padding-right: max(8px, env(safe-area-inset-right));
+            }
+
+            main {
+                padding-left: max(16px, env(safe-area-inset-left));
+                padding-right: max(16px, env(safe-area-inset-right));
+            }
+
+            #installBanner,
+            #iosInstallTip {
+                left: max(8px, env(safe-area-inset-left));
+                right: max(8px, env(safe-area-inset-right));
+            }
+
+            body {
+                padding-bottom: max(48px, calc(48px + env(safe-area-inset-bottom)));
+            }
+        }
+
+        /* ============================
+           Touch target enforcement
+           All interactive elements must be >= 44x44
+           ============================ */
+        button, [role="button"], a, input, select, textarea {
+            min-height: 44px;
+        }
+
+        /* Exceptions: certain inline elements sized differently */
+        .chip,
+        .navigate-btn-small,
+        span[class*="bg-rose-50"] {
+            min-height: auto;
+        }
+
+        /* ==========================================================================
+           TABLET LAYOUTS — target: 600px / 768px / 800px / 834px / 1024px
+           These rules only activate above mobile breakpoints.
+           ========================================================================== */
+
+        /* ============================
+           600px — small tablets / large phones in landscape
+           ============================ */
+        @media (min-width: 600px) {
+            /* --- Content width --- */
+            .max-w-md {
+                max-width: 580px;
+            }
+
+            main.max-w-md {
+                max-width: 580px;
+            }
+
+            /* --- Card grid: 2 columns --- */
+            #locationList {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            #loader {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* --- Header --- */
+            header.sun-theme {
+                padding-top: calc(48px + env(safe-area-inset-top));
+                padding-bottom: 56px;
+                padding-left: calc(32px + env(safe-area-inset-left));
+                padding-right: calc(32px + env(safe-area-inset-right));
+            }
+
+            /* --- Search bar wider --- */
+            .glass-nav {
+                padding: 20px;
+            }
+
+            #searchInput {
+                font-size: 14px;
+                padding: 14px 16px 14px 44px;
+            }
+
+            /* --- Filters: show more chips inline --- */
+            #filterContainer {
+                flex-wrap: wrap;
+                overflow-x: visible;
+            }
+
+            /* --- Modal: centered dialog, wider --- */
+            .modal-panel {
+                max-width: 520px;
+                max-height: 80vh;
+                border-radius: 24px;
+                margin: auto;
+            }
+
+            #detailModal {
+                align-items: center !important;
+            }
+
+            .modal-scroll-body {
+                max-height: calc(80vh - 80px);
+            }
+
+            /* --- List viewport taller --- */
+            #listViewport {
+                max-height: min(78dvh, 900px);
+            }
+
+            /* --- About panel: 2-column stats --- */
+            #mostViewedList,
+            #topSearchesList {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* --- Install banners centered --- */
+            #installBanner,
+            #iosInstallTip {
+                max-width: 520px;
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%) translateY(120%);
+            }
+
+            #installBanner.banner-shown,
+            #iosInstallTip.banner-shown {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            /* --- Toast wider --- */
+            #toast {
+                max-width: 400px;
+            }
+
+            /* --- Language picker cards side-by-side --- */
+            .lang-picker-inner {
+                max-width: 520px;
+            }
+
+            /* --- Share button: not full-width on tablet --- */
+            .share-btn {
+                width: auto;
+            }
+
+        }
+
+        /* ============================
+           768px — standard tablets (iPad Mini, most Android tablets)
+           ============================ */
+        @media (min-width: 768px) {
+            /* --- Content width --- */
+            .max-w-md {
+                max-width: 672px;
+            }
+
+            main.max-w-md {
+                max-width: 672px;
+            }
+
+            /* --- Header --- */
+            header.sun-theme {
+                padding-top: calc(56px + env(safe-area-inset-top));
+                padding-bottom: 64px;
+                border-radius: 0 0 48px 48px;
+            }
+
+            #appTitle {
+                font-size: 1.75rem;
+            }
+
+            #appSubtitle {
+                font-size: 0.8125rem;
+                margin-top: 8px;
+            }
+
+            /* --- Search bar --- */
+            .glass-nav {
+                padding: 24px;
+                border-radius: 20px;
+            }
+
+            /* --- Modal wider --- */
+            .modal-panel {
+                max-width: 580px;
+                padding: 32px;
+            }
+
+            /* --- About panel --- */
+            .about-panel {
+                padding: 24px;
+            }
+
+            /* --- Language picker --- */
+            .lang-picker-inner {
+                max-width: 560px;
+            }
+
+            /* --- Cards: more breathing room --- */
+            .card-shell.card {
+                padding: 24px;
+            }
+
+            .card-shell.card h2 {
+                font-size: 1.25rem;
+            }
+
+            /* --- Install banners --- */
+            #installBanner,
+            #iosInstallTip {
+                max-width: 560px;
+                flex-wrap: nowrap;
+            }
+
+            .install-cta-btn {
+                width: auto;
+            }
+        }
+
+        /* ============================
+           800px — wider tablets
+           ============================ */
+        @media (min-width: 800px) {
+            .max-w-md {
+                max-width: 720px;
+            }
+
+            main.max-w-md {
+                max-width: 720px;
+            }
+
+            /* --- Cards: slightly larger gap --- */
+            #locationList {
+                gap: 20px;
+            }
+
+            #loader {
+                gap: 20px;
+            }
+
+            /* --- Modal --- */
+            .modal-panel {
+                max-width: 600px;
+            }
+        }
+
+        /* ============================
+           834px — iPad Air / iPad 10th gen
+           ============================ */
+        @media (min-width: 834px) {
+            .max-w-md {
+                max-width: 760px;
+            }
+
+            main.max-w-md {
+                max-width: 760px;
+            }
+
+            /* --- Header larger text --- */
+            #appTitle {
+                font-size: 2rem;
+            }
+
+            /* --- Search bar container --- */
+            .sticky-search-wrap {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+            /* --- List viewport --- */
+            #listViewport {
+                max-height: min(80dvh, 1000px);
+            }
+
+            /* --- About panel: wider stats --- */
+            .about-panel {
+                padding: 32px;
+            }
+
+            /* --- Language picker wider --- */
+            .lang-picker-inner {
+                max-width: 600px;
+            }
+        }
+
+        /* ============================
+           1024px — large tablets (iPad Pro 11", landscape tablets)
+           ============================ */
+        @media (min-width: 1024px) {
+            .max-w-md {
+                max-width: 900px;
+            }
+
+            main.max-w-md {
+                max-width: 900px;
+            }
+
+            /* --- Header --- */
+            header.sun-theme {
+                padding-top: calc(64px + env(safe-area-inset-top));
+                padding-bottom: 72px;
+                border-radius: 0 0 56px 56px;
+            }
+
+            #appTitle {
+                font-size: 2.25rem;
+            }
+
+            #appSubtitle {
+                font-size: 0.875rem;
+                letter-spacing: 0.25em;
+            }
+
+            /* --- Card grid: can show 3 columns --- */
+            #locationList {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+            }
+
+            #loader {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+            }
+
+            /* --- Search bar --- */
+            .glass-nav {
+                padding: 24px 32px;
+                border-radius: 24px;
+            }
+
+            #searchInput {
+                padding: 16px 20px 16px 48px;
+            }
+
+            /* --- Search icon position for wider input --- */
+            .sticky-search-wrap i[data-lucide="search"] {
+                left: 16px;
+                top: 16px;
+            }
+
+            /* --- Modal --- */
+            .modal-panel {
+                max-width: 640px;
+                padding: 32px;
+                border-radius: 28px;
+            }
+
+            .modal-scroll-body {
+                max-height: calc(78vh - 80px);
+            }
+
+            /* --- Filter chips --- */
+            .filter-chip {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+
+            /* --- Navigate buttons --- */
+            .navigate-btn {
+                font-size: 15px;
+                padding: 16px 32px;
+                border-radius: 20px;
+            }
+
+            .navigate-btn-small {
+                font-size: 12px;
+                padding: 10px 20px;
+            }
+
+            /* --- About panel two-column layout for sections --- */
+            #aboutPanel > .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            /* --- List viewport taller --- */
+            #listViewport {
+                max-height: min(82dvh, 1100px);
+            }
+
+            /* --- Install banners --- */
+            #installBanner,
+            #iosInstallTip {
+                max-width: 600px;
+            }
+
+            /* --- Language picker --- */
+            .lang-picker-inner {
+                max-width: 640px;
+            }
+
+            /* --- Cards: larger text --- */
+            .card-shell.card h2 {
+                font-size: 1.35rem;
+            }
+
+            /* --- Usage pills larger --- */
+            .usage-pill {
+                font-size: 13px;
+                padding: 8px 20px;
+            }
+        }
+
+        /* ============================
+           Tablet landscape height fix
+           ============================ */
+        @media (min-width: 600px) and (orientation: landscape) {
+            header.sun-theme {
+                padding-bottom: 40px;
+            }
+
+            #listViewport {
+                max-height: min(70dvh, calc(100vh - 200px));
+            }
+
+            .modal-panel {
+                max-height: 90vh;
+            }
+
+            .modal-scroll-body {
+                max-height: calc(88vh - 80px);
+            }
+        }
+
+        /* ==========================================================================
+           DESKTOP LAYOUTS — target: 1280px / 1440px / 1600px / 1920px
+           Two-column layout (sidebar + main grid)
+           ========================================================================== */
+
+        /* ============================
+           1280px — Standard Desktop
+           ============================ */
+        @media (min-width: 1280px) {
+            body {
+                display: grid;
+                /* Create centered layout with auto margins */
+                grid-template-columns: 1fr 380px minmax(700px, 860px) 1fr;
+                grid-template-rows: auto 1fr;
+                grid-template-areas:
+                    ". header header ."
+                    ". sidebar main .";
+                column-gap: 40px;
+                row-gap: 32px;
+                align-items: start;
+                padding-bottom: 64px;
+            }
+
+            header.sun-theme {
+                grid-area: header;
+                margin-top: 40px;
+                padding: 64px 48px;
+                border-radius: 40px;
+                background: linear-gradient(135deg, #0f172a 0%, #9f1239 60%, #e11d48 100%);
+            }
+
+            #appTitle { font-size: 2.75rem; }
+            #appSubtitle { font-size: 1rem; margin-top: 12px; }
+
+            .sticky-search-wrap {
+                grid-area: sidebar;
+                position: sticky;
+                top: 40px;
+                margin-top: 0;
+                padding: 0;
+            }
+
+            .glass-nav {
+                max-width: 100%;
+                margin: 0;
+                padding: 32px;
+                border-radius: 32px;
+            }
+
+            #searchInput {
+                font-size: 15px;
+                padding: 16px 20px 16px 48px;
+            }
+
+            #filterContainer {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px;
+                padding-bottom: 8px;
+            }
+            
+            .filter-chip {
+                flex: 1 1 auto;
+                justify-content: center;
+                font-size: 14px;
+                padding: 12px 24px;
+            }
+
+            main.max-w-md {
+                grid-area: main;
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #locationList, #loader {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+            }
+
+            #listViewport {
+                max-height: calc(100vh - 120px);
+            }
+
+            /* About panel */
+            #aboutPanel {
+                margin-top: 40px;
+                padding: 40px;
+            }
+            #aboutPanel > .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            /* Modal wider for desktop */
+            .modal-panel {
+                max-width: 720px;
+                padding: 48px;
+                border-radius: 32px;
+            }
+            .modal-scroll-body {
+                max-height: calc(85vh - 120px);
+            }
+        }
+
+        /* ============================
+           1440px — Large Desktop
+           ============================ */
+        @media (min-width: 1440px) {
+            body {
+                grid-template-columns: 1fr 400px 920px 1fr;
+                column-gap: 48px;
+            }
+
+            header.sun-theme {
+                padding: 80px 64px;
+                border-radius: 48px;
+            }
+
+            #appTitle { font-size: 3rem; }
+
+            .card-shell.card {
+                padding: 32px;
+                border-radius: 32px;
+            }
+            .card-shell.card h2 {
+                font-size: 1.5rem;
+            }
+
+            #locationList, #loader {
+                gap: 32px;
+            }
+        }
+
+        /* ============================
+           1600px — Extra Large Desktop
+           ============================ */
+        @media (min-width: 1600px) {
+            body {
+                grid-template-columns: 1fr 420px 1100px 1fr;
+                column-gap: 64px;
+            }
+
+            header.sun-theme {
+                padding: 96px 80px;
+                border-radius: 56px;
+            }
+
+            #appTitle { font-size: 3.5rem; }
+
+            #locationList, #loader {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .modal-panel {
+                max-width: 800px;
+            }
+        }
+
+        /* ============================
+           1920px — Ultrawide Desktop
+           ============================ */
+        @media (min-width: 1920px) {
+            body {
+                grid-template-columns: 1fr 480px 1280px 1fr;
+                column-gap: 80px;
+            }
+
+            header.sun-theme {
+                padding: 120px 96px;
+                border-radius: 64px;
+            }
+
+            #appTitle { font-size: 4rem; }
+
+            #locationList, #loader {
+                gap: 40px;
+            }
+            
+            .card-shell.card {
+                padding: 40px;
+            }
+        }
+
+        /* ==========================================================================
+           VISUAL POLISH & ANIMATIONS
+           ========================================================================== */
+
+        /* 1. Card hover animations */
+        .card {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, background-color 0.4s ease;
+            will-change: transform, box-shadow;
+        }
+        .card:hover {
+            transform: translateY(-4px) scale(1.015);
+            box-shadow: 0 20px 40px -12px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(225, 29, 72, 0.1);
+            z-index: 10;
+        }
+        html.dark .card:hover {
+            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(225, 29, 72, 0.3);
+        }
+
+        /* 2. Button transitions & Active states */
+        .tap-shrink {
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background-color 0.25s ease, opacity 0.25s ease !important;
+        }
+        .tap-shrink:active {
+            transform: scale(0.94) !important;
+        }
+
+        /* Better shadows for main CTAs */
+        .navigate-btn {
+            box-shadow: 0 8px 20px -6px rgba(225, 29, 72, 0.4) !important;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        .navigate-btn:hover:not(:disabled) {
+            box-shadow: 0 14px 28px -8px rgba(225, 29, 72, 0.6) !important;
+            transform: translateY(-2px);
+        }
+        .navigate-btn:active:not(:disabled) {
+            box-shadow: 0 4px 12px -4px rgba(225, 29, 72, 0.4) !important;
+            transform: translateY(1px) scale(0.96) !important;
+        }
+
+        /* 3. Search animations */
+        #searchInput {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #searchInput:focus {
+            box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.15), 0 8px 24px rgba(15, 23, 42, 0.08);
+            transform: translateY(-1px);
+        }
+        html.dark #searchInput:focus {
+            box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.25), 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 4. Loading skeletons */
+        @keyframes shimmerEnhance {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton-line, .skeleton-card {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%) !important;
+            background-size: 200% 100% !important;
+            animation: shimmerEnhance 2s infinite cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        html.dark .skeleton-line, html.dark .skeleton-card {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%) !important;
+        }
+
+        /* 5. Dialog animations */
+        #detailModal {
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+        }
+        #detailModal:not(.hidden) .modal-panel {
+            animation: modalSlideUpBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes modalSlideUpBounce {
+            0% { opacity: 0; transform: translateY(60px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* 6. Empty state illustrations */
+        @keyframes floatEmpty {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        .empty-illustration {
+            animation: floatEmpty 4s ease-in-out infinite;
+            filter: drop-shadow(0 12px 20px rgba(15, 23, 42, 0.08));
+        }
+        html.dark .empty-illustration {
+            filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.4));
+        }
+
+        /* 7. Theme transitions */
+        body, .glass-nav, .modal-panel, .sun-theme {
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* 8. Focus states & Accessibility */
+        *:focus-visible {
+            outline: 3px solid rgba(225, 29, 72, 0.6) !important;
+            outline-offset: 2px !important;
+            border-radius: 4px;
+        }
+        .card:focus-visible, button:focus-visible, input:focus-visible {
+            border-radius: inherit;
+        }
+
+        /* 9. Better Icon Spacing */
+        .lucide {
+            margin-bottom: 1px; /* Optical alignment for icons next to text */
+        }
+
+
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        @media (forced-colors: active) {
+            .card, .modal-panel, button, input {
+                border: 1px solid CanvasText !important;
+            }
+        }
+
+        /* ---------- Go To Top Button ---------- */
+        .go-to-top-btn {
+            position: fixed;
+            bottom: max(24px, env(safe-area-inset-bottom));
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            border-radius: 999px;
+            background: #e11d48;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px -5px rgba(225, 29, 72, 0.4);
+            z-index: 40;
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid white;
+        }
+        
+        .go-to-top-btn:focus-visible {
+            outline: 3px solid #000;
+        }
+
+        .go-to-top-btn.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        html.dark .go-to-top-btn {
+            border-color: #0f172a;
+        }
+
+        /* ==========================================================================
+           CAMPUSCOMPASS v2 — PRODUCTION-GRADE REDESIGN
+           Brand: Sandip University · Red #DC2626 · White · Black
+           ========================================================================== */
+
+        /* ---------- Design Tokens ---------- */
+        :root {
+            --cc-brand-50: #fef2f2;
+            --cc-brand-100: #fee2e2;
+            --cc-brand-200: #fecaca;
+            --cc-brand-500: #ef4444;
+            --cc-brand-600: #dc2626;
+            --cc-brand-700: #b91c1c;
+            --cc-brand-800: #991b1b;
+            --cc-brand-900: #7f1d1d;
+            --cc-surface: #f8fafc;
+            --cc-surface-raised: #ffffff;
+            --cc-surface-overlay: rgba(10, 10, 10, 0.55);
+            --cc-text-1: #0f172a;
+            --cc-text-2: #475569;
+            --cc-text-3: #94a3b8;
+            --cc-border: #e2e8f0;
+            --cc-border-subtle: rgba(0,0,0,0.05);
+            --cc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+            --cc-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --cc-shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.04);
+            --cc-shadow-card-up: 0 12px 32px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.04);
+            --cc-shadow-sheet: 0 -8px 32px rgba(0,0,0,0.12);
+        }
+        html.dark {
+            --cc-surface: #0b1120;
+            --cc-surface-raised: #131c2f;
+            --cc-surface-overlay: rgba(0, 0, 0, 0.7);
+            --cc-text-1: #f1f5f9;
+            --cc-text-2: #cbd5e1;
+            --cc-text-3: #64748b;
+            --cc-border: rgba(255,255,255,0.08);
+            --cc-border-subtle: rgba(255,255,255,0.04);
+            --cc-shadow-card: 0 1px 3px rgba(0,0,0,0.2), 0 6px 16px rgba(0,0,0,0.15);
+            --cc-shadow-card-up: 0 12px 32px rgba(0,0,0,0.35);
+            --cc-shadow-sheet: 0 -8px 32px rgba(0,0,0,0.4);
+        }
+
+        /* ---------- Base Typography ---------- */
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: var(--cc-surface) !important;
+            color: var(--cc-text-1) !important;
+        }
+        html.dark body {
+            background-color: var(--cc-surface) !important;
+            color: var(--cc-text-1) !important;
+        }
+
+        /* ---------- Header Redesign ---------- */
+        .sun-theme {
+            background: linear-gradient(155deg, #0a0a0a 0%, #1a1a2e 45%, #dc2626 100%) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        .sun-theme::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 80% 20%, rgba(220,38,38,0.2) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* ---------- Frosted Search Bar ---------- */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.78) !important;
+            backdrop-filter: blur(24px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04) !important;
+            border: 1px solid rgba(255,255,255,0.6) !important;
+        }
+        html.dark .glass-nav {
+            background: rgba(15, 23, 42, 0.85) !important;
+            border-color: rgba(255,255,255,0.06) !important;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.25) !important;
+        }
+        #searchInput {
+            border-radius: 14px !important;
+            background: var(--cc-surface) !important;
+            border: 1.5px solid transparent !important;
+            transition: all 0.25s cubic-bezier(0.16,1,0.3,1) !important;
+            padding-right: 44px !important;
+        }
+        #searchInput:focus {
+            border-color: var(--cc-brand-600) !important;
+            box-shadow: 0 0 0 4px rgba(220,38,38,0.1), 0 4px 16px rgba(0,0,0,0.05) !important;
+            background: var(--cc-surface-raised) !important;
+            transform: none !important;
+        }
+        html.dark #searchInput {
+            background: rgba(30,41,59,0.8) !important;
+        }
+        html.dark #searchInput:focus {
+            border-color: var(--cc-brand-600) !important;
+            box-shadow: 0 0 0 4px rgba(220,38,38,0.2), 0 4px 16px rgba(0,0,0,0.2) !important;
+            background: #1e293b !important;
+        }
+
+        /* Search Clear Button */
+        .search-clear-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 28px;
+            min-height: 28px !important;
+            border-radius: 9999px;
+            background: #e2e8f0;
+            color: #64748b;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s ease;
+            padding: 0;
+        }
+        .search-clear-btn:hover { background: #cbd5e1; color: #334155; }
+        .search-clear-btn.visible { display: flex; }
+        html.dark .search-clear-btn { background: #334155; color: #94a3b8; }
+        html.dark .search-clear-btn:hover { background: #475569; color: #e2e8f0; }
+
+        /* ---------- Filter Chips ---------- */
+        .filter-chip {
+            transition: all 0.2s cubic-bezier(0.16,1,0.3,1) !important;
+            border-radius: 12px !important;
+        }
+        .filter-chip-active {
+            background: var(--cc-brand-600) !important;
+            color: white !important;
+            border-color: var(--cc-brand-600) !important;
+            box-shadow: 0 2px 8px rgba(220,38,38,0.25) !important;
+        }
+
+        /* ---------- Premium Cards ---------- */
+        .card-shell.card {
+            background: var(--cc-surface-raised) !important;
+            border: 1px solid var(--cc-border-subtle) !important;
+            box-shadow: var(--cc-shadow-card) !important;
+            border-radius: 20px !important;
+            transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
+                        box-shadow 0.3s cubic-bezier(0.16,1,0.3,1),
+                        border-color 0.3s ease !important;
+            will-change: transform;
+            position: relative;
+        }
+        .card-shell.card:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: var(--cc-shadow-card-up) !important;
+            border-color: rgba(220,38,38,0.1) !important;
+            z-index: 5;
+        }
+        .card-shell.card:active {
+            transform: translateY(0) scale(0.985) !important;
+            box-shadow: var(--cc-shadow-card) !important;
+        }
+        /* Card accent bar */
+        .card-shell.card::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 16px;
+            bottom: 16px;
+            width: 3px;
+            background: var(--cc-brand-600);
+            border-radius: 0 3px 3px 0;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            z-index: 5;
+        }
+        .card-shell.card:hover::after {
+            opacity: 1;
+        }
+        /* Card stagger entrance */
+        @keyframes cc-card-enter {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        #locationList .card-shell.card {
+            animation: cc-card-enter 0.5s cubic-bezier(0.16,1,0.3,1) both;
+        }
+        #locationList .card-shell.card:nth-child(1) { animation-delay: 0s; }
+        #locationList .card-shell.card:nth-child(2) { animation-delay: 0.05s; }
+        #locationList .card-shell.card:nth-child(3) { animation-delay: 0.1s; }
+        #locationList .card-shell.card:nth-child(4) { animation-delay: 0.15s; }
+        #locationList .card-shell.card:nth-child(5) { animation-delay: 0.2s; }
+        #locationList .card-shell.card:nth-child(6) { animation-delay: 0.25s; }
+        #locationList .card-shell.card:nth-child(n+7) { animation-delay: 0.3s; }
+
+        /* ---------- Bottom Sheet Modal ---------- */
+        #detailModal {
+            align-items: flex-end !important;
+            transition: opacity 0.35s ease, visibility 0.35s !important;
+        }
+        #detailModal.modal-overlay {
+            background: var(--cc-surface-overlay) !important;
+            backdrop-filter: blur(6px) !important;
+            -webkit-backdrop-filter: blur(6px) !important;
+        }
+        .modal-panel {
+            border-radius: 24px 24px 0 0 !important;
+            max-height: 92vh !important;
+            max-height: 92dvh !important;
+            background: var(--cc-surface-raised) !important;
+            box-shadow: var(--cc-shadow-sheet) !important;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.16,1,0.3,1) !important;
+            opacity: 1 !important;
+        }
+        #detailModal.modal-visible .modal-panel,
+        #detailModal:not(.hidden) .modal-panel {
+            transform: translateY(0) !important;
+            animation: none !important;
+        }
+        #detailModal.hidden .modal-panel {
+            transform: translateY(100%) !important;
+        }
+        /* Drag handle */
+        .modal-panel::before {
+            content: '';
+            display: block;
+            width: 36px;
+            height: 4px;
+            background: #d1d5db;
+            border-radius: 2px;
+            margin: 4px auto 8px;
+            flex-shrink: 0;
+        }
+        html.dark .modal-panel::before {
+            background: #4b5563;
+        }
+        /* Modal close button refinement */
+        #modalCloseBtn {
+            background: var(--cc-surface) !important;
+            border: 1px solid var(--cc-border) !important;
+            border-radius: 9999px !important;
+            transition: all 0.2s ease !important;
+        }
+        #modalCloseBtn:hover {
+            background: var(--cc-brand-50) !important;
+            border-color: var(--cc-brand-200) !important;
+        }
+
+        /* ---------- Bottom Sheet Language Picker ---------- */
+        #langPickerOverlay {
+            background: var(--cc-surface-overlay) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+            justify-content: flex-end !important;
+        }
+        .lang-picker-inner {
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            background: var(--cc-surface-raised) !important;
+            border-radius: 24px 24px 0 0 !important;
+            max-height: 90vh !important;
+            overflow-y: auto !important;
+            box-shadow: var(--cc-shadow-sheet) !important;
+            transform: translateY(100%);
+            transition: transform 0.32s cubic-bezier(0.16,1,0.3,1);
+            padding-top: 8px !important;
+        }
+        #langPickerOverlay.picker-visible .lang-picker-inner {
+            transform: translateY(0);
+        }
+        /* Drag handle */
+        .lang-picker-inner::before {
+            content: '';
+            display: block;
+            width: 36px;
+            height: 4px;
+            background: #d1d5db;
+            border-radius: 2px;
+            margin: 8px auto 16px;
+        }
+        html.dark .lang-picker-inner::before {
+            background: #4b5563;
+        }
+        /* Override text for light bg */
+        #langPickerOverlay .lang-picker-inner .text-white {
+            color: var(--cc-text-1) !important;
+        }
+        #langPickerOverlay .lang-picker-inner .text-rose-200 {
+            color: var(--cc-text-2) !important;
+        }
+        #langPickerOverlay .lang-picker-inner [class*="text-rose-200"] {
+            color: var(--cc-text-3) !important;
+        }
+        #langPickerOverlay .lang-picker-inner i.text-white {
+            color: var(--cc-brand-600) !important;
+        }
+        #langPickerOverlay .lang-picker-inner i[class*="opacity-90"] {
+            opacity: 1 !important;
+            color: var(--cc-brand-600) !important;
+        }
+        .lang-card {
+            background: var(--cc-surface) !important;
+            border: 1px solid var(--cc-border) !important;
+            color: var(--cc-text-1) !important;
+            border-radius: 16px !important;
+            transition: all 0.15s ease !important;
+        }
+        .lang-card:hover {
+            border-color: var(--cc-brand-200) !important;
+            background: var(--cc-brand-50) !important;
+        }
+        .lang-card:active {
+            transform: scale(0.98) !important;
+            background: var(--cc-brand-100) !important;
+        }
+        .lang-card i[data-lucide="chevron-right"] {
+            color: var(--cc-text-3) !important;
+            opacity: 1 !important;
+        }
+        .lang-card-native { color: var(--cc-text-1) !important; }
+        .lang-card-sub { color: var(--cc-text-3) !important; }
+
+        /* ---------- Navigate Buttons — Brand Red ---------- */
+        .navigate-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+            box-shadow: 0 4px 16px -4px rgba(220,38,38,0.45) !important;
+        }
+        .navigate-btn:hover:not(:disabled) {
+            box-shadow: 0 8px 28px -6px rgba(220,38,38,0.55) !important;
+            transform: translateY(-2px) !important;
+        }
+        .navigate-btn:active:not(:disabled) {
+            transform: translateY(1px) scale(0.97) !important;
+            box-shadow: 0 2px 8px rgba(220,38,38,0.3) !important;
+        }
+        .navigate-btn-small {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+            box-shadow: 0 2px 8px rgba(220,38,38,0.3) !important;
+        }
+        .navigate-btn-small:hover:not(:disabled) {
+            box-shadow: 0 4px 14px rgba(220,38,38,0.4) !important;
+        }
+        .card-quick-action {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
+        }
+
+        /* ---------- Install / Go-Top / Toast ---------- */
+        .install-cta-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+            border-radius: 14px !important;
+        }
+        .go-to-top-btn {
+            background: #dc2626 !important;
+            box-shadow: 0 6px 20px -4px rgba(220,38,38,0.45) !important;
+            border: 2px solid rgba(255,255,255,0.9) !important;
+        }
+        .go-to-top-btn:active { transform: scale(0.9) !important; }
+        #toast {
+            background: #0f172a !important;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.2) !important;
+            border-radius: 14px !important;
+            padding: 10px 20px !important;
+        }
+        #offlineBanner {
+            background: rgba(15,23,42,0.92) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            border-radius: 14px !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15) !important;
+        }
+
+        /* ---------- Focus Visible ---------- */
+        *:focus-visible {
+            outline: 2.5px solid rgba(220, 38, 38, 0.5) !important;
+            outline-offset: 2px !important;
+        }
+
+        /* ---------- Enhanced Skeletons ---------- */
+        @keyframes cc-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .skeleton-line {
+            background: linear-gradient(90deg, #f1f5f9 0%, #e8ecf1 20%, #f8fafc 40%, #e8ecf1 60%, #f1f5f9 100%) !important;
+            background-size: 200% 100% !important;
+            animation: cc-shimmer 2s ease-in-out infinite !important;
+            border-radius: 8px;
+        }
+        html.dark .skeleton-line {
+            background: linear-gradient(90deg, #1e293b 0%, #293548 20%, #1e293b 40%, #293548 60%, #1e293b 100%) !important;
+            background-size: 200% 100% !important;
+        }
+        .skeleton-card {
+            border-radius: 20px !important;
+            border: 1px solid var(--cc-border-subtle) !important;
+            box-shadow: var(--cc-shadow-card) !important;
+        }
+
+        /* ---------- About Panel ---------- */
+        .about-panel {
+            background: var(--cc-surface-raised) !important;
+            border: 1px solid var(--cc-border) !important;
+            border-radius: 20px !important;
+            box-shadow: var(--cc-shadow-card) !important;
+        }
+        .about-toggle-btn {
+            border: 1px solid var(--cc-border) !important;
+            border-radius: 14px !important;
+            transition: all 0.2s ease !important;
+        }
+        .about-toggle-btn:hover {
+            background: var(--cc-brand-50) !important;
+            border-color: var(--cc-brand-200) !important;
+            color: var(--cc-brand-600) !important;
+        }
+        .usage-pill {
+            border-radius: 12px !important;
+            background: var(--cc-surface) !important;
+            border: 1px solid var(--cc-border) !important;
+            font-weight: 600 !important;
+        }
+
+        /* ---------- Misc Polish ---------- */
+        .copy-link-btn {
+            border-radius: 14px !important;
+            border: 1px solid var(--cc-border) !important;
+        }
+        .share-btn, .clear-recent-btn {
+            border-radius: 12px !important;
+            border: 1px solid var(--cc-border) !important;
+        }
+        .recent-chip {
+            border-radius: 12px !important;
+            border: 1px solid var(--cc-border) !important;
+            transition: all 0.15s ease !important;
+        }
+        .recent-chip:hover {
+            border-color: var(--cc-brand-200) !important;
+            background: var(--cc-brand-50) !important;
+        }
+        .chip { border-radius: 8px !important; }
+        .theme-toggle-btn, .lang-toggle-btn {
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), background 0.2s ease !important;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .theme-toggle-btn:active, .lang-toggle-btn:active {
+            transform: scale(0.85) rotate(-10deg) !important;
+        }
+        #installBanner, #iosInstallTip {
+            border-radius: 20px !important;
+            border: 1px solid var(--cc-border) !important;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.12) !important;
+        }
+        #dataErrorBanner { border-radius: 20px !important; }
+
+        /* ---------- Modal Responsive Override ---------- */
+        @media (min-width: 600px) {
+            #detailModal { align-items: center !important; }
+            .modal-panel {
+                border-radius: 24px !important;
+                max-height: 85vh !important;
+                max-width: 520px !important;
+                margin: auto !important;
+            }
+            .lang-picker-inner {
+                max-width: 480px !important;
+                margin: 0 auto !important;
+                border-radius: 24px 24px 0 0 !important;
+            }
+        }
+
+        /* ---------- Reduced Motion ---------- */
+        @media (prefers-reduced-motion: reduce) {
+            #locationList .card-shell.card { animation: none !important; }
+            .modal-panel, .lang-picker-inner { transition-duration: 0.01ms !important; }
+        }

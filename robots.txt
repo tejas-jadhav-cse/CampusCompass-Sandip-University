@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 
 # If you add a sitemap, update the URL below
-Sitemap: https://example.com/sitemap.xml
+Sitemap: https://tejas-jadhav-cse.github.io/CampusCompass-Sandip-University/sitemap.xml
