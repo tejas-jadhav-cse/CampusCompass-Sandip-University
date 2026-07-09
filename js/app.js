@@ -2308,7 +2308,7 @@
             };
 
             viewport.addEventListener("touchstart", (event) => {
-                if (viewport.scrollTop > 0 || event.touches.length !== 1) return;
+                if (window.scrollY > 0 || event.touches.length !== 1) return;
                 pullRefreshTouchId = event.touches[0].identifier;
                 pullRefreshStartY = event.touches[0].clientY;
             }, { passive: true });
@@ -2316,7 +2316,7 @@
             viewport.addEventListener("touchmove", (event) => {
                 if (pullRefreshStartY == null || event.touches.length !== 1) return;
                 const touch = event.touches[0];
-                if (touch.identifier !== pullRefreshTouchId || viewport.scrollTop > 0) return;
+                if (touch.identifier !== pullRefreshTouchId || window.scrollY > 0) return;
                 const deltaY = touch.clientY - pullRefreshStartY;
                 if (deltaY > 0) {
                     event.preventDefault();
@@ -2416,10 +2416,14 @@
 
             emptyState.classList.add("hidden");
 
-            if (resetScroll) viewport.scrollTop = 0;
+            if (resetScroll) {
+                window.scrollTo({ top: 0, behavior: "instant" });
+            }
 
             const cols = getVirtualCols();
-            const { start, end } = getVirtualWindow(total, viewport.scrollTop, Math.max(1, viewport.clientHeight), virtualState.estimatedRowHeight, cols);
+            const listOffsetTop = viewport.getBoundingClientRect().top + window.scrollY;
+            const virtualScrollTop = Math.max(0, window.scrollY - listOffsetTop);
+            const { start, end } = getVirtualWindow(total, virtualScrollTop, Math.max(1, window.innerHeight), virtualState.estimatedRowHeight, cols);
             const signature = `${start}:${end}:${total}:${Math.round(virtualState.estimatedRowHeight)}:${cols}`;
             if (signature === virtualState.lastSignature) return;
             virtualState.start = start;
@@ -2736,6 +2740,18 @@
          * @returns {void}
          */
         function registerServiceWorker() {
+            if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+                if ("serviceWorker" in navigator) {
+                    navigator.serviceWorker.getRegistrations().then((registrations) => {
+                        for (const registration of registrations) {
+                            registration.unregister().then(() => {
+                                console.log("Developer Mode: SW unregistered successfully.");
+                            });
+                        }
+                    });
+                }
+                return;
+            }
             if ("serviceWorker" in navigator) {
                 window.addEventListener("load", () => {
                     navigator.serviceWorker.register("sw.js").catch((error) => {
@@ -2927,7 +2943,7 @@
         function wireListViewport() {
             const viewport = getEl("listViewport");
             if (!viewport) return;
-            viewport.addEventListener("scroll", scheduleVirtualRender, { passive: true });
+            window.addEventListener("scroll", scheduleVirtualRender, { passive: true });
             window.addEventListener("resize", scheduleVirtualRender);
         }
 

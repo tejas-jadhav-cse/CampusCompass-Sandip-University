@@ -94,26 +94,20 @@
 
 <body class="bg-slate-50 text-slate-900 pb-10">
 
-    <header class="sun-theme text-white py-12 px-6 text-center rounded-b-[40px] shadow-xl relative">
-        <div class="absolute top-4 right-4 flex items-center gap-2">
+    <!-- Top Campus Banner with Toggles -->
+    <div class="top-banner w-full h-[200px] sticky top-0 -z-10 overflow-hidden select-none bg-slate-100 dark:bg-slate-900">
+        <img src="assets/campus_banner.png" alt="Sandip University Campus" class="w-full h-full object-cover">
+        <!-- Floating Toggles over Banner -->
+        <div class="absolute top-4 right-4 flex items-center gap-2 z-10">
             <button id="langToggleBtn" onclick="openLangPicker(true)" aria-label="Change language" data-i18n-aria="langPickerTitle"
-                class="lang-toggle-btn">
+                class="lang-toggle-btn glass-btn">
                 <i data-lucide="globe" class="w-5 h-5"></i>
             </button>
             <button id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle dark mode"
-                class="theme-toggle-btn">
+                class="theme-toggle-btn glass-btn">
                 <i data-lucide="sun" class="w-5 h-5" id="themeIconSun"></i>
                 <i data-lucide="moon" class="w-5 h-5 hidden" id="themeIconMoon"></i>
             </button>
-        </div>
-        <h1 class="text-2xl font-black tracking-tight italic" id="appTitle" data-i18n="appTitle">SANDIP UNIVERSITY</h1>
-        <p class="text-red-200 text-xs font-bold tracking-[0.2em] mt-2" id="appSubtitle" data-i18n="appSubtitle">CAMPUS NAVIGATION</p>
-    </header>
-
-    <!-- Campus Banner Image -->
-    <div class="max-w-md mx-auto mt-4 px-4">
-        <div class="rounded-3xl overflow-hidden shadow-sm border border-slate-200 dark:border-white/10">
-            <img src="assets/campus_banner.png" alt="Sandip University Campus" class="w-full h-40 object-cover object-center">
         </div>
     </div>
 
@@ -132,8 +126,8 @@
         </div>
     </div>
 
-    <div class="sticky top-0 z-40 px-4 -mt-6 sticky-search-wrap">
-        <div class="max-w-md mx-auto glass-nav rounded-2xl shadow-lg border border-white/50 p-4 space-y-4">
+    <div class="sticky top-0 z-40 sticky-search-wrap">
+        <div class="glass-nav shadow-lg p-4 space-y-4">
             <div class="relative">
                 <i data-lucide="search" class="absolute left-3 top-3 w-5 h-5 text-slate-500"></i>
                 <input type="text" id="searchInput" aria-label="Search locations"
