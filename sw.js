@@ -1,7 +1,7 @@
 // CampusCompass Service Worker
 // Bump CACHE_VERSION whenever app-shell files change so clients pick up
 // the new versions instead of serving stale cached copies forever.
-const CACHE_VERSION = "v9";
+const CACHE_VERSION = "v10";
 const CACHE_NAME = `campuscompass-shell-${CACHE_VERSION}`;
 
 // The app shell: everything needed for the app to boot and run fully
@@ -15,7 +15,7 @@ const APP_SHELL = [
   "./js/app.js",
   "./assets/icon-192.png",
   "./assets/icon-512.png",
-  "./assets/campus_banner.png"
+  "./assets/campus_banner.webp"
 ];
 
 // The external dataset file is optional (index.html falls back to its
