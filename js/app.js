@@ -1,4 +1,4 @@
-        // ===== MODULE: data.js (data loading, parsing, embedded dataset) =====
+// ===== MODULE: data.js (data loading, parsing, embedded dataset) =====
 
         /** @type {string} */
         const DATA_URL = "./sandip_university_campus.json";
@@ -111,8 +111,12 @@
             end: 0,
             total: 0,
             estimatedRowHeight: DEFAULT_VIRTUAL_ROW_HEIGHT,
+            estimateLockedCols: null,
             lastSignature: ""
         };
+
+        /** @type {ResizeObserver | null} */
+        let headerResizeObserver = null;
 
         // ---------- i18n module ----------
 
@@ -2352,12 +2356,43 @@
         function refineVirtualEstimate() {
             const list = getEl("locationList");
             if (!list) return;
-            const cards = list.querySelectorAll(".card");
+            const cards = Array.from(list.querySelectorAll(".card-shell"));
             if (!cards.length) return;
-            const measured = Array.from(cards).reduce((sum, card) => sum + card.getBoundingClientRect().height, 0) / cards.length;
-            if (measured > 0) {
-                virtualState.estimatedRowHeight = Math.max(180, Math.round((virtualState.estimatedRowHeight * 0.7) + ((measured + 16) * 0.3)));
+            const cols = Math.max(1, getVirtualCols());
+            if (virtualState.estimateLockedCols === cols) return;
+            const rowGap = Number.parseFloat(window.getComputedStyle(list).rowGap) || 16;
+            const rowHeights = [];
+            for (let index = 0; index < cards.length; index += cols) {
+                const rowCards = cards.slice(index, index + cols);
+                const rowHeight = Math.max(...rowCards.map((card) => card.getBoundingClientRect().height));
+                rowHeights.push(rowHeight + rowGap);
             }
+            const measured = rowHeights.reduce((sum, value) => sum + value, 0) / rowHeights.length;
+            if (measured > 0) {
+                virtualState.estimatedRowHeight = Math.round(measured);
+                virtualState.estimateLockedCols = cols;
+            }
+        }
+
+        function syncLayoutMetrics() {
+            const header = getEl("pageHeader");
+            if (!header) return;
+            const headerHeight = Math.ceil(header.getBoundingClientRect().height);
+            document.documentElement.style.setProperty("--cc-header-height", `${headerHeight}px`);
+        }
+
+        function wireLayoutMetrics() {
+            syncLayoutMetrics();
+            if (typeof ResizeObserver !== "undefined" && !headerResizeObserver) {
+                const header = getEl("pageHeader");
+                if (header) {
+                    headerResizeObserver = new ResizeObserver(() => {
+                        syncLayoutMetrics();
+                    });
+                    headerResizeObserver.observe(header);
+                }
+            }
+            window.addEventListener("resize", syncLayoutMetrics);
         }
 
         function getVirtualCols() {
@@ -3059,6 +3094,7 @@
             renderLoaderSkeletons();
             applyThemeIcons();
             applyLanguageToStaticText();
+            wireLayoutMetrics();
             renderFilters();
             renderAboutPanel();
             initIconsForRoot(document.body);

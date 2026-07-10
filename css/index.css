@@ -1,4 +1,4 @@
-        html[lang="hi"] body,
+html[lang="hi"] body,
         html[lang="mr"] body {
             font-family: "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", Roboto, "Nirmala UI", "Noto Sans", sans-serif;
             line-height: 1.65;
@@ -762,13 +762,8 @@
             scroll-behavior: smooth;
             overscroll-behavior: contain;
             -webkit-overflow-scrolling: touch;
-            max-height: calc(100dvh - 220px);
-        }
-
-        @media (min-width: 1024px) {
-            #listViewport {
-                max-height: calc(100dvh - 120px);
-            }
+            margin-top: var(--cc-header-height, 250px);
+            height: calc(100dvh - var(--cc-header-height, 250px));
         }
 
         .virtual-spacer {
@@ -852,6 +847,25 @@
         body {
             min-width: 0;
             -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #pageHeader {
+            position: fixed;
+            inset: 0 0 auto 0;
+            z-index: 30;
+        }
+
+        #pageHeader .top-banner,
+        #pageHeader .sticky-search-wrap {
+            position: relative;
+            left: 0;
+            right: 0;
         }
 
         img, svg, video, canvas {

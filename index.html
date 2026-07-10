@@ -92,24 +92,42 @@
     <link rel="stylesheet" href="css/index.css">
 </head>
 
-<body class="bg-slate-50 text-slate-900 pb-10">
+<body class="bg-slate-50 text-slate-900">
 
-    <!-- Top Campus Banner with Toggles -->
-    <div class="top-banner w-full h-[200px] sticky top-0 -z-10 overflow-hidden select-none bg-slate-100 dark:bg-slate-900">
-        <img src="assets/campus_banner.webp" alt="Sandip University Campus" class="w-full h-full object-cover">
-        <!-- Floating Toggles over Banner -->
-        <div class="absolute top-4 right-4 flex items-center gap-2 z-10">
-            <button id="langToggleBtn" onclick="openLangPicker(true)" aria-label="Change language" data-i18n-aria="langPickerTitle"
-                class="lang-toggle-btn glass-btn">
-                <i data-lucide="globe" class="w-5 h-5"></i>
-            </button>
-            <button id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle dark mode"
-                class="theme-toggle-btn glass-btn">
-                <i data-lucide="sun" class="w-5 h-5" id="themeIconSun"></i>
-                <i data-lucide="moon" class="w-5 h-5 hidden" id="themeIconMoon"></i>
-            </button>
+    <header id="pageHeader">
+        <!-- Top Campus Banner with Toggles -->
+        <div class="top-banner w-full h-[200px] overflow-hidden select-none bg-slate-100 dark:bg-slate-900">
+            <img src="assets/campus_banner.webp" alt="Sandip University Campus" class="w-full h-full object-cover">
+            <!-- Floating Toggles over Banner -->
+            <div class="absolute top-4 right-4 flex items-center gap-2 z-10">
+                <button id="langToggleBtn" onclick="openLangPicker(true)" aria-label="Change language" data-i18n-aria="langPickerTitle"
+                    class="lang-toggle-btn glass-btn">
+                    <i data-lucide="globe" class="w-5 h-5"></i>
+                </button>
+                <button id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle dark mode"
+                    class="theme-toggle-btn glass-btn">
+                    <i data-lucide="sun" class="w-5 h-5" id="themeIconSun"></i>
+                    <i data-lucide="moon" class="w-5 h-5 hidden" id="themeIconMoon"></i>
+                </button>
+            </div>
         </div>
-    </div>
+
+        <div class="sticky top-0 z-40 sticky-search-wrap">
+            <div class="glass-nav shadow-lg p-4 space-y-4">
+                <div class="relative">
+                    <i data-lucide="search" class="absolute left-3 top-3 w-5 h-5 text-slate-500"></i>
+                    <input type="text" id="searchInput" aria-label="Search locations"
+                        placeholder="Search building, department, hostel..." data-i18n-placeholder="searchPlaceholder" data-i18n-aria="searchPlaceholder"
+                        class="w-full pl-10 pr-12 py-3 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-red-500 outline-none text-sm font-medium" maxlength="200" autocomplete="off">
+                    <button id="searchClearBtn" class="search-clear-btn" onclick="clearSearch()" aria-label="Clear search">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+                <div id="recentSearchesWrap" class="recent-searches-wrap" aria-live="polite"></div>
+                <div class="flex gap-2 overflow-x-auto no-scrollbar" id="filterContainer"></div>
+            </div>
+        </div>
+    </header>
 
     <!-- Full-screen language picker (first launch, and re-openable via the globe toggle) -->
     <div id="langPickerOverlay" role="dialog" aria-modal="true" aria-label="Choose your language" data-i18n-aria="langPickerTitle">
@@ -126,22 +144,7 @@
         </div>
     </div>
 
-    <div class="sticky top-0 z-40 sticky-search-wrap">
-        <div class="glass-nav shadow-lg p-4 space-y-4">
-            <div class="relative">
-                <i data-lucide="search" class="absolute left-3 top-3 w-5 h-5 text-slate-500"></i>
-                <input type="text" id="searchInput" aria-label="Search locations"
-                    placeholder="Search building, department, hostel..." data-i18n-placeholder="searchPlaceholder" data-i18n-aria="searchPlaceholder"
-                    class="w-full pl-10 pr-12 py-3 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-red-500 outline-none text-sm font-medium" maxlength="200" autocomplete="off">
-                <button id="searchClearBtn" class="search-clear-btn" onclick="clearSearch()" aria-label="Clear search">
-                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
-                </button>
-            </div>
-            <div id="recentSearchesWrap" class="recent-searches-wrap" aria-live="polite"></div>
-            <div class="flex gap-2 overflow-x-auto no-scrollbar" id="filterContainer"></div>
-        </div>
-    </div>
-
+    <div id="listViewport" class="gesture-scroll-none">
     <main id="mainContent" class="max-w-md mx-auto p-4 mt-4" role="main">
         <div id="dataErrorBanner" class="hidden mb-4 rounded-3xl p-4 shadow-sm" role="alert" aria-live="assertive">
             <div class="flex items-start gap-3">
@@ -164,17 +167,15 @@
             </svg>
             <p class="text-sm font-bold" id="emptyStateText" data-i18n="emptyStateText">No matching locations found</p>
         </div>
-        <div id="listViewport" class="rounded-[24px] gesture-scroll-none">
-            <div id="pullRefreshBanner" class="pull-refresh-banner mb-2 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 px-4 py-4 shadow-sm">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="refresh-ccw" class="w-4 h-4"></i>
-                    <span id="pullRefreshText" class="text-xs font-bold" data-i18n="pullToRefresh">Pull to refresh</span>
-                </div>
+        <div id="pullRefreshBanner" class="pull-refresh-banner mb-2 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 px-4 py-4 shadow-sm">
+            <div class="flex items-center gap-2">
+                <i data-lucide="refresh-ccw" class="w-4 h-4"></i>
+                <span id="pullRefreshText" class="text-xs font-bold" data-i18n="pullToRefresh">Pull to refresh</span>
             </div>
-            <div id="listSpacerTop" class="virtual-spacer" aria-hidden="true"></div>
-            <div id="locationList" class="grid gap-4" role="list"></div>
-            <div id="listSpacerBottom" class="virtual-spacer" aria-hidden="true"></div>
         </div>
+        <div id="listSpacerTop" class="virtual-spacer" aria-hidden="true"></div>
+        <div id="locationList" class="grid gap-4" role="list"></div>
+        <div id="listSpacerBottom" class="virtual-spacer" aria-hidden="true"></div>
 
         <div class="flex items-center justify-between gap-4 mt-6 px-1">
             <div>
@@ -208,6 +209,7 @@
             </div>
         </section>
     </main>
+    </div>
 
     <!-- Detail Modal -->
     <div id="detailModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center modal-overlay gesture-scroll-none"
