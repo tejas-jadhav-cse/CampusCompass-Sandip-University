@@ -651,6 +651,14 @@ html[lang="hi"] body,
             padding-right: calc(24px + env(safe-area-inset-right));
         }
 
+        /* Reserve space so the last item in the scrollable list (currently the
+           About row) never ends up underneath the fixed go-to-top button.
+           The button is 48px tall, sits 24px (+ safe area) from the bottom,
+           so give the content noticeably more clearance than that footprint. */
+        #mainContent {
+            padding-bottom: calc(104px + env(safe-area-inset-bottom)) !important;
+        }
+
         .sticky-search-wrap {
             position: sticky !important;
             top: 0 !important;

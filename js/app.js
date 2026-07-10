@@ -105,13 +105,29 @@
         /** @type {number} */
         let firstLaunchPending = false;
 
-        /** @type {{start:number,end:number,total:number,estimatedRowHeight:number,lastSignature:string}} */
+        /**
+         * @type {{
+         *   start:number, end:number, total:number,
+         *   estimatedRowHeight:number,
+         *   rowHeights:Array<number|null>,
+         *   lastMeasuredCols:number|null,
+         *   lastSignature:string
+         * }}
+         *
+         * rowHeights holds the *real measured* height of each row once it has been
+         * rendered at least once. estimatedRowHeight is a rolling average of all
+         * measured rows, used only as a best guess for rows that haven't been
+         * rendered yet. This replaces the old "lock one average forever" approach,
+         * which drifted badly on lists with variable-height cards and caused
+         * scrolling to snap toward the end of the list.
+         */
         const virtualState = {
             start: 0,
             end: 0,
             total: 0,
             estimatedRowHeight: DEFAULT_VIRTUAL_ROW_HEIGHT,
-            estimateLockedCols: null,
+            rowHeights: [],
+            lastMeasuredCols: null,
             lastSignature: ""
         };
 
@@ -2349,7 +2365,27 @@
         }
 
         /**
-         * Measure visible cards and adjust the estimated row height.
+         * Ensure the rowHeights cache has an entry (possibly null/unmeasured)
+         * for every row in the current list, without discarding heights we
+         * already know for rows that still exist.
+         * @param {number} totalRows
+         * @returns {void}
+         */
+        function ensureRowHeightsCapacity(totalRows) {
+            if (virtualState.rowHeights.length < totalRows) {
+                for (let i = virtualState.rowHeights.length; i < totalRows; i++) {
+                    virtualState.rowHeights.push(null);
+                }
+            } else if (virtualState.rowHeights.length > totalRows) {
+                virtualState.rowHeights.length = totalRows;
+            }
+        }
+
+        /**
+         * Measure the currently rendered cards and record the REAL height of
+         * each visible row (cards are not uniform height, so this is per-row,
+         * not a single global constant). Also refreshes the rolling-average
+         * estimate used for rows we haven't rendered/measured yet.
          * DOM-coupled helper: reads rendered cards only.
          * @returns {void}
          */
@@ -2359,19 +2395,73 @@
             const cards = Array.from(list.querySelectorAll(".card-shell"));
             if (!cards.length) return;
             const cols = Math.max(1, getVirtualCols());
-            if (virtualState.estimateLockedCols === cols) return;
+
+            if (virtualState.lastMeasuredCols !== cols) {
+                // Column count changed (responsive breakpoint) - row groupings
+                // shifted, so previously cached row heights no longer line up
+                // with the right cards. Start the cache over.
+                virtualState.rowHeights = [];
+                virtualState.lastMeasuredCols = cols;
+            }
+
             const rowGap = Number.parseFloat(window.getComputedStyle(list).rowGap) || 16;
-            const rowHeights = [];
-            for (let index = 0; index < cards.length; index += cols) {
-                const rowCards = cards.slice(index, index + cols);
+            const startRow = Math.floor(virtualState.start / cols);
+
+            for (let i = 0; i < cards.length; i += cols) {
+                const rowCards = cards.slice(i, i + cols);
                 const rowHeight = Math.max(...rowCards.map((card) => card.getBoundingClientRect().height));
-                rowHeights.push(rowHeight + rowGap);
+                if (rowHeight > 0) {
+                    const rowIndex = startRow + Math.floor(i / cols);
+                    virtualState.rowHeights[rowIndex] = rowHeight + rowGap;
+                }
             }
-            const measured = rowHeights.reduce((sum, value) => sum + value, 0) / rowHeights.length;
-            if (measured > 0) {
-                virtualState.estimatedRowHeight = Math.round(measured);
-                virtualState.estimateLockedCols = cols;
+
+            const measured = virtualState.rowHeights.filter((h) => h != null);
+            if (measured.length) {
+                virtualState.estimatedRowHeight = Math.round(
+                    measured.reduce((sum, h) => sum + h, 0) / measured.length
+                );
             }
+        }
+
+        /**
+         * Build cumulative pixel offsets for the start of every row, using
+         * real measured heights where we have them and the rolling-average
+         * estimate elsewhere. offsets[i] = pixel offset of the top of row i;
+         * offsets[totalRows] = total content height.
+         * @param {number} totalRows
+         * @returns {Array<number>}
+         */
+        function getCumulativeRowOffsets(totalRows) {
+            const offsets = new Array(totalRows + 1);
+            offsets[0] = 0;
+            for (let row = 0; row < totalRows; row++) {
+                const height = virtualState.rowHeights[row] != null
+                    ? virtualState.rowHeights[row]
+                    : virtualState.estimatedRowHeight;
+                offsets[row + 1] = offsets[row] + height;
+            }
+            return offsets;
+        }
+
+        /**
+         * Binary search: the greatest row index whose offset is <= targetOffset.
+         * @param {Array<number>} offsets
+         * @param {number} targetOffset
+         * @returns {number}
+         */
+        function findRowForOffset(offsets, targetOffset) {
+            let lo = 0;
+            let hi = offsets.length - 1;
+            while (lo < hi) {
+                const mid = Math.ceil((lo + hi) / 2);
+                if (offsets[mid] <= targetOffset) {
+                    lo = mid;
+                } else {
+                    hi = mid - 1;
+                }
+            }
+            return lo;
         }
 
         function syncLayoutMetrics() {
@@ -2404,21 +2494,27 @@
         }
 
         /**
-         * Compute the current virtualized slice for the scroll position.
-         * Pure function: no DOM access.
-         * @param {number} total
+         * Compute the current virtualized row range for the scroll position,
+         * using real per-row offsets rather than assuming every row is the
+         * same height. Pure function given the offsets table: no DOM access.
+         * @param {number} totalRows
+         * @param {Array<number>} offsets cumulative row offsets, length totalRows+1
          * @param {number} scrollTop
          * @param {number} viewportHeight
-         * @param {number} estimatedRowHeight
-         * @param {number} cols
-         * @returns {{start:number,end:number}}
+         * @returns {{startRow:number,endRow:number}}
          */
-        function getVirtualWindow(total, scrollTop, viewportHeight, estimatedRowHeight, cols) {
-            const rowsPerViewport = Math.max(1, Math.ceil(viewportHeight / estimatedRowHeight));
-            const startRow = Math.max(0, Math.floor(scrollTop / estimatedRowHeight) - VIRTUAL_OVERSCAN);
-            const start = Math.min(total, startRow * cols);
-            const end = Math.min(total, start + ((rowsPerViewport + (VIRTUAL_OVERSCAN * 2)) * cols));
-            return { start, end };
+        function getVirtualRowWindow(totalRows, offsets, scrollTop, viewportHeight) {
+            const centerRow = findRowForOffset(offsets, scrollTop);
+            const startRow = Math.max(0, centerRow - VIRTUAL_OVERSCAN);
+
+            const bottomTarget = scrollTop + viewportHeight;
+            let endRow = centerRow;
+            while (endRow < totalRows && offsets[endRow] < bottomTarget) {
+                endRow++;
+            }
+            endRow = Math.min(totalRows, endRow + VIRTUAL_OVERSCAN);
+
+            return { startRow, endRow };
         }
 
         /**
@@ -2453,6 +2549,12 @@
 
             if (resetScroll) {
                 viewport.scrollTo({ top: 0, behavior: "instant" });
+                // The list content is changing (new filter/search results), so
+                // previously measured row heights no longer correspond to the
+                // right items. Start the height cache fresh to avoid stale
+                // offsets from the old result set.
+                virtualState.rowHeights = [];
+                virtualState.lastMeasuredCols = null;
             }
 
             const cols = getVirtualCols();
@@ -2463,19 +2565,23 @@
             const viewportHeight = usesOwnScroll
                 ? Math.max(1, viewport.clientHeight)
                 : Math.max(1, window.innerHeight);
-            const { start, end } = getVirtualWindow(total, virtualScrollTop, viewportHeight, virtualState.estimatedRowHeight, cols);
-            const signature = `${start}:${end}:${total}:${Math.round(virtualState.estimatedRowHeight)}:${cols}`;
+
+            const totalRows = Math.ceil(total / cols);
+            ensureRowHeightsCapacity(totalRows);
+            const offsets = getCumulativeRowOffsets(totalRows);
+
+            const { startRow, endRow } = getVirtualRowWindow(totalRows, offsets, virtualScrollTop, viewportHeight);
+            const start = Math.min(total, startRow * cols);
+            const end = Math.min(total, endRow * cols);
+
+            const signature = `${start}:${end}:${total}:${cols}:${Math.round(virtualState.estimatedRowHeight)}`;
             if (signature === virtualState.lastSignature) return;
             virtualState.start = start;
             virtualState.end = end;
             virtualState.lastSignature = signature;
 
-            const startRow = Math.floor(start / cols);
-            const endRow = Math.ceil(end / cols);
-            const totalRows = Math.ceil(total / cols);
-
-            topSpacer.style.height = `${startRow * virtualState.estimatedRowHeight}px`;
-            bottomSpacer.style.height = `${Math.max(0, totalRows - endRow) * virtualState.estimatedRowHeight}px`;
+            topSpacer.style.height = `${offsets[startRow]}px`;
+            bottomSpacer.style.height = `${Math.max(0, offsets[totalRows] - offsets[endRow])}px`;
 
             list.innerHTML = displayIndexes.slice(start, end).map((originalIndex) => renderCard(allLocations[originalIndex], originalIndex)).join("");
             initIconsForRoot(list);
