@@ -758,10 +758,17 @@
 
         /* ---------- Virtualized list, about panel, and error boundary ---------- */
         #listViewport {
-            max-height: min(74dvh, 820px);
             overflow-y: auto;
+            scroll-behavior: smooth;
             overscroll-behavior: contain;
             -webkit-overflow-scrolling: touch;
+            max-height: calc(100dvh - 220px);
+        }
+
+        @media (min-width: 1024px) {
+            #listViewport {
+                max-height: calc(100dvh - 120px);
+            }
         }
 
         .virtual-spacer {
@@ -967,11 +974,6 @@
         }
 
         /* ---------- Virtual list responsive height ---------- */
-        #listViewport {
-            max-height: min(74dvh, calc(100vh - 220px));
-        }
-
-
         /* ---------- Modal footer buttons responsive ---------- */
         .modal-footer-sticky {
             padding-bottom: max(8px, env(safe-area-inset-bottom));
@@ -1247,10 +1249,6 @@
            ============================ */
         @media (max-height: 667px) {
             /* iPhone SE height / short Android */
-            #listViewport {
-                max-height: min(65dvh, calc(100vh - 250px));
-            }
-
             .modal-scroll-body {
                 max-height: calc(80dvh - 64px);
             }
@@ -1268,10 +1266,6 @@
             header.sun-theme {
                 padding-top: calc(16px + env(safe-area-inset-top));
                 padding-bottom: 24px;
-            }
-
-            #listViewport {
-                max-height: min(55dvh, calc(100vh - 180px));
             }
 
             .modal-scroll-body {
@@ -1388,11 +1382,6 @@
 
             .modal-scroll-body {
                 max-height: calc(80vh - 80px);
-            }
-
-            /* --- List viewport taller --- */
-            #listViewport {
-                max-height: min(78dvh, 900px);
             }
 
             /* --- About panel: 2-column stats --- */
@@ -1554,11 +1543,6 @@
                 padding-right: 24px;
             }
 
-            /* --- List viewport --- */
-            #listViewport {
-                max-height: min(80dvh, 1000px);
-            }
-
             /* --- About panel: wider stats --- */
             .about-panel {
                 padding: 32px;
@@ -1659,11 +1643,6 @@
                 grid-template-columns: 1fr 1fr;
             }
 
-            /* --- List viewport taller --- */
-            #listViewport {
-                max-height: min(82dvh, 1100px);
-            }
-
             /* --- Install banners --- */
             #installBanner,
             #iosInstallTip {
@@ -1693,10 +1672,6 @@
         @media (min-width: 600px) and (orientation: landscape) {
             header.sun-theme {
                 padding-bottom: 40px;
-            }
-
-            #listViewport {
-                max-height: min(70dvh, calc(100vh - 200px));
             }
 
             .modal-panel {
@@ -1796,10 +1771,6 @@
             #locationList, #loader {
                 grid-template-columns: repeat(3, 1fr);
                 gap: 24px;
-            }
-
-            #listViewport {
-                max-height: calc(100vh - 120px);
             }
 
             /* About panel */
@@ -2571,30 +2542,3 @@
             background: rgba(15, 23, 42, 0.5) !important;
             border-color: rgba(255, 255, 255, 0.25) !important;
         }
-
-        /* ---------- Force Unified Page Scrolling ---------- */
-        #listViewport {
-            max-height: none !important;
-            overflow-y: visible !important;
-            overscroll-behavior: auto !important;
-        }
-
-        /* ---------- Full-Width Location Cards (Mobile/Tablet) ---------- */
-        @media (max-width: 1023px) {
-            #listViewport {
-                margin-left: calc(-1 * max(16px, env(safe-area-inset-left))) !important;
-                margin-right: calc(-1 * max(16px, env(safe-area-inset-right))) !important;
-            }
-        }
-        @media (min-width: 480px) and (max-width: 1023px) {
-            #listViewport {
-                margin-left: calc(-1 * max(8px, env(safe-area-inset-left))) !important;
-                margin-right: calc(-1 * max(8px, env(safe-area-inset-right))) !important;
-            }
-        }
-        @media (min-width: 600px) and (max-width: 1023px) {
-            #listViewport {
-                margin-left: calc(-1 * max(16px, env(safe-area-inset-left))) !important;
-                margin-right: calc(-1 * max(16px, env(safe-area-inset-right))) !important;
-            }
-        }

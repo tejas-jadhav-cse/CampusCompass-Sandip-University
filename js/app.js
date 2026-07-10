@@ -2308,7 +2308,7 @@
             };
 
             viewport.addEventListener("touchstart", (event) => {
-                if (window.scrollY > 0 || event.touches.length !== 1) return;
+                if (viewport.scrollTop > 0 || event.touches.length !== 1) return;
                 pullRefreshTouchId = event.touches[0].identifier;
                 pullRefreshStartY = event.touches[0].clientY;
             }, { passive: true });
@@ -2316,7 +2316,7 @@
             viewport.addEventListener("touchmove", (event) => {
                 if (pullRefreshStartY == null || event.touches.length !== 1) return;
                 const touch = event.touches[0];
-                if (touch.identifier !== pullRefreshTouchId || window.scrollY > 0) return;
+                if (touch.identifier !== pullRefreshTouchId || viewport.scrollTop > 0) return;
                 const deltaY = touch.clientY - pullRefreshStartY;
                 if (deltaY > 0) {
                     event.preventDefault();
@@ -2417,13 +2417,13 @@
             emptyState.classList.add("hidden");
 
             if (resetScroll) {
-                window.scrollTo({ top: 0, behavior: "instant" });
+                viewport.scrollTo({ top: 0, behavior: "instant" });
             }
 
             const cols = getVirtualCols();
-            const listOffsetTop = viewport.getBoundingClientRect().top + window.scrollY;
-            const virtualScrollTop = Math.max(0, window.scrollY - listOffsetTop);
-            const { start, end } = getVirtualWindow(total, virtualScrollTop, Math.max(1, window.innerHeight), virtualState.estimatedRowHeight, cols);
+            const virtualScrollTop = Math.max(0, viewport.scrollTop);
+            const viewportHeight = Math.max(1, viewport.clientHeight);
+            const { start, end } = getVirtualWindow(total, virtualScrollTop, viewportHeight, virtualState.estimatedRowHeight, cols);
             const signature = `${start}:${end}:${total}:${Math.round(virtualState.estimatedRowHeight)}:${cols}`;
             if (signature === virtualState.lastSignature) return;
             virtualState.start = start;
@@ -2943,7 +2943,7 @@
         function wireListViewport() {
             const viewport = getEl("listViewport");
             if (!viewport) return;
-            window.addEventListener("scroll", scheduleVirtualRender, { passive: true });
+            viewport.addEventListener("scroll", scheduleVirtualRender, { passive: true });
             window.addEventListener("resize", scheduleVirtualRender);
         }
 
@@ -3101,8 +3101,6 @@
             window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
             window.addEventListener("appinstalled", onAppInstalled);
 
-            // Scroll listener for Go To Top button
-            window.addEventListener("scroll", handleScrollForTopBtn, { passive: true });
             const listViewport = getEl("listViewport");
             if (listViewport) {
                 listViewport.addEventListener("scroll", handleScrollForTopBtn, { passive: true });
@@ -3115,8 +3113,9 @@
         function handleScrollForTopBtn() {
             const btn = getEl("goToTopBtn");
             if (!btn) return;
-            const scrollY = window.scrollY || (getEl("listViewport") ? getEl("listViewport").scrollTop : 0);
-            if (scrollY > 300) {
+            const viewport = getEl("listViewport");
+            const scrollTop = viewport ? viewport.scrollTop : 0;
+            if (scrollTop > 300) {
                 btn.classList.add("visible");
             } else {
                 btn.classList.remove("visible");
@@ -3128,7 +3127,6 @@
          */
         function scrollToTop() {
             hapticTap();
-            window.scrollTo({ top: 0, behavior: "smooth" });
             const listViewport = getEl("listViewport");
             if (listViewport) {
                 listViewport.scrollTo({ top: 0, behavior: "smooth" });
@@ -3179,5 +3177,5 @@
         window.retryLoadData = retryLoadData;
         window.toggleAboutPanel = toggleAboutPanel;
         window.loadData = loadData;
-        window.scrollToTop = scrollToTop;
-        window.clearSearch = clearSearch;
+        window["scrollToTop"] = scrollToTop;
+        window.clearSearch = clearSearch;
