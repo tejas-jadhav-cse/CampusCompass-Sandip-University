@@ -2456,8 +2456,13 @@
             }
 
             const cols = getVirtualCols();
-            const virtualScrollTop = Math.max(0, viewport.scrollTop);
-            const viewportHeight = Math.max(1, viewport.clientHeight);
+            const usesOwnScroll = viewport.scrollHeight > viewport.clientHeight + 1;
+            const virtualScrollTop = usesOwnScroll
+                ? Math.max(0, viewport.scrollTop)
+                : Math.max(0, window.scrollY - viewport.offsetTop);
+            const viewportHeight = usesOwnScroll
+                ? Math.max(1, viewport.clientHeight)
+                : Math.max(1, window.innerHeight);
             const { start, end } = getVirtualWindow(total, virtualScrollTop, viewportHeight, virtualState.estimatedRowHeight, cols);
             const signature = `${start}:${end}:${total}:${Math.round(virtualState.estimatedRowHeight)}:${cols}`;
             if (signature === virtualState.lastSignature) return;
@@ -2979,6 +2984,7 @@
             const viewport = getEl("listViewport");
             if (!viewport) return;
             viewport.addEventListener("scroll", scheduleVirtualRender, { passive: true });
+            window.addEventListener("scroll", scheduleVirtualRender, { passive: true });
             window.addEventListener("resize", scheduleVirtualRender);
         }
 
@@ -3167,6 +3173,7 @@
             if (listViewport) {
                 listViewport.scrollTo({ top: 0, behavior: "smooth" });
             }
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
 
         /**

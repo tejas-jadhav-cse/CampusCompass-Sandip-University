@@ -1708,7 +1708,6 @@ html[lang="hi"] body,
         @media (min-width: 1280px) {
             body {
                 display: grid;
-                /* Create centered layout with auto margins */
                 grid-template-columns: 1fr 380px minmax(700px, 860px) 1fr;
                 grid-template-rows: auto 1fr;
                 grid-template-areas:
@@ -1718,23 +1717,30 @@ html[lang="hi"] body,
                 row-gap: 0;
                 align-items: start;
                 padding-bottom: 64px;
+                height: auto;
+                overflow: visible;
+            }
+
+            #pageHeader {
+                display: contents;
             }
 
             .top-banner {
                 grid-row: 1;
                 grid-column: 1 / -1;
+                grid-area: header;
                 position: sticky;
                 top: 0;
-                z-index: -10;
+                z-index: 10;
                 height: 200px;
                 width: 100%;
             }
 
             .sticky-search-wrap {
                 grid-area: sidebar;
-                align-self: stretch;
-                position: relative !important;
-                top: auto !important;
+                align-self: start;
+                position: sticky !important;
+                top: 24px !important;
                 margin-top: 0;
                 padding: 0;
             }
@@ -1745,9 +1751,6 @@ html[lang="hi"] body,
                 padding: 32px;
                 border-radius: 24px !important;
                 border: 1px solid rgba(255, 255, 255, 0.4) !important;
-                position: sticky;
-                top: 24px;
-                z-index: 40;
             }
             html.dark .glass-nav {
                 border: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -1764,7 +1767,7 @@ html[lang="hi"] body,
                 gap: 12px;
                 padding-bottom: 8px;
             }
-            
+
             .filter-chip {
                 flex: 1 1 auto;
                 justify-content: center;
@@ -1772,8 +1775,20 @@ html[lang="hi"] body,
                 padding: 12px 24px;
             }
 
-            main.max-w-md {
+            #listViewport {
                 grid-area: main;
+                margin-top: 0;
+                height: auto;
+                max-height: none;
+                overflow: visible;
+            }
+
+            html, body {
+                overflow: visible;
+                height: auto;
+            }
+
+            #mainContent {
                 max-width: 100%;
                 margin-top: 0;
                 margin-left: 0;
@@ -1811,11 +1826,6 @@ html[lang="hi"] body,
            1440px — Large Desktop
            ============================ */
         @media (min-width: 1440px) {
-            body {
-                grid-template-columns: 1fr 400px 920px 1fr;
-                column-gap: 48px;
-            }
-
             header.sun-theme {
                 padding: 80px 64px;
                 border-radius: 48px;
@@ -1840,11 +1850,6 @@ html[lang="hi"] body,
            1600px — Extra Large Desktop
            ============================ */
         @media (min-width: 1600px) {
-            body {
-                grid-template-columns: 1fr 420px 1100px 1fr;
-                column-gap: 64px;
-            }
-
             header.sun-theme {
                 padding: 96px 80px;
                 border-radius: 56px;
@@ -1865,11 +1870,6 @@ html[lang="hi"] body,
            1920px — Ultrawide Desktop
            ============================ */
         @media (min-width: 1920px) {
-            body {
-                grid-template-columns: 1fr 480px 1280px 1fr;
-                column-gap: 80px;
-            }
-
             header.sun-theme {
                 padding: 120px 96px;
                 border-radius: 64px;
