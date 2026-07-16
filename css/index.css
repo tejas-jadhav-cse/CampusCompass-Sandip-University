@@ -2224,16 +2224,16 @@ html[lang="hi"] body,
             from { opacity: 0; transform: translateY(20px) scale(0.97); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        #locationList .card-shell.card {
+        .animate-entrance #locationList .card-shell.card {
             animation: cc-card-enter 0.5s cubic-bezier(0.16,1,0.3,1) both;
         }
-        #locationList .card-shell.card:nth-child(1) { animation-delay: 0s; }
-        #locationList .card-shell.card:nth-child(2) { animation-delay: 0.05s; }
-        #locationList .card-shell.card:nth-child(3) { animation-delay: 0.1s; }
-        #locationList .card-shell.card:nth-child(4) { animation-delay: 0.15s; }
-        #locationList .card-shell.card:nth-child(5) { animation-delay: 0.2s; }
-        #locationList .card-shell.card:nth-child(6) { animation-delay: 0.25s; }
-        #locationList .card-shell.card:nth-child(n+7) { animation-delay: 0.3s; }
+        .animate-entrance #locationList .card-shell.card:nth-child(1) { animation-delay: 0s; }
+        .animate-entrance #locationList .card-shell.card:nth-child(2) { animation-delay: 0.05s; }
+        .animate-entrance #locationList .card-shell.card:nth-child(3) { animation-delay: 0.1s; }
+        .animate-entrance #locationList .card-shell.card:nth-child(4) { animation-delay: 0.15s; }
+        .animate-entrance #locationList .card-shell.card:nth-child(5) { animation-delay: 0.2s; }
+        .animate-entrance #locationList .card-shell.card:nth-child(6) { animation-delay: 0.25s; }
+        .animate-entrance #locationList .card-shell.card:nth-child(n+7) { animation-delay: 0.3s; }
 
         /* ---------- Bottom Sheet Modal ---------- */
         #detailModal {

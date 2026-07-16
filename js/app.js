@@ -2512,6 +2512,10 @@
                 // offsets from the old result set.
                 virtualState.rowHeights = [];
                 virtualState.lastMeasuredCols = null;
+                const mainContent = getEl("mainContent");
+                if (mainContent) {
+                    mainContent.classList.add("animate-entrance");
+                }
             }
 
             const cols = getVirtualCols();
@@ -3035,7 +3039,13 @@
          * @returns {void}
          */
         function wireListViewport() {
-            window.addEventListener("scroll", scheduleVirtualRender, { passive: true });
+            window.addEventListener("scroll", () => {
+                const mainContent = getEl("mainContent");
+                if (mainContent && mainContent.classList.contains("animate-entrance")) {
+                    mainContent.classList.remove("animate-entrance");
+                }
+                scheduleVirtualRender();
+            }, { passive: true });
             window.addEventListener("resize", scheduleVirtualRender);
         }
 
