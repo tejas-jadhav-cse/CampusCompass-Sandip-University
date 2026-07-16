@@ -145,6 +145,7 @@
                 appSubtitle: "CAMPUS NAVIGATION",
                 searchPlaceholder: "Search building, department, hostel...",
                 filterAll: "All",
+                filterLabel: "Filters",
                 categoryLabels: {
                     admission_cell: "Admission Cell",
                     gate: "Gate",
@@ -227,6 +228,7 @@
                 appSubtitle: "कैंपस नेविगेशन",
                 searchPlaceholder: "भवन, विभाग, छात्रावास खोजें...",
                 filterAll: "सभी",
+                filterLabel: "फ़िल्टर",
                 categoryLabels: {
                     admission_cell: "प्रवेश प्रकोष्ठ",
                     gate: "प्रवेश द्वार",
@@ -309,6 +311,7 @@
                 appSubtitle: "कॅम्पस नेव्हिगेशन",
                 searchPlaceholder: "इमारत, विभाग, वसतिगृह शोधा...",
                 filterAll: "सर्व",
+                filterLabel: "फिल्टर",
                 categoryLabels: {
                     admission_cell: "प्रवेश कक्ष",
                     gate: "प्रवेशद्वार",
@@ -391,6 +394,7 @@
                 appSubtitle: "परिसर नेविगेशन",
                 searchPlaceholder: "भवन, विभाग, छात्रावास खोजू...",
                 filterAll: "सब",
+                filterLabel: "फ़िल्टर",
                 categoryLabels: {
                     admission_cell: "प्रवेश कक्ष",
                     gate: "गेट",
@@ -471,6 +475,7 @@
                 appSubtitle: "క్యాంపస్ నావిగేషన్",
                 searchPlaceholder: "భవనం, విభాగం, హాస్టల్ కోసం వెతకండి...",
                 filterAll: "అన్నీ",
+                filterLabel: "ఫిల్టర్లు",
                 categoryLabels: {
                     admission_cell: "అడ్మిషన్ సెల్",
                     gate: "గేట్",
@@ -551,6 +556,7 @@
                 appSubtitle: "வளாக வழிகாட்டல்",
                 searchPlaceholder: "கட்டடம், துறை, விடுதியைத் தேடுக...",
                 filterAll: "அனைத்தும்",
+                filterLabel: "வடிகட்டிகள்",
                 categoryLabels: {
                     admission_cell: "சேர்க்கை பிரிவு",
                     gate: "நுழைவாயில்",
@@ -631,6 +637,7 @@
                 appSubtitle: "NAVEGAÇÃO DO CAMPUS",
                 searchPlaceholder: "Pesquisar prédio, departamento, albergue...",
                 filterAll: "Todos",
+                filterLabel: "Filtros",
                 categoryLabels: {
                     admission_cell: "Célula de Admissão",
                     gate: "Portão",
@@ -747,6 +754,9 @@
 
         /** @type {{active:boolean,startX:number,startY:number,deltaX:number,deltaY:number,revealed:boolean,ignoreClick:boolean}|null} */
         let modalGestureState = null;
+
+        /** @type {HTMLElement | null} */
+        let langPickerTrigger = null;
 
         /** @type {number} */
         const CARD_SWIPE_THRESHOLD = 56;
@@ -1482,6 +1492,7 @@
         function openLangPicker(focusFirstOption = false) {
             const overlay = getEl("langPickerOverlay");
             if (!overlay) return;
+            langPickerTrigger = document.activeElement;
             overlay.classList.add("picker-shown");
             requestAnimationFrame(() => {
                 overlay.classList.add("picker-visible");
@@ -1502,7 +1513,13 @@
             const overlay = getEl("langPickerOverlay");
             if (!overlay) return;
             overlay.classList.remove("picker-visible");
-            const finish = () => overlay.classList.remove("picker-shown");
+            const finish = () => {
+                overlay.classList.remove("picker-shown");
+                if (langPickerTrigger && typeof langPickerTrigger.focus === "function") {
+                    langPickerTrigger.focus();
+                    langPickerTrigger = null;
+                }
+            };
             if (prefersReducedMotion()) {
                 finish();
             } else {
@@ -1589,7 +1606,8 @@
             const container = getEl("filterContainer");
             if (!container) return;
 
-            container.innerHTML = categories.map((category) => {
+            const legendHtml = `<legend class="sr-only">${escapeHtml(t("filterLabel"))}</legend>`;
+            const chipsHtml = categories.map((category) => {
                 const icon = category === ALL_FILTER ? "layout-grid" : (CATEGORY_ICONS[category] || DEFAULT_ICON);
                 const isActive = currentFilter === category;
                 const label = category === ALL_FILTER ? t("filterAll") : formatCategoryLabel(category);
@@ -1603,6 +1621,7 @@
                     </button>
                 `;
             }).join("");
+            container.innerHTML = legendHtml + chipsHtml;
             initIconsForRoot(container);
         }
 
@@ -2071,12 +2090,14 @@
             const translatedDescription = getTranslatedContent(description, currentLang);
 
             return `
-                <div class="card-shell card tap-shrink bg-white rounded-3xl p-6 shadow-sm border border-slate-100 relative overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 gesture-pan-y flex flex-col min-h-[250px]"
-                    data-location-id="${escapeHtml(locationId)}" data-original-index="${originalIndex}" data-quick-reveal="false"
-                    tabindex="0" role="listitem" aria-label="${escapeHtml(t("viewDetails"))} ${escapeHtml(locationName)}">
+                <li class="card-shell card tap-shrink bg-white rounded-3xl p-6 shadow-sm border border-slate-100 relative overflow-hidden cursor-pointer focus-within:ring-2 focus-within:ring-red-500 gesture-pan-y flex flex-col min-h-[250px]"
+                    data-location-id="${escapeHtml(locationId)}" data-original-index="${originalIndex}" data-quick-reveal="false">
+
+                    <button class="card-details-trigger absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 text-left" 
+                        aria-label="${escapeHtml(t("viewDetails"))} ${escapeHtml(locationName)}"></button>
 
                     <div class="card-quick-action">
-                        <button class="tap-shrink inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/15 text-white font-black text-xs quick-nav-btn" aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}">
+                        <button class="tap-shrink inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/15 text-white font-black text-xs quick-nav-btn relative z-20" aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}">
                             <i data-lucide="navigation-2" class="w-4 h-4"></i>
                             <span>${escapeHtml(t("navigate"))}</span>
                         </button>
@@ -2091,12 +2112,12 @@
                                 <span class="text-[10px] font-bold uppercase tracking-wider">${escapeHtml(t("viewDetails"))}</span>
                             </div>
                             <button aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}"
-                                class="navigate-btn-small tap-shrink" style="min-height:44px;" ${mapUrl ? "" : "disabled"}>
+                                class="navigate-btn-small tap-shrink relative z-20" style="min-height:44px;" ${mapUrl ? "" : "disabled"}>
                                 <i data-lucide="map-pin" class="w-4 h-4"></i> ${escapeHtml(t("navigate"))}
                             </button>
                         </div>
                     </div>
-                </div>
+                </li>
             `;
         }
 
@@ -2138,7 +2159,9 @@
             }
 
             if (event && event.target instanceof HTMLElement && event.target.closest("button")) {
-                return;
+                if (!event.target.closest(".card-details-trigger")) {
+                    return;
+                }
             }
 
             openModal(index);
@@ -3154,6 +3177,7 @@
             if (listViewport) {
                 listViewport.addEventListener("scroll", handleScrollForTopBtn, { passive: true });
             }
+            window.addEventListener("scroll", handleScrollForTopBtn, { passive: true });
 
             // Bind static buttons programmatically to satisfy CSP (no inline onclick)
             const langToggleBtn = getEl("langToggleBtn");
@@ -3276,7 +3300,7 @@
             const btn = getEl("goToTopBtn");
             if (!btn) return;
             const viewport = getEl("listViewport");
-            const scrollTop = viewport ? viewport.scrollTop : 0;
+            const scrollTop = (viewport && viewport.scrollTop > 0) ? viewport.scrollTop : window.scrollY;
             if (scrollTop > 300) {
                 btn.classList.add("visible");
             } else {

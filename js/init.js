@@ -9,7 +9,7 @@
     try {
         const prefsRaw = localStorage.getItem("cc-preferences");
         const prefs = prefsRaw ? JSON.parse(prefsRaw) : {};
-        if (prefs.language === "hi" || prefs.language === "mr") {
+        if (prefs.language && typeof prefs.language === "string" && prefs.language.length >= 2) {
             document.documentElement.setAttribute("lang", prefs.language);
         }
     } catch (e) { /* localStorage unavailable, default to English */ }

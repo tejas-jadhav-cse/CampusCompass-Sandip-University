@@ -94,7 +94,7 @@
                     </button>
                 </div>
                 <div id="recentSearchesWrap" class="recent-searches-wrap" aria-live="polite"></div>
-                <div class="flex gap-2 overflow-x-auto no-scrollbar" id="filterContainer"></div>
+                <fieldset class="flex gap-2 overflow-x-auto no-scrollbar border-0 p-0 m-0 min-w-0" id="filterContainer"></fieldset>
             </div>
         </div>
     </header>
@@ -138,7 +138,7 @@
             <p class="text-sm font-bold" id="emptyStateText" data-i18n="emptyStateText">No matching locations found</p>
         </div>
         <div id="listSpacerTop" class="virtual-spacer" aria-hidden="true"></div>
-        <div id="locationList" class="grid gap-4" role="list"></div>
+        <ul id="locationList" class="grid gap-4"></ul>
         <div id="listSpacerBottom" class="virtual-spacer" aria-hidden="true"></div>
 
         <div class="flex items-center justify-between gap-4 mt-6 px-1">

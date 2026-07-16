@@ -751,12 +751,7 @@ html[lang="hi"] body,
 
         /* ---------- Virtualized list, about panel, and error boundary ---------- */
         #listViewport {
-            overflow-y: auto;
             scroll-behavior: smooth;
-            overscroll-behavior: contain;
-            -webkit-overflow-scrolling: touch;
-            margin-top: var(--cc-header-height, 250px);
-            height: calc(100dvh - var(--cc-header-height, 250px));
         }
 
         .virtual-spacer {
@@ -844,14 +839,11 @@ html[lang="hi"] body,
 
         html,
         body {
-            height: 100%;
-            overflow: hidden;
+            min-height: 100%;
         }
 
         #pageHeader {
-            position: fixed;
-            inset: 0 0 auto 0;
-            z-index: 30;
+            display: contents;
         }
 
         #pageHeader .top-banner,
@@ -2196,6 +2188,7 @@ html[lang="hi"] body,
             will-change: transform;
             position: relative;
         }
+        .card-shell.card:focus-within,
         .card-shell.card:hover {
             transform: translateY(-3px) !important;
             box-shadow: var(--cc-shadow-card-up) !important;
@@ -2220,6 +2213,7 @@ html[lang="hi"] body,
             transition: opacity 0.25s ease;
             z-index: 5;
         }
+        .card-shell.card:focus-within::after,
         .card-shell.card:hover::after {
             opacity: 1;
         }
