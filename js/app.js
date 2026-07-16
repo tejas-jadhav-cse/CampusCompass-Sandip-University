@@ -2185,7 +2185,12 @@
 
             card.addEventListener("pointerdown", (event) => {
                 if (event.button !== 0) return;
-                if (event.target instanceof HTMLElement && event.target.closest("button")) return;
+                if (event.target instanceof HTMLElement) {
+                    const button = event.target.closest("button");
+                    if (button && !button.classList.contains("card-details-trigger")) {
+                        return;
+                    }
+                }
                 state.active = true;
                 state.pointerId = event.pointerId;
                 state.startX = event.clientX;
