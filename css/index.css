@@ -2179,38 +2179,52 @@ html[lang="hi"] body,
         }
 
         /* ---------- Premium Cards ---------- */
+        /* ---------- Premium Cards Theme Styles ---------- */
         .card-shell.card {
             background: var(--cc-surface-raised) !important;
             border: 1px solid var(--cc-border-subtle) !important;
-            box-shadow: var(--cc-shadow-card) !important;
-            border-radius: 20px !important;
-            transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
-                        box-shadow 0.3s cubic-bezier(0.16,1,0.3,1),
+            border-radius: 24px !important;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
                         border-color 0.3s ease !important;
             will-change: transform;
             position: relative;
+            box-shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.03), 0 2px 6px -1px rgba(0, 0, 0, 0.02) !important;
+            --cat-color-primary: 220, 38, 38;
+            --cat-bg-light: 254, 242, 242;
+            --cat-bg-dark: 69, 10, 10;
         }
+
+
         .card-shell.card:focus-within,
         .card-shell.card:hover {
-            transform: translateY(-3px) !important;
-            box-shadow: var(--cc-shadow-card-up) !important;
-            border-color: rgba(220,38,38,0.1) !important;
+            transform: translateY(-4px) !important;
+            box-shadow: 0 16px 28px -4px rgba(var(--cat-color-primary), 0.12), 
+                        0 8px 16px -4px rgba(var(--cat-color-primary), 0.06) !important;
+            border-color: rgba(var(--cat-color-primary), 0.3) !important;
             z-index: 5;
         }
+
+        html.dark .card-shell.card:hover {
+            box-shadow: 0 20px 32px -4px rgba(var(--cat-color-primary), 0.2), 
+                        0 10px 20px -4px rgba(var(--cat-color-primary), 0.1) !important;
+            border-color: rgba(var(--cat-color-primary), 0.45) !important;
+        }
+
         .card-shell.card:active {
             transform: translateY(0) scale(0.985) !important;
-            box-shadow: var(--cc-shadow-card) !important;
         }
+
         /* Card accent bar */
         .card-shell.card::after {
             content: '';
             position: absolute;
             left: 0;
-            top: 16px;
-            bottom: 16px;
-            width: 3px;
-            background: var(--cc-brand-600);
-            border-radius: 0 3px 3px 0;
+            top: 20px;
+            bottom: 20px;
+            width: 4px;
+            background: linear-gradient(to bottom, rgb(var(--cat-color-primary)), rgba(var(--cat-color-primary), 0.4)) !important;
+            border-radius: 0 4px 4px 0;
             opacity: 0;
             transition: opacity 0.25s ease;
             z-index: 5;
@@ -2219,6 +2233,50 @@ html[lang="hi"] body,
         .card-shell.card:hover::after {
             opacity: 1;
         }
+
+        /* Card Elements */
+        .card-icon-container {
+            background: rgb(var(--cat-bg-light));
+            color: rgb(var(--cat-color-primary));
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
+        }
+        html.dark .card-icon-container {
+            background: rgba(var(--cat-color-primary), 0.15);
+        }
+        .card-shell.card:hover .card-icon-container {
+            transform: scale(1.12) rotate(4deg);
+        }
+
+        .card-category-badge {
+            background: rgb(var(--cat-bg-light));
+            color: rgb(var(--cat-color-primary));
+            letter-spacing: 0.05em;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        html.dark .card-category-badge {
+            background: rgba(var(--cat-color-primary), 0.2);
+        }
+
+        .card-parent-icon, .card-parent-text {
+            color: rgb(var(--cat-color-primary));
+        }
+        .card-parent-text {
+            opacity: 0.85;
+        }
+
+        .card-arrow-link {
+            transition: color 0.3s ease;
+        }
+        .card-chevron {
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .card-shell.card:hover .card-arrow-link {
+            color: rgb(var(--cat-color-primary)) !important;
+        }
+        .card-shell.card:hover .card-chevron {
+            transform: translateX(4px);
+        }
+
         /* Card stagger entrance */
         @keyframes cc-card-enter {
             from { opacity: 0; transform: translateY(20px) scale(0.97); }

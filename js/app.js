@@ -2058,21 +2058,21 @@
             const parentLine = parentName
                 ? `
                 <div class="flex items-center gap-2 mt-2 ml-14">
-                    <i data-lucide="corner-down-right" class="w-3.5 h-3.5 text-red-600 dark:text-red-500"></i>
-                    <span class="text-sm font-semibold text-red-600 dark:text-red-400">${escapeHtml(parentName)}</span>
+                    <i data-lucide="corner-down-right" class="w-3.5 h-3.5 card-parent-icon"></i>
+                    <span class="text-xs font-semibold card-parent-text">${escapeHtml(parentName)}</span>
                 </div>`
                 : "";
             return `
                 <div class="flex items-start gap-4">
                     <!-- Icon Container -->
-                    <div class="flex items-center justify-center flex-shrink-0 w-10 h-10 text-red-600 dark:text-red-500 bg-red-50 dark:bg-red-950/20 rounded-xl">
+                    <div class="card-icon-container flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-xl">
                         <i data-lucide="${icon}" class="w-5 h-5"></i>
                     </div>
 
-                    <!-- Dynamic Text Flow (The Fix for Overlaps & Collapsing) -->
+                    <!-- Dynamic Text Flow -->
                     <div class="mt-0.5 min-w-0">
                         <h2 class="inline text-lg font-extrabold text-slate-800 dark:text-slate-200 leading-tight mr-2">${escapeHtml(locationName)}</h2>
-                        <span class="inline-block px-2.5 py-1 text-[10px] font-black text-red-700 dark:text-red-400 uppercase bg-red-50 dark:bg-red-950/40 rounded-lg whitespace-nowrap align-middle">
+                        <span class="inline-block px-2.5 py-1 text-[9px] font-black uppercase rounded-lg whitespace-nowrap align-middle card-category-badge">
                             ${escapeHtml(formatCategoryLabel(location.category))}
                         </span>
                     </div>
@@ -2092,8 +2092,9 @@
             const translatedDescription = getTranslatedContent(description, currentLang);
 
             return `
-                <li class="card-shell card tap-shrink bg-white rounded-3xl p-6 shadow-sm border border-slate-100 relative overflow-hidden cursor-pointer focus-within:ring-2 focus-within:ring-red-500 gesture-pan-y flex flex-col min-h-[250px]"
-                    data-location-id="${escapeHtml(locationId)}" data-original-index="${originalIndex}" data-quick-reveal="false">
+                <li class="card-shell card tap-shrink bg-white rounded-3xl p-6 relative overflow-hidden cursor-pointer focus-within:ring-2 focus-within:ring-red-500 gesture-pan-y flex flex-col min-h-[250px]"
+                    data-location-id="${escapeHtml(locationId)}" data-original-index="${originalIndex}" data-quick-reveal="false"
+                    data-category="${escapeHtml(location.category)}">
 
                     <button class="card-details-trigger absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 text-left" 
                         aria-label="${escapeHtml(t("viewDetails"))} ${escapeHtml(locationName)}"></button>
@@ -2105,12 +2106,14 @@
                         </button>
                     </div>
 
-                    <div class="card-main flex-1 flex flex-col">
-                        ${getCardHeader(location, locationName, icon)}
-                        <p class="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400 leading-relaxed flex-grow ml-14 line-clamp-2">${escapeHtml(translatedDescription)}</p>
+                    <div class="card-main flex-1 flex flex-col justify-between">
+                        <div>
+                            ${getCardHeader(location, locationName, icon)}
+                            <p class="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400 leading-relaxed ml-14 line-clamp-2">${escapeHtml(translatedDescription)}</p>
+                        </div>
                         <div class="flex items-center justify-between pt-4 mt-6 border-t border-slate-100 dark:border-white/5 ml-14">
-                            <div class="flex items-center gap-1.5 text-slate-400">
-                                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                            <div class="flex items-center gap-1.5 card-arrow-link text-slate-400">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 card-chevron"></i>
                                 <span class="text-[10px] font-bold uppercase tracking-wider">${escapeHtml(t("viewDetails"))}</span>
                             </div>
                             <button aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}"
