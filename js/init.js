@@ -1,9 +1,12 @@
 (function () {
     try {
         const saved = localStorage.getItem("cc-theme");
-        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const isDark = saved ? saved === "dark" : prefersDark;
-        if (isDark) document.documentElement.classList.add("dark");
+        const isDark = saved === "dark";
+        if (isDark) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
     } catch (e) { /* localStorage unavailable, default to light */ }
 
     try {
