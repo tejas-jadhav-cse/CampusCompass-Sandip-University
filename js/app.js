@@ -1492,6 +1492,7 @@
         function openLangPicker(focusFirstOption = false) {
             const overlay = getEl("langPickerOverlay");
             if (!overlay) return;
+            window.history.pushState({ langPickerOpen: true }, "");
             document.documentElement.classList.add("no-scroll");
             langPickerTrigger = document.activeElement;
             overlay.classList.add("picker-shown");
@@ -1510,7 +1511,7 @@
          * DOM-coupled helper: hides the overlay.
          * @returns {void}
          */
-        function closeLangPicker() {
+        function closeLangPicker(triggerHistoryBack = true) {
             const overlay = getEl("langPickerOverlay");
             if (!overlay) return;
             overlay.classList.remove("picker-visible");
@@ -1522,6 +1523,9 @@
                     langPickerTrigger = null;
                 }
             };
+            if (triggerHistoryBack && window.history.state && window.history.state.langPickerOpen) {
+                window.history.back();
+            }
             if (prefersReducedMotion()) {
                 finish();
             } else {
@@ -2017,19 +2021,18 @@
             return `
                 <p class="text-xs font-bold text-slate-700 mb-4">${escapeHtml(coordsText)}</p>
                 <div class="modal-footer-sticky">
-                    <button class="navigate-btn tap-shrink" aria-label="${escapeHtml(t("navigateToLocation"))}" ${mapUrl ? "" : "disabled"}>
-                        <span class="navigate-btn-icon"><i data-lucide="map-pin" class="w-4 h-4"></i></span>
-                        ${escapeHtml(t("navigateToLocation"))}
-                    </button>
                     <button class="share-btn tap-shrink" aria-label="${escapeHtml(t("share"))}" ${mapUrl ? "" : "disabled"}>
                         <i data-lucide="share-2" class="w-4 h-4"></i>
-                        ${escapeHtml(t("share"))}
                     </button>
                     <button class="copy-link-btn tap-shrink" aria-label="${escapeHtml(t("copyLink"))}" ${mapUrl ? "" : "disabled"}>
-                        <i data-lucide="clipboard" class="w-4 h-4"></i> ${escapeHtml(t("copyLink"))}
+                        <i data-lucide="clipboard" class="w-4 h-4"></i>
                     </button>
-                    ${!mapUrl ? `<p class="text-[11px] font-semibold text-slate-500 italic mt-2 text-center">${escapeHtml(t("locationNotAvailable"))}</p>` : ""}
+                    <button class="navigate-btn tap-shrink" aria-label="${escapeHtml(t("navigateToLocation"))}" ${mapUrl ? "" : "disabled"}>
+                        <i data-lucide="map-pin" class="w-4 h-4"></i>
+                        <span>${escapeHtml(t("navigateToLocation"))}</span>
+                    </button>
                 </div>
+                ${!mapUrl ? `<p class="text-[11px] font-semibold text-slate-500 italic mt-2 text-center">${escapeHtml(t("locationNotAvailable"))}</p>` : ""}
             `;
         }
 
@@ -2057,18 +2060,13 @@
             const parentName = getTranslatedContent(location.parent, currentLang);
             const parentLine = parentName
                 ? `
-                <div class="flex items-center gap-2 mt-2 ml-14">
-                    <i data-lucide="corner-down-right" class="w-3.5 h-3.5 card-parent-icon"></i>
+                <div class="flex items-center gap-2 mt-2">
+                    <i data-lucide="map-pin" class="w-3.5 h-3.5 card-parent-icon"></i>
                     <span class="text-xs font-semibold card-parent-text">${escapeHtml(parentName)}</span>
                 </div>`
                 : "";
             return `
-                <div class="flex items-start gap-4">
-                    <!-- Icon Container -->
-                    <div class="card-icon-container flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-xl">
-                        <i data-lucide="${icon}" class="w-5 h-5"></i>
-                    </div>
-
+                <div class="flex items-start">
                     <!-- Dynamic Text Flow -->
                     <div class="mt-0.5 min-w-0">
                         <h2 class="inline text-lg font-extrabold text-slate-800 dark:text-slate-200 leading-tight mr-2">${escapeHtml(locationName)}</h2>
@@ -2092,7 +2090,7 @@
             const translatedDescription = getTranslatedContent(description, currentLang);
 
             return `
-                <li class="card-shell card tap-shrink bg-white rounded-3xl p-6 relative overflow-hidden cursor-pointer focus-within:ring-2 focus-within:ring-red-500 gesture-pan-y flex flex-col min-h-[250px]"
+                <li class="card-shell card tap-shrink bg-white rounded-3xl p-5 relative overflow-hidden cursor-pointer focus-within:ring-2 focus-within:ring-red-500 gesture-pan-y flex flex-col min-h-[250px]"
                     data-location-id="${escapeHtml(locationId)}" data-original-index="${originalIndex}" data-quick-reveal="false"
                     data-category="${escapeHtml(location.category)}">
 
@@ -2109,9 +2107,9 @@
                     <div class="card-main flex-1 flex flex-col justify-between">
                         <div>
                             ${getCardHeader(location, locationName, icon)}
-                            <p class="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400 leading-relaxed ml-14 line-clamp-2">${escapeHtml(translatedDescription)}</p>
+                            <p class="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400 leading-normal line-clamp-3">${escapeHtml(translatedDescription)}</p>
                         </div>
-                        <div class="flex items-center justify-between pt-4 mt-6 border-t border-slate-100 dark:border-white/5 ml-14">
+                        <div class="flex items-center justify-between pt-4 mt-6 border-t border-slate-100 dark:border-white/5">
                             <div class="flex items-center gap-1.5 card-arrow-link text-slate-400">
                                 <i data-lucide="chevron-right" class="w-3.5 h-3.5 card-chevron"></i>
                                 <span class="text-[10px] font-bold uppercase tracking-wider">${escapeHtml(t("viewDetails"))}</span>
@@ -2656,6 +2654,7 @@
 
             const modal = DOMUtils.get("detailModal");
             if (!modal) return;
+            window.history.pushState({ modalOpen: true }, "");
             document.documentElement.classList.add("no-scroll");
             DOMUtils.show(modal);
             modal.classList.add("flex");
@@ -2678,7 +2677,7 @@
          * DOM-coupled helper: updates modal visibility.
          * @returns {void}
          */
-        function closeModal() {
+        function closeModal(triggerHistoryBack = true) {
             const modal = getEl("detailModal");
             if (!modal) return;
             const panel = getEl("modalPanel");
@@ -2695,6 +2694,9 @@
                 }
             };
             modal.classList.remove("modal-visible", "modal-overlay-active");
+            if (triggerHistoryBack && window.history.state && window.history.state.modalOpen) {
+                window.history.back();
+            }
             if (prefersReducedMotion()) {
                 finish();
             } else {
@@ -3206,6 +3208,16 @@
             window.addEventListener("offline", updateOnlineStatus);
             window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
             window.addEventListener("appinstalled", onAppInstalled);
+            window.addEventListener("popstate", (event) => {
+                const detailModal = getEl("detailModal");
+                const langOverlay = getEl("langPickerOverlay");
+                if (detailModal && detailModal.classList.contains("modal-overlay-active")) {
+                    closeModal(false);
+                }
+                if (langOverlay && langOverlay.classList.contains("picker-visible")) {
+                    closeLangPicker(false);
+                }
+            });
 
             window.addEventListener("scroll", handleScrollForTopBtn, { passive: true });
 
