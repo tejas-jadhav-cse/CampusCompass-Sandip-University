@@ -750,9 +750,7 @@ html[lang="hi"] body,
         }
 
         /* ---------- Virtualized list, about panel, and error boundary ---------- */
-        #listViewport {
-            scroll-behavior: smooth;
-        }
+
 
         .virtual-spacer {
             width: 100%;
@@ -1760,13 +1758,6 @@ html[lang="hi"] body,
                 padding: 12px 24px;
             }
 
-            #listViewport {
-                grid-area: main;
-                margin-top: 0;
-                height: auto;
-                max-height: none;
-                overflow: visible;
-            }
 
             html, body {
                 overflow: visible;
@@ -2666,8 +2657,7 @@ html[lang="hi"] body,
         }
 
         /* ---------- Elevated glass search and filter bar ---------- */
-        /* The header is fixed while #listViewport scrolls, so this bar remains
-           pinned above the results without competing with dialogs (z-index 50+). */
+        /* The header is positioned above the results without competing with dialogs (z-index 50+). */
         #pageHeader {
             z-index: 40;
         }

@@ -2457,11 +2457,10 @@
          */
         function renderVirtualizedList(resetScroll = false) {
             const list = getEl("locationList");
-            const viewport = getEl("listViewport");
             const topSpacer = getEl("listSpacerTop");
             const bottomSpacer = getEl("listSpacerBottom");
             const emptyState = getEl("emptyState");
-            if (!list || !viewport || !topSpacer || !bottomSpacer || !emptyState) return;
+            if (!list || !topSpacer || !bottomSpacer || !emptyState) return;
 
             const displayIndexes = getDisplayIndexes(filteredIndexes);
             const total = displayIndexes.length;
@@ -2480,7 +2479,7 @@
             emptyState.classList.add("hidden");
 
             if (resetScroll) {
-                viewport.scrollTo({ top: 0, behavior: "instant" });
+                window.scrollTo({ top: 0, behavior: "instant" });
                 // The list content is changing (new filter/search results), so
                 // previously measured row heights no longer correspond to the
                 // right items. Start the height cache fresh to avoid stale
@@ -2490,13 +2489,10 @@
             }
 
             const cols = getVirtualCols();
-            const usesOwnScroll = viewport.scrollHeight > viewport.clientHeight + 1;
-            const virtualScrollTop = usesOwnScroll
-                ? Math.max(0, viewport.scrollTop)
-                : Math.max(0, window.scrollY - viewport.offsetTop);
-            const viewportHeight = usesOwnScroll
-                ? Math.max(1, viewport.clientHeight)
-                : Math.max(1, window.innerHeight);
+            const mainContent = getEl("mainContent");
+            const contentTop = mainContent ? mainContent.offsetTop : 0;
+            const virtualScrollTop = Math.max(0, window.scrollY - contentTop);
+            const viewportHeight = Math.max(1, window.innerHeight);
 
             const totalRows = Math.ceil(total / cols);
             ensureRowHeightsCapacity(totalRows);
@@ -3007,13 +3003,10 @@
         }
 
         /**
-         * Wire the list viewport scroll and keyboard handlers.
+         * Wire the scroll and keyboard handlers for virtualized list.
          * @returns {void}
          */
         function wireListViewport() {
-            const viewport = getEl("listViewport");
-            if (!viewport) return;
-            viewport.addEventListener("scroll", scheduleVirtualRender, { passive: true });
             window.addEventListener("scroll", scheduleVirtualRender, { passive: true });
             window.addEventListener("resize", scheduleVirtualRender);
         }
@@ -3173,10 +3166,6 @@
             window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
             window.addEventListener("appinstalled", onAppInstalled);
 
-            const listViewport = getEl("listViewport");
-            if (listViewport) {
-                listViewport.addEventListener("scroll", handleScrollForTopBtn, { passive: true });
-            }
             window.addEventListener("scroll", handleScrollForTopBtn, { passive: true });
 
             // Bind static buttons programmatically to satisfy CSP (no inline onclick)
@@ -3299,9 +3288,7 @@
         function handleScrollForTopBtn() {
             const btn = getEl("goToTopBtn");
             if (!btn) return;
-            const viewport = getEl("listViewport");
-            const scrollTop = (viewport && viewport.scrollTop > 0) ? viewport.scrollTop : window.scrollY;
-            if (scrollTop > 300) {
+            if (window.scrollY > 300) {
                 btn.classList.add("visible");
             } else {
                 btn.classList.remove("visible");
@@ -3309,14 +3296,10 @@
         }
 
         /**
-         * Scrolls the window and listViewport to the top smoothly.
+         * Scrolls the window to the top smoothly.
          */
         function scrollToTop() {
             hapticTap();
-            const listViewport = getEl("listViewport");
-            if (listViewport) {
-                listViewport.scrollTo({ top: 0, behavior: "smooth" });
-            }
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
 
