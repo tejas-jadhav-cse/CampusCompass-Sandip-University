@@ -38,14 +38,24 @@ html[lang="hi"] body,
             -ms-overflow-style: none; /* IE / Edge */
         }
 
+        html.no-scroll,
+        html.no-scroll body {
+            overflow: hidden !important;
+            height: 100% !important;
+        }
+
         .modal-overlay {
             background: rgba(15, 23, 42, 0.55);
             backdrop-filter: blur(2px);
         }
 
-        #detailModal,
+        #detailModal {
+            overscroll-behavior: none;
+        }
+
         .modal-scroll-body {
             overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
         }
 
         .gesture-scroll-none {
@@ -408,13 +418,13 @@ html[lang="hi"] body,
         #langPickerOverlay.picker-visible {
             opacity: 1;
         }
-
         .lang-picker-inner {
             margin: auto;
             width: 100%;
             max-width: 420px;
             padding: 32px 24px calc(32px + env(safe-area-inset-bottom));
             padding-top: calc(32px + env(safe-area-inset-top));
+            -webkit-overflow-scrolling: touch;
         }
 
         .lang-card {
@@ -642,6 +652,7 @@ html[lang="hi"] body,
            so give the content noticeably more clearance than that footprint. */
         #mainContent {
             padding-bottom: calc(104px + env(safe-area-inset-bottom)) !important;
+            overflow-anchor: none;
         }
 
         .sticky-search-wrap {
@@ -2293,6 +2304,7 @@ html[lang="hi"] body,
             border-radius: 24px 24px 0 0 !important;
             max-height: 90vh !important;
             overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
             box-shadow: var(--cc-shadow-sheet) !important;
             transform: translateY(100%);
             transition: transform 0.32s cubic-bezier(0.16,1,0.3,1);

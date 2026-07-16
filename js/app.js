@@ -1492,6 +1492,7 @@
         function openLangPicker(focusFirstOption = false) {
             const overlay = getEl("langPickerOverlay");
             if (!overlay) return;
+            document.documentElement.classList.add("no-scroll");
             langPickerTrigger = document.activeElement;
             overlay.classList.add("picker-shown");
             requestAnimationFrame(() => {
@@ -1515,6 +1516,7 @@
             overlay.classList.remove("picker-visible");
             const finish = () => {
                 overlay.classList.remove("picker-shown");
+                document.documentElement.classList.remove("no-scroll");
                 if (langPickerTrigger && typeof langPickerTrigger.focus === "function") {
                     langPickerTrigger.focus();
                     langPickerTrigger = null;
@@ -2190,22 +2192,33 @@
                 state.deltaX = 0;
                 state.deltaY = 0;
                 card.dataset.gestureIgnore = "false";
-                card.setPointerCapture(event.pointerId);
             });
 
             card.addEventListener("pointermove", (event) => {
                 if (!state.active || event.pointerId !== state.pointerId) return;
-                state.deltaX = event.clientX - state.startX;
-                state.deltaY = event.clientY - state.startY;
-                if (Math.abs(state.deltaX) < 8 && Math.abs(state.deltaY) < 8) return;
-                if (Math.abs(state.deltaX) > Math.abs(state.deltaY)) {
+                const deltaX = event.clientX - state.startX;
+                const deltaY = event.clientY - state.startY;
+                state.deltaX = deltaX;
+                state.deltaY = deltaY;
+                if (Math.abs(deltaX) < 8 && Math.abs(deltaY) < 8) return;
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    if (!card.hasPointerCapture(event.pointerId)) {
+                        card.setPointerCapture(event.pointerId);
+                    }
                     event.preventDefault();
-                    if (state.deltaX < -CARD_SWIPE_THRESHOLD) {
+                    if (deltaX < -CARD_SWIPE_THRESHOLD) {
                         card.dataset.quickReveal = "true";
                         card.dataset.gestureIgnore = "true";
-                    } else if (state.deltaX > CARD_SWIPE_THRESHOLD) {
+                    } else if (deltaX > CARD_SWIPE_THRESHOLD) {
                         resetReveal();
                         card.dataset.gestureIgnore = "true";
+                    }
+                } else {
+                    state.active = false;
+                    if (card.hasPointerCapture(event.pointerId)) {
+                        try {
+                            card.releasePointerCapture(event.pointerId);
+                        } catch (e) {}
                     }
                 }
             });
@@ -2263,16 +2276,29 @@
                 state.deltaX = 0;
                 state.deltaY = 0;
                 panel.style.transition = "none";
-                body.setPointerCapture(event.pointerId);
             });
 
             body.addEventListener("pointermove", (event) => {
                 if (!state.active || event.pointerId !== state.pointerId) return;
-                state.deltaX = event.clientX - state.startX;
-                state.deltaY = event.clientY - state.startY;
-                if (state.deltaY > 0 && Math.abs(state.deltaY) > Math.abs(state.deltaX)) {
+                const deltaX = event.clientX - state.startX;
+                const deltaY = event.clientY - state.startY;
+                state.deltaX = deltaX;
+                state.deltaY = deltaY;
+                if (Math.abs(deltaX) < 6 && Math.abs(deltaY) < 6) return;
+                if (deltaY > 0 && Math.abs(deltaY) > Math.abs(deltaX)) {
+                    if (!body.hasPointerCapture(event.pointerId)) {
+                        body.setPointerCapture(event.pointerId);
+                    }
                     event.preventDefault();
-                    panel.style.transform = `translateY(${Math.min(state.deltaY, 180)}px)`;
+                    panel.style.transform = `translateY(${Math.min(deltaY, 180)}px)`;
+                } else if (deltaY < 0) {
+                    state.active = false;
+                    if (body.hasPointerCapture(event.pointerId)) {
+                        try {
+                            body.releasePointerCapture(event.pointerId);
+                        } catch (e) {}
+                    }
+                    resetPanel();
                 }
             });
 
@@ -2623,6 +2649,7 @@
 
             const modal = DOMUtils.get("detailModal");
             if (!modal) return;
+            document.documentElement.classList.add("no-scroll");
             DOMUtils.show(modal);
             modal.classList.add("flex");
             initIconsForRoot(modalContent);
@@ -2651,6 +2678,7 @@
             const finish = () => {
                 DOMUtils.hide(modal);
                 modal.classList.remove("flex");
+                document.documentElement.classList.remove("no-scroll");
                 if (panel) panel.style.transform = "";
                 if (lastFocusedElement && typeof lastFocusedElement.focus === "function" && document.contains(lastFocusedElement)) {
                     lastFocusedElement.focus();
