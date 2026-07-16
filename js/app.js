@@ -763,20 +763,8 @@
         /** @type {string} */
         let lastRecordedSearchQuery = "";
 
-        /** @type {boolean} */
-        let isPullRefreshing = false;
-
         /** @type {{active:boolean,startX:number,startY:number,deltaX:number,deltaY:number,revealed:boolean,ignoreClick:boolean}|null} */
         let modalGestureState = null;
-
-        /** @type {number | null} */
-        let pullRefreshStartY = null;
-
-        /** @type {number | null} */
-        let pullRefreshTouchId = null;
-
-        /** @type {number} */
-        const PULL_REFRESH_THRESHOLD = 72;
 
         /** @type {number} */
         const CARD_SWIPE_THRESHOLD = 56;
@@ -1626,7 +1614,7 @@
                 return `
                     <button onclick='setFilter(${safeJsonAttr(category)})' aria-pressed="${isActive}"
                         class="filter-chip tap-shrink inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold border whitespace-nowrap transition-all
-                        ${isActive ? "bg-slate-900 text-white border-slate-900" : "bg-white filter-chip-inactive text-slate-500 border-slate-200"}"
+                        ${isActive ? "filter-chip-active bg-slate-900 text-white border-slate-900" : "bg-white filter-chip-inactive text-slate-500 border-slate-200"}"
                         style="min-height:44px;">
                         <i data-lucide="${icon}" class="w-3.5 h-3.5"></i>
                         <span>${escapeHtml(label)}</span>
@@ -2308,60 +2296,6 @@
 
             body.addEventListener("pointerup", finishModalGesture);
             body.addEventListener("pointercancel", finishModalGesture);
-        }
-
-        /**
-         * Bind pull-to-refresh gestures to the list viewport.
-         * @returns {void}
-         */
-        function bindPullToRefresh() {
-            const viewport = getEl("listViewport");
-            const banner = getEl("pullRefreshBanner");
-            if (!viewport || !banner || viewport.dataset.pullBound === "true") return;
-            viewport.dataset.pullBound = "true";
-
-            const showBanner = (visible, progress = 0) => {
-                banner.setAttribute("data-visible", String(visible));
-                banner.style.transform = visible ? `translateY(${Math.min(progress, 72)}px)` : "";
-                const text = getEl("pullRefreshText");
-                if (text) text.textContent = t("pullToRefresh");
-            };
-
-            viewport.addEventListener("touchstart", (event) => {
-                if (viewport.scrollTop > 0 || event.touches.length !== 1) return;
-                pullRefreshTouchId = event.touches[0].identifier;
-                pullRefreshStartY = event.touches[0].clientY;
-            }, { passive: true });
-
-            viewport.addEventListener("touchmove", (event) => {
-                if (pullRefreshStartY == null || event.touches.length !== 1) return;
-                const touch = event.touches[0];
-                if (touch.identifier !== pullRefreshTouchId || viewport.scrollTop > 0) return;
-                const deltaY = touch.clientY - pullRefreshStartY;
-                if (deltaY > 0) {
-                    event.preventDefault();
-                    showBanner(true, deltaY);
-                    if (deltaY > PULL_REFRESH_THRESHOLD) {
-                        const text = getEl("pullRefreshText");
-                        if (text) text.textContent = t("pullToRefresh");
-                    }
-                }
-            }, { passive: false });
-
-            const finishRefresh = async () => {
-                if (pullRefreshStartY == null) return;
-                const shouldRefresh = isPullRefreshing || (banner.getAttribute("data-visible") === "true" && banner.style.transform !== "");
-                const delta = banner.style.transform ? Number((banner.style.transform.match(/translateY\((\d+)/) || [0, 0])[1]) : 0;
-                showBanner(false, 0);
-                pullRefreshStartY = null;
-                pullRefreshTouchId = null;
-                if (delta > PULL_REFRESH_THRESHOLD) {
-                    await loadData({ fromRefresh: true });
-                }
-            };
-
-            viewport.addEventListener("touchend", finishRefresh);
-            viewport.addEventListener("touchcancel", finishRefresh);
         }
 
         /**
