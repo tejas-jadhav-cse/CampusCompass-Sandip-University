@@ -1,7 +1,7 @@
 // CampusCompass Service Worker
 // Bump CACHE_VERSION whenever app-shell files change so clients pick up
 // the new versions instead of serving stale cached copies forever.
-const CACHE_VERSION = "v10";
+const CACHE_VERSION = "v11";
 const CACHE_NAME = `campuscompass-shell-${CACHE_VERSION}`;
 
 // The app shell: everything needed for the app to boot and run fully
@@ -12,24 +12,32 @@ const APP_SHELL = [
   "./index.html",
   "./manifest.json",
   "./css/index.css",
+  "./css/fonts.css",
   "./js/app.js",
+  "./js/init.js",
   "./assets/icon-192.png",
   "./assets/icon-512.png",
-  "./assets/campus_banner.webp"
+  "./assets/campus_banner.webp",
+  "./assets/vendor/tailwind.js",
+  "./assets/vendor/lucide.min.js",
+  "./assets/fonts/TuG7UUFzXI5FBtUq5a8bjKYTZjtRU6Sgv3NaV_SNmI0b8QQCQmHN5DV_.woff2",
+  "./assets/fonts/TuG7UUFzXI5FBtUq5a8bjKYTZjtRU6Sgv3NaV_SNmI0b8QQCQmHN5TV_9qo.woff2",
+  "./assets/fonts/TuG7UUFzXI5FBtUq5a8bjKYTZjtRU6Sgv3NaV_SNmI0b8QQCQmHN6jV_9qo.woff2",
+  "./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2",
+  "./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2",
+  "./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7SUc.woff2",
+  "./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7SUc.woff2",
+  "./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2",
+  "./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7SUc.woff2",
+  "./assets/fonts/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7SUc.woff2"
 ];
-
-// The external dataset file is optional (index.html falls back to its
-// embedded copy if this fetch fails), but we still cache it opportunistically
-// so a fresh copy is available offline if it's ever present alongside the app.
-const DATA_URL = "./sandip_university_campus.json";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
       const cache = await caches.open(CACHE_NAME);
       // Add each shell file individually so a single missing/optional
-      // file (e.g. the external dataset not being present) can't abort
-      // the whole install.
+      // file can't abort the whole install.
       await Promise.all(
         APP_SHELL.map((url) =>
           cache.add(url).catch((err) => {
@@ -37,10 +45,6 @@ self.addEventListener("install", (event) => {
           })
         )
       );
-      // Best-effort: also try to warm the cache with the external dataset.
-      await cache.add(DATA_URL).catch(() => {
-        // Fine if this isn't present; index.html has an embedded fallback.
-      });
       // Activate this SW immediately rather than waiting for old tabs to close.
       await self.skipWaiting();
     })()
@@ -62,7 +66,7 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Stale-while-revalidate: serve the cached response immediately (if any)
+// Cache-first: serve the cached response immediately (if any)
 // while kicking off a network request in the background to refresh the
 // cache for next time.
 /**
@@ -76,11 +80,6 @@ function isValidResponseForCache(response, request) {
   if (!response || !response.ok) return false;
   const contentType = response.headers.get("content-type") || "";
   const url = new URL(request.url);
-
-  // If caching the JSON dataset, ensure it actually is JSON
-  if (url.pathname.endsWith("sandip_university_campus.json")) {
-    return contentType.includes("application/json");
-  }
 
   // If caching web pages or assets
   if (url.pathname.endsWith(".html") || url.pathname.endsWith("/")) {
@@ -96,22 +95,6 @@ function isValidResponseForCache(response, request) {
   }
 
   return true; // Fallback allow for general app shell assets (svg, CSS, JS, etc.)
-}
-
-async function staleWhileRevalidate(request) {
-  const cache = await caches.open(CACHE_NAME);
-  const cached = await cache.match(request);
-
-  const networkFetch = fetch(request)
-    .then((response) => {
-      if (isValidResponseForCache(response, request)) {
-        cache.put(request, response.clone());
-      }
-      return response;
-    })
-    .catch(() => null);
-
-  return cached || (await networkFetch) || new Response(null, { status: 504 });
 }
 
 // Cache-first: use the cached copy if we have one, otherwise go to the
@@ -138,9 +121,7 @@ async function cacheFirst(request) {
 self.addEventListener("fetch", (event) => {
   const { request } = event;
 
-  // Only handle same-origin GET requests; let everything else (CDN
-  // scripts for Tailwind/Lucide, cross-origin calls, POSTs, etc.) pass
-  // straight through to the network as normal.
+  // Only handle same-origin GET requests
   if (request.method !== "GET") return;
 
   let url;
@@ -150,13 +131,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   if (url.origin !== self.location.origin) return;
-
-  const isDataFile = url.pathname.endsWith("sandip_university_campus.json");
-
-  if (isDataFile) {
-    event.respondWith(staleWhileRevalidate(request));
-    return;
-  }
 
   event.respondWith(cacheFirst(request));
 });

@@ -1,7 +1,6 @@
 // ===== MODULE: data.js (data loading, parsing, embedded dataset) =====
 
-        /** @type {string} */
-        const DATA_URL = "./sandip_university_campus.json";
+
 
         /** @type {string} */
         const ANALYTICS_KEY = "cc-usage-analytics";
@@ -1612,7 +1611,7 @@
                 const isActive = currentFilter === category;
                 const label = category === ALL_FILTER ? t("filterAll") : formatCategoryLabel(category);
                 return `
-                    <button onclick='setFilter(${safeJsonAttr(category)})' aria-pressed="${isActive}"
+                    <button data-filter="${escapeHtml(category)}" aria-pressed="${isActive}"
                         class="filter-chip tap-shrink inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold border whitespace-nowrap transition-all
                         ${isActive ? "filter-chip-active bg-slate-900 text-white border-slate-900" : "bg-white filter-chip-inactive text-slate-500 border-slate-200"}"
                         style="min-height:44px;">
@@ -1644,13 +1643,13 @@
 
             const items = recentSearches.slice(0, RECENT_SEARCH_LIMIT);
             const chips = items.map((query) => `
-                <button class="recent-chip tap-shrink" onclick='applyRecentSearch(${safeJsonAttr(query)})' aria-label="${escapeHtml(query)}">
+                <button class="recent-chip tap-shrink" data-recent-query="${escapeHtml(query)}" aria-label="${escapeHtml(query)}">
                     <i data-lucide="history" class="w-3.5 h-3.5"></i>
                     <span>${escapeHtml(query)}</span>
                 </button>
             `).join("");
             const clearButton = items.length > 0
-                ? `<button class="clear-recent-btn tap-shrink" onclick="clearRecentSearches()" aria-label="${escapeHtml(t("clearRecent"))}">${escapeHtml(t("clearRecent"))}</button>`
+                ? `<button class="clear-recent-btn tap-shrink" data-action="clear-recent" aria-label="${escapeHtml(t("clearRecent"))}">${escapeHtml(t("clearRecent"))}</button>`
                 : `<p class="text-xs font-medium text-slate-500 italic">${escapeHtml(t("usageEmpty"))}</p>`;
 
             wrap.innerHTML = `
@@ -2010,23 +2009,19 @@
             const coordsText = (coordinates && coordinates.latitude != null && coordinates.longitude != null)
                 ? `${coordinates.latitude}, ${coordinates.longitude}`
                 : t("coordinatesNotAvailable");
-            const locationName = location && location.name ? location.name : t("unnamedLocation");
-            const navigateHandler = mapUrl ? `navigateToLocation(${safeJsonAttr(mapUrl)})` : "navigateToLocation(null)";
-            const copyHandler = mapUrl ? `copyMapLink(${safeJsonAttr(mapUrl)})` : "";
-            const shareHandler = mapUrl ? `shareLocation(${safeJsonAttr(locationName)}, ${safeJsonAttr(mapUrl)})` : "";
 
             return `
                 <p class="text-xs font-bold text-slate-700 mb-4">${escapeHtml(coordsText)}</p>
                 <div class="modal-footer-sticky">
-                    <button onclick='${navigateHandler}' aria-label="${escapeHtml(t("navigateToLocation"))}" class="navigate-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
+                    <button class="navigate-btn tap-shrink" aria-label="${escapeHtml(t("navigateToLocation"))}" ${mapUrl ? "" : "disabled"}>
                         <span class="navigate-btn-icon"><i data-lucide="map-pin" class="w-4 h-4"></i></span>
                         ${escapeHtml(t("navigateToLocation"))}
                     </button>
-                    <button onclick='${shareHandler}' aria-label="${escapeHtml(t("share"))}" class="share-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
+                    <button class="share-btn tap-shrink" aria-label="${escapeHtml(t("share"))}" ${mapUrl ? "" : "disabled"}>
                         <i data-lucide="share-2" class="w-4 h-4"></i>
                         ${escapeHtml(t("share"))}
                     </button>
-                    <button onclick='${copyHandler}' aria-label="${escapeHtml(t("copyLink"))}" class="copy-link-btn tap-shrink" ${mapUrl ? "" : "disabled"}>
+                    <button class="copy-link-btn tap-shrink" aria-label="${escapeHtml(t("copyLink"))}" ${mapUrl ? "" : "disabled"}>
                         <i data-lucide="clipboard" class="w-4 h-4"></i> ${escapeHtml(t("copyLink"))}
                     </button>
                     ${!mapUrl ? `<p class="text-[11px] font-semibold text-slate-500 italic mt-2 text-center">${escapeHtml(t("locationNotAvailable"))}</p>` : ""}
@@ -2087,7 +2082,6 @@
             const icon = CATEGORY_ICONS[location.category] || DEFAULT_ICON;
             const description = location.description && location.description.trim() !== "" ? location.description : t("noDescription");
             const mapUrl = getMapUrl(location);
-            const navHandler = mapUrl ? `navigateToLocation(${safeJsonAttr(mapUrl)})` : `navigateToLocation(null)`;
             
             // Apply language translations
             const locationName = getTranslatedContent(location.name || t("unnamedLocation"), currentLang);
@@ -2095,13 +2089,11 @@
 
             return `
                 <div class="card-shell card tap-shrink bg-white rounded-3xl p-6 shadow-sm border border-slate-100 relative overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 gesture-pan-y flex flex-col min-h-[250px]"
-                    data-location-id="${escapeHtml(locationId)}" data-quick-reveal="false"
-                    onclick='handleCardActivate(event, ${originalIndex}, ${safeJsonAttr(locationId)})'
-                    onkeydown='if(event.key==="Enter"||event.key===" ") { event.preventDefault(); handleCardActivate(event, ${originalIndex}, ${safeJsonAttr(locationId)}); }'
+                    data-location-id="${escapeHtml(locationId)}" data-original-index="${originalIndex}" data-quick-reveal="false"
                     tabindex="0" role="listitem" aria-label="${escapeHtml(t("viewDetails"))} ${escapeHtml(locationName)}">
 
                     <div class="card-quick-action">
-                        <button onclick='event.stopPropagation(); ${navHandler}' class="tap-shrink inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/15 text-white font-black text-xs" aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}">
+                        <button class="tap-shrink inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/15 text-white font-black text-xs quick-nav-btn" aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}">
                             <i data-lucide="navigation-2" class="w-4 h-4"></i>
                             <span>${escapeHtml(t("navigate"))}</span>
                         </button>
@@ -2115,7 +2107,7 @@
                                 <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
                                 <span class="text-[10px] font-bold uppercase tracking-wider">${escapeHtml(t("viewDetails"))}</span>
                             </div>
-                            <button onclick='event.stopPropagation(); ${navHandler}' aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}"
+                            <button aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}"
                                 class="navigate-btn-small tap-shrink" style="min-height:44px;" ${mapUrl ? "" : "disabled"}>
                                 <i data-lucide="map-pin" class="w-4 h-4"></i> ${escapeHtml(t("navigate"))}
                             </button>
@@ -2156,7 +2148,7 @@
                 event.preventDefault();
             }
 
-            const card = event && event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
+            const card = event && event.target instanceof HTMLElement ? event.target.closest(".card-shell") : null;
             if (card && card.dataset.gestureIgnore === "true") {
                 card.dataset.gestureIgnore = "false";
                 return;
@@ -2610,6 +2602,23 @@
                 ${getModalBody(location)}
             `;
 
+            const mapUrl = getMapUrl(location);
+            if (mapUrl) {
+                const navigateBtn = modalContent.querySelector(".navigate-btn");
+                if (navigateBtn) {
+                    navigateBtn.addEventListener("click", () => navigateToLocation(mapUrl));
+                }
+                const shareBtn = modalContent.querySelector(".share-btn");
+                if (shareBtn) {
+                    const locationNameTranslated = getTranslatedContent(location.name || t("unnamedLocation"), currentLang);
+                    shareBtn.addEventListener("click", () => shareLocation(locationNameTranslated, mapUrl));
+                }
+                const copyLinkBtn = modalContent.querySelector(".copy-link-btn");
+                if (copyLinkBtn) {
+                    copyLinkBtn.addEventListener("click", () => copyMapLink(mapUrl));
+                }
+            }
+
             const modal = DOMUtils.get("detailModal");
             if (!modal) return;
             DOMUtils.show(modal);
@@ -2870,23 +2879,9 @@
             const fromRefresh = Boolean(options.fromRefresh);
             setDataErrorVisible(false);
 
-            let externalPayload = null;
             const embeddedPayload = loadEmbeddedData();
-
-            try {
-                const response = await fetch(DATA_URL);
-                if (!response.ok) throw new Error(`Network response was not ok: ${response.status}`);
-                externalPayload = await response.json();
-            } catch (error) {
-                console.warn(`External fetch of ${DATA_URL} failed, using embedded dataset instead:`, error && error.message ? error.message : error);
-            }
-
-            const externalLocations = extractLocations(externalPayload);
-            const embeddedLocations = extractLocations(embeddedPayload);
-            const selectedLocations = externalLocations.length > 0 ? externalLocations : embeddedLocations;
-
-            allLocations = selectedLocations;
-            datasetMeta = extractDatasetMeta(embeddedPayload, externalPayload, allLocations);
+            allLocations = extractLocations(embeddedPayload);
+            datasetMeta = extractDatasetMeta(embeddedPayload, null, allLocations);
 
             // Compute a simple data signature (version + total) to detect no-op refreshes.
             const newSignature = `${datasetMeta.version || ""}:${Number(datasetMeta.total_locations || allLocations.length)}`;
@@ -2899,7 +2894,7 @@
             currentDataVersionSignature = newSignature;
 
             if (allLocations.length === 0) {
-                console.error("No campus locations could be loaded from either source.");
+                console.error("No campus locations could be loaded from the embedded source.");
                 setDataErrorVisible(true);
                 renderAboutPanel();
                 return;
@@ -3043,7 +3038,7 @@
             if (detailModal && !detailModal.classList.contains("hidden")) {
                 activeModal = detailModal;
                 activePanel = getEl("modalPanel");
-            } else if (langOverlay && !langOverlay.classList.contains("hidden")) {
+            } else if (langOverlay && langOverlay.classList.contains("picker-shown")) {
                 activeModal = langOverlay;
                 activePanel = langOverlay.querySelector(".lang-picker-inner");
             }
@@ -3097,7 +3092,7 @@
                 { code: 'pt', native: 'Português', english: 'Portuguese' }
             ];
             container.innerHTML = langs.map(l => `
-                <button class="lang-card tap-shrink" onclick="selectLanguage('${l.code}')" aria-label="${escapeHtml(l.english)}">
+                <button class="lang-card tap-shrink" data-lang="${l.code}" aria-label="${escapeHtml(l.english)}">
                     <span>
                         <span class="lang-card-native">${escapeHtml(l.native)}</span>
                         <span class="lang-card-sub block">${escapeHtml(l.english)}</span>
@@ -3186,6 +3181,119 @@
             const listViewport = getEl("listViewport");
             if (listViewport) {
                 listViewport.addEventListener("scroll", handleScrollForTopBtn, { passive: true });
+            }
+
+            // Bind static buttons programmatically to satisfy CSP (no inline onclick)
+            const langToggleBtn = getEl("langToggleBtn");
+            if (langToggleBtn) {
+                langToggleBtn.addEventListener("click", () => openLangPicker(true));
+            }
+            const themeToggleBtn = getEl("themeToggleBtn");
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener("click", toggleTheme);
+            }
+            const searchClearBtn = getEl("searchClearBtn");
+            if (searchClearBtn) {
+                searchClearBtn.addEventListener("click", clearSearch);
+            }
+            const retryLoadBtn = getEl("retryLoadBtn");
+            if (retryLoadBtn) {
+                retryLoadBtn.addEventListener("click", retryLoadData);
+            }
+            const aboutToggleBtn = getEl("aboutToggleBtn");
+            if (aboutToggleBtn) {
+                aboutToggleBtn.addEventListener("click", toggleAboutPanel);
+            }
+            const modalCloseBtn = getEl("modalCloseBtn");
+            if (modalCloseBtn) {
+                modalCloseBtn.addEventListener("click", closeModal);
+            }
+            const goToTopBtn = getEl("goToTopBtn");
+            if (goToTopBtn) {
+                goToTopBtn.addEventListener("click", scrollToTop);
+            }
+            const installBannerBtn = getEl("installBannerBtn");
+            if (installBannerBtn) {
+                installBannerBtn.addEventListener("click", handleInstallClick);
+            }
+            const installBannerDismissBtn = getEl("installBannerDismissBtn");
+            if (installBannerDismissBtn) {
+                installBannerDismissBtn.addEventListener("click", dismissInstallBanner);
+            }
+            const iosInstallTipDismissBtn = getEl("iosInstallTipDismissBtn");
+            if (iosInstallTipDismissBtn) {
+                iosInstallTipDismissBtn.addEventListener("click", dismissIosInstallTip);
+            }
+
+            // Event delegation for dynamic controls
+            const filterContainer = getEl("filterContainer");
+            if (filterContainer) {
+                filterContainer.addEventListener("click", (event) => {
+                    const btn = event.target.closest("button");
+                    if (btn && btn.dataset.filter) {
+                        setFilter(btn.dataset.filter);
+                    }
+                });
+            }
+
+            const recentWrap = getEl("recentSearchesWrap");
+            if (recentWrap) {
+                recentWrap.addEventListener("click", (event) => {
+                    const btn = event.target.closest("button");
+                    if (!btn) return;
+                    if (btn.dataset.recentQuery) {
+                        applyRecentSearch(btn.dataset.recentQuery);
+                    } else if (btn.dataset.action === "clear-recent") {
+                        clearRecentSearches();
+                    }
+                });
+            }
+
+            const langCardsContainer = getEl("langCardsContainer");
+            if (langCardsContainer) {
+                langCardsContainer.addEventListener("click", (event) => {
+                    const card = event.target.closest(".lang-card");
+                    if (card && card.dataset.lang) {
+                        selectLanguage(card.dataset.lang);
+                    }
+                });
+            }
+
+            const locationList = getEl("locationList");
+            if (locationList) {
+                locationList.addEventListener("click", (event) => {
+                    const target = event.target;
+                    const cardShell = target.closest(".card-shell");
+                    if (!cardShell) return;
+
+                    const quickNav = target.closest(".quick-nav-btn") || target.closest(".navigate-btn-small");
+                    if (quickNav) {
+                        event.stopPropagation();
+                        const locationId = cardShell.dataset.locationId;
+                        const location = allLocations.find(l => getLocationStorageKey(l) === locationId);
+                        if (location) {
+                            const mapUrl = getMapUrl(location);
+                            navigateToLocation(mapUrl);
+                        }
+                        return;
+                    }
+
+                    const originalIndex = parseInt(cardShell.dataset.originalIndex, 10);
+                    const locationId = cardShell.dataset.locationId;
+                    handleCardActivate(event, originalIndex, locationId);
+                });
+
+                locationList.addEventListener("keydown", (event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        const cardShell = event.target.closest(".card-shell");
+                        if (cardShell && document.activeElement === cardShell) {
+                            event.preventDefault();
+                            const originalIndex = parseInt(cardShell.dataset.originalIndex, 10);
+                            const locationId = cardShell.dataset.locationId;
+                            handleCardActivate(event, originalIndex, locationId);
+                        }
+                    }
+                });
             }
         }
 

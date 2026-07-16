@@ -36,8 +36,7 @@
     <title>Campus Navigation | Sandip University</title>
     <meta name="description" content="Offline-first campus navigation for Sandip University with search, filters, favorites, directions, and multilingual support.">
     <link rel="canonical" href="https://tejas-jadhav-cse.github.io/CampusCompass-Sandip-University">
-    <!-- Security: Content-Security-Policy (report-only to avoid breaking inline handlers) -->
-    <meta http-equiv="Content-Security-Policy-Report-Only" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <!-- Security: Content-Security-Policy (report-only to avoid breaking inline handlers) -->    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
     <meta property="og:title" content="CampusCompass | Sandip University Campus Navigation">
     <meta property="og:description" content="Find campus locations offline with search, filters, favorites, directions, and multilingual support.">
     <meta property="og:type" content="website">
@@ -55,41 +54,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="CampusCompass">
-    <!-- Apply saved theme and language before first paint to avoid a flash
-         of the wrong theme / wrong-language font stack. -->
-    <script>
-        (function () {
-            try {
-                const saved = localStorage.getItem("cc-theme");
-                const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-                const isDark = saved ? saved === "dark" : prefersDark;
-                if (isDark) document.documentElement.classList.add("dark");
-            } catch (e) { /* localStorage unavailable, default to light */ }
-
-            try {
-                const prefsRaw = localStorage.getItem("cc-preferences");
-                const prefs = prefsRaw ? JSON.parse(prefsRaw) : {};
-                if (prefs.language === "hi" || prefs.language === "mr") {
-                    document.documentElement.setAttribute("lang", prefs.language);
-                }
-            } catch (e) { /* localStorage unavailable, default to English */ }
-        })();
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = { darkMode: "class" };
-    </script>
-    <script src="https://unpkg.com/lucide@1.23.0/dist/umd/lucide.min.js"
-            integrity="sha384-ouAVEJVCMsf8Svzn+BwqbaBhxBEA0xgeVBhHnxmWd+Wqyv18yhWCQwGegFD/OHLq"
-            crossorigin="anonymous" defer></script>
-    <!-- Devanagari-capable webfont for Hindi/Marathi UI text. Loaded via CDN
-         link (not @import) so it degrades gracefully offline to the system
-         font stack below, which also covers Devanagari on most platforms. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/index.css">
+    <!-- Initialize theme preferences and Tailwind Config programmatically without inline script to satisfy CSP -->
+    <script src="js/init.js"></script>
+    <script src="assets/vendor/tailwind.js"></script>
+    <script src="assets/vendor/lucide.min.js" defer></script>
+    <link href="css/fonts.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css">">
 </head>
 
 <body class="bg-slate-50 text-slate-900">
@@ -100,11 +70,11 @@
             <img src="assets/campus_banner.webp" alt="Sandip University Campus" class="w-full h-full object-cover">
             <!-- Floating Toggles over Banner -->
             <div class="absolute top-4 right-4 flex items-center gap-2 z-10">
-                <button id="langToggleBtn" onclick="openLangPicker(true)" aria-label="Change language" data-i18n-aria="langPickerTitle"
+                <button id="langToggleBtn" aria-label="Change language" data-i18n-aria="langPickerTitle"
                     class="lang-toggle-btn glass-btn">
                     <i data-lucide="globe" class="w-5 h-5"></i>
                 </button>
-                <button id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle dark mode"
+                <button id="themeToggleBtn" aria-label="Toggle dark mode"
                     class="theme-toggle-btn glass-btn">
                     <i data-lucide="sun" class="w-5 h-5" id="themeIconSun"></i>
                     <i data-lucide="moon" class="w-5 h-5 hidden" id="themeIconMoon"></i>
@@ -119,7 +89,7 @@
                     <input type="text" id="searchInput" aria-label="Search locations"
                         placeholder="Search building, department, hostel..." data-i18n-placeholder="searchPlaceholder" data-i18n-aria="searchPlaceholder"
                         class="w-full pl-10 pr-12 py-3 rounded-xl bg-slate-100 border-none focus:ring-2 focus:ring-red-500 outline-none text-sm font-medium" maxlength="200" autocomplete="off">
-                    <button id="searchClearBtn" class="search-clear-btn" onclick="clearSearch()" aria-label="Clear search">
+                    <button id="searchClearBtn" class="search-clear-btn" aria-label="Clear search">
                         <i data-lucide="x" class="w-3.5 h-3.5"></i>
                     </button>
                 </div>
@@ -152,7 +122,7 @@
                     <p class="text-sm font-black" id="dataErrorTitle" data-i18n="dataLoadErrorTitle">Unable to load campus data</p>
                     <p class="text-xs font-medium leading-relaxed mt-2" id="dataErrorText" data-i18n="dataLoadErrorText">The app could not load either the online dataset or the embedded fallback.</p>
                 </div>
-                <button id="retryLoadBtn" onclick="retryLoadData()" data-i18n="retry" class="tap-shrink inline-flex items-center justify-center px-4 py-3 rounded-2xl text-sm font-black bg-rose-600 text-white shadow-sm" style="min-width:44px;min-height:44px;">Retry</button>
+                <button id="retryLoadBtn" data-i18n="retry" class="tap-shrink inline-flex items-center justify-center px-4 py-3 rounded-2xl text-sm font-black bg-rose-600 text-white shadow-sm" style="min-width:44px;min-height:44px;">Retry</button>
             </div>
         </div>
         <div id="loader" class="grid gap-4" aria-hidden="true"></div>
@@ -176,7 +146,7 @@
                 <p class="text-[10px] uppercase tracking-[0.28em] font-black text-slate-500" id="aboutRowLabel" data-i18n="aboutRowLabel">About</p>
                 <p class="text-sm font-bold text-slate-700" id="aboutRowSubtitle" data-i18n="aboutRowSubtitle">Dataset metadata and local-only usage stats</p>
             </div>
-            <button id="aboutToggleBtn" class="about-toggle-btn tap-shrink" onclick="toggleAboutPanel()" aria-expanded="false" aria-controls="aboutPanel" aria-label="Open dataset details" data-i18n-aria="openDatasetDetails">
+            <button id="aboutToggleBtn" class="about-toggle-btn tap-shrink" aria-expanded="false" aria-controls="aboutPanel" aria-label="Open dataset details" data-i18n-aria="openDatasetDetails">
                 <i data-lucide="info" class="w-5 h-5"></i>
             </button>
         </div>
@@ -207,11 +177,10 @@
 
     <!-- Detail Modal -->
     <div id="detailModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center modal-overlay gesture-scroll-none"
-        role="dialog" aria-modal="true" aria-labelledby="modalTitleRegion"
-        onclick="if(event.target === this) closeModal();">
+        role="dialog" aria-modal="true" aria-labelledby="modalTitleRegion">
         <div class="modal-panel w-full sm:max-w-md sm:rounded-3xl rounded-t-3xl p-6 relative shadow-2xl flex flex-col"
             id="modalPanel">
-            <button id="modalCloseBtn" onclick="closeModal()" aria-label="Close details" data-i18n-aria="closeDetails"
+            <button id="modalCloseBtn" aria-label="Close details" data-i18n-aria="closeDetails"
                 class="absolute top-4 right-4 bg-slate-100 rounded-full p-2 tap-shrink z-10" style="min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;">
                 <i data-lucide="x" class="w-4 h-4 text-slate-600"></i>
             </button>
@@ -222,7 +191,7 @@
     </div>
 
     <!-- Go To Top Button -->
-    <button id="goToTopBtn" onclick="scrollToTop()" class="go-to-top-btn tap-shrink" aria-label="Go to top" title="Go to top">
+    <button id="goToTopBtn" class="go-to-top-btn tap-shrink" aria-label="Go to top" title="Go to top">
         <i data-lucide="arrow-up" class="w-6 h-6"></i>
     </button>
 
@@ -241,8 +210,8 @@
             <p class="text-sm font-black leading-tight" id="installBannerTitle" data-i18n="installBannerTitle">Install CampusCompass</p>
             <p class="text-[11px] font-medium opacity-70 leading-tight mt-1" id="installBannerSubtitle" data-i18n="installBannerSubtitle">Add to your home screen for quick, offline access.</p>
         </div>
-        <button onclick="handleInstallClick()" class="install-cta-btn" id="installBannerBtn" aria-label="Install CampusCompass app" data-i18n="installBannerBtn">Install</button>
-        <button onclick="dismissInstallBanner()" class="install-dismiss-btn" aria-label="Dismiss install prompt">
+        <button class="install-cta-btn" id="installBannerBtn" aria-label="Install CampusCompass app" data-i18n="installBannerBtn">Install</button>
+        <button id="installBannerDismissBtn" class="install-dismiss-btn" aria-label="Dismiss install prompt">
             <i data-lucide="x" class="w-4 h-4"></i>
         </button>
     </div>
@@ -254,7 +223,7 @@
             <p class="text-sm font-black leading-tight" id="iosInstallTipTitle" data-i18n="iosInstallTipTitle">Install this app</p>
             <p class="text-[11px] font-medium opacity-70 leading-tight mt-1" id="iosInstallTipSubtitle" data-i18n="iosInstallTipSubtitle">Tap the Share icon, then "Add to Home Screen".</p>
         </div>
-        <button onclick="dismissIosInstallTip()" class="install-dismiss-btn" aria-label="Dismiss install tip">
+        <button id="iosInstallTipDismissBtn" class="install-dismiss-btn" aria-label="Dismiss install tip">
             <i data-lucide="x" class="w-4 h-4"></i>
         </button>
     </div>
