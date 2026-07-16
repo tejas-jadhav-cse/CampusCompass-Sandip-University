@@ -2638,6 +2638,23 @@ html[lang="hi"] body,
         /* Keep the header compact without reducing the touch targets of its controls. */
         #pageHeader .top-banner {
             height: 176px !important;
+            position: relative;
+        }
+
+        #pageHeader .top-banner::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background: linear-gradient(to bottom, rgba(248, 250, 252, 0) 0%, var(--cc-surface) 100%);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%);
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 100%);
+            pointer-events: none;
+            z-index: 2;
         }
 
         #pageHeader .top-banner > .absolute {
