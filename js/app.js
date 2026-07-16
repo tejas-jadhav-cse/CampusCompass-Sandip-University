@@ -199,8 +199,6 @@
                 clearRecent: "Clear recent",
                 share: "Share",
                 shareFallbackCopied: "Link copied - Web Share not supported on this browser",
-                upToDate: "Up to date",
-                pullToRefresh: "Pull to refresh",
                 swipeNavigateHint: "Swipe left for quick Navigate",
                 aboutRowLabel: "About",
                 aboutRowSubtitle: "Dataset metadata and local-only usage stats",
@@ -283,8 +281,6 @@
                 clearRecent: "हाल की साफ़ करें",
                 share: "साझा करें",
                 shareFallbackCopied: "लिंक कॉपी हो गया - इस ब्राउज़र पर Web Share समर्थित नहीं है",
-                upToDate: "अप-टू-डेट",
-                pullToRefresh: "रीफ्रेश के लिए खींचें",
                 swipeNavigateHint: "त्वरित नेविगेट के लिए बाईं ओर स्वाइप करें",
                 aboutRowLabel: "परिचय",
                 aboutRowSubtitle: "डेटासेट मेटाडेटा और केवल स्थानीय उपयोग आंकड़े",
@@ -367,8 +363,6 @@
                 clearRecent: "अलीकडील साफ करा",
                 share: "शेअर",
                 shareFallbackCopied: "लिंक कॉपी झाली - या ब्राउझरवर Web Share समर्थित नाही",
-                upToDate: "अद्ययावत आहे",
-                pullToRefresh: "रीफ्रेशसाठी खाली ओढा",
                 swipeNavigateHint: "जलद नेव्हिगेटसाठी डावीकडे स्वाइप करा",
                 aboutRowLabel: "माहिती",
                 aboutRowSubtitle: "डेटासेट मेटाडेटा आणि फक्त स्थानिक वापर आकडे",
@@ -450,8 +444,6 @@
                 clearRecent: "हालक साफ करू",
                 share: "साझा करू",
                 shareFallbackCopied: "लिंक कॉपी भेल - एहि ब्राउज़र पर वेब शेयर समर्थित नहि अछि",
-                upToDate: "अप-टू-डेट",
-                pullToRefresh: "रीफ्रेश करय लेल खींचू",
                 swipeNavigateHint: "त्वरित नेविगेट लेल बामा दिस स्वाइप करू",
                 aboutRowLabel: "परिचय",
                 aboutRowSubtitle: "डेटासेट मेटाडेटा आ केवल स्थानीय उपयोगक आंकड़े",
@@ -532,8 +524,6 @@
                 clearRecent: "ఇటీవలివి క్లియర్ చేయండి",
                 share: "షేర్ చేయండి",
                 shareFallbackCopied: "లింక్ కాపీ చేయబడింది - ఈ బ్రౌజర్‌లో వెబ్ షేర్‌కు మద్దతు లేదు",
-                upToDate: "అప్‌డేట్ చేయబడింది",
-                pullToRefresh: "రిఫ్రెష్ చేయడానికి లాగండి",
                 swipeNavigateHint: "త్వరిత నావిగేషన్ కోసం ఎడమవైపుకు స్వైప్ చేయండి",
                 aboutRowLabel: "గురించి",
                 aboutRowSubtitle: "డేటాసెట్ మెటాడేటా మరియు స్థానిక వినియోగ గణాంకాలు మాత్రమే",
@@ -614,8 +604,6 @@
                 clearRecent: "சமீபத்தியதை அழி",
                 share: "பகிர்",
                 shareFallbackCopied: "இணைப்பு நகலெடுக்கப்பட்டது - இந்த உலாவியில் Web Share ஆதரிக்கப்படவில்லை",
-                upToDate: "புதுப்பிக்கப்பட்டது",
-                pullToRefresh: "புதுப்பிக்க இழுக்கவும்",
                 swipeNavigateHint: "விரைவாக வழிசெலுத்த இடதுபுறமாக ஸ்வைப் செய்யவும்",
                 aboutRowLabel: "பற்றி",
                 aboutRowSubtitle: "தரவுத்தொகுப்பு மெட்டாடேட்டா மற்றும் உள்ளூர் பயன்பாட்டு புள்ளிவிவரங்கள்",
@@ -696,8 +684,6 @@
                 clearRecent: "Limpar recentes",
                 share: "Compartilhar",
                 shareFallbackCopied: "Link copiado - Web Share não suportado neste navegador",
-                upToDate: "Atualizado",
-                pullToRefresh: "Puxe para atualizar",
                 swipeNavigateHint: "Deslize para a esquerda para navegar rapidamente",
                 aboutRowLabel: "Sobre",
                 aboutRowSubtitle: "Metadados do conjunto de dados e estatísticas de uso apenas local",
@@ -756,9 +742,6 @@
         /** @type {boolean} */
         let searchInputFocused = false;
 
-        /** @type {number | null} */
-        let currentDataVersionSignature = null;
-
         /** @type {string} */
         let lastRecordedSearchQuery = "";
 
@@ -772,7 +755,7 @@
         const MODAL_SWIPE_THRESHOLD = 72;
 
         /**
-         * Return the storage key that should identify a location for favorites and analytics.
+         * Return the storage key that should identify a location for analytics.
          * Pure function: no DOM access.
          * @param {Object} location
          * @returns {string}
@@ -2875,23 +2858,12 @@
          * Load the campus dataset, preferring the external file and falling back to the embedded JSON.
          * @returns {Promise<void>}
          */
-        async function loadData(options = {}) {
-            const fromRefresh = Boolean(options.fromRefresh);
+        async function loadData() {
             setDataErrorVisible(false);
 
             const embeddedPayload = loadEmbeddedData();
             allLocations = extractLocations(embeddedPayload);
             datasetMeta = extractDatasetMeta(embeddedPayload, null, allLocations);
-
-            // Compute a simple data signature (version + total) to detect no-op refreshes.
-            const newSignature = `${datasetMeta.version || ""}:${Number(datasetMeta.total_locations || allLocations.length)}`;
-            if (fromRefresh && currentDataVersionSignature !== null && newSignature === currentDataVersionSignature) {
-                // Nothing changed since last load — inform the user and skip heavy re-render.
-                showToast(t("upToDate"));
-                return;
-            }
-            // Persist the latest known signature for future refresh comparisons.
-            currentDataVersionSignature = newSignature;
 
             if (allLocations.length === 0) {
                 console.error("No campus locations could be loaded from the embedded source.");
@@ -3330,7 +3302,7 @@
          */
         function initApp() {
             firstLaunchPending = !initLanguage();
-            // Load persisted UX preferences (favorites, recent searches)
+            // Load persisted UX preferences (recent searches)
             recentSearches = getRecentSearches();
             initUI();
             wireInteractiveHandlers();

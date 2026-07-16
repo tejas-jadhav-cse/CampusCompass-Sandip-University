@@ -97,6 +97,28 @@ function isValidResponseForCache(response, request) {
   return true; // Fallback allow for general app shell assets (svg, CSS, JS, etc.)
 }
 
+/**
+ * Helper to fetch a request with a timeout using AbortController.
+ * Ensures that if a network request hangs, it fails gracefully and does not freeze the app.
+ * @param {Request} request
+ * @param {number} timeoutMs
+ * @returns {Promise<Response>}
+ */
+async function fetchWithTimeout(request, timeoutMs = 8000) {
+  const controller = new AbortController();
+  const signal = controller.signal;
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(request, { signal });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (err) {
+    clearTimeout(timeoutId);
+    throw err;
+  }
+}
+
 // Cache-first: use the cached copy if we have one, otherwise go to the
 // network and store the result for next time. Good for static, rarely
 // changing app-shell assets.
@@ -106,7 +128,7 @@ async function cacheFirst(request) {
   if (cached) return cached;
 
   try {
-    const response = await fetch(request);
+    const response = await fetchWithTimeout(request, 8000);
     if (isValidResponseForCache(response, request)) {
       cache.put(request, response.clone());
     }

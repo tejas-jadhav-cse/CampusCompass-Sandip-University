@@ -17,7 +17,7 @@ A single-file, offline-first campus navigation web app for Sandip University.
 - Stage 2: PWA features: `manifest.json`, `sw.js`, install banners and iOS tip.
 - Stage 3: Multi-language support (English, Hindi, Marathi), theme toggle (dark/light).
 - Stage 4: Performance and architecture: virtualized list, debounced search, scoped icon hydration.
-- Stage 5: Final features: favorites, recent searches, Near Me sort (Haversine), share fallback, gestures (swipe-to-reveal, modal swipe-down), SEO meta tags.
+- Stage 5: Final features: recent searches, share fallback, gestures (swipe-to-reveal, modal swipe-down), SEO meta tags.
 - Stage 6: Polishing and hardening: robust data handling, preferences migration, reset app data, privacy note, accessibility improvements, security hardening (noopener), SW cache bump.
 
 ## Setup / Run
@@ -62,7 +62,6 @@ python -m http.server 8000
 ## Privacy & Security
 
 - All analytics (search counts, view counts) are stored locally in `localStorage` and never transmitted.
-- Geolocation is only used locally (for sorting) and never sent anywhere.
 - External navigation uses `rel="noopener noreferrer"` to avoid exposing window.opener.
 
 ## Known limitations
