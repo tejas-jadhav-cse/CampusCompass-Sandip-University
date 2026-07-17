@@ -752,17 +752,8 @@
         /** @type {string} */
         let lastRecordedSearchQuery = "";
 
-        /** @type {{active:boolean,startX:number,startY:number,deltaX:number,deltaY:number,revealed:boolean,ignoreClick:boolean}|null} */
-        let modalGestureState = null;
-
         /** @type {HTMLElement | null} */
         let langPickerTrigger = null;
-
-        /** @type {number} */
-        const CARD_SWIPE_THRESHOLD = 56;
-
-        /** @type {number} */
-        const MODAL_SWIPE_THRESHOLD = 72;
 
         /**
          * Return the storage key that should identify a location for analytics.
@@ -2069,7 +2060,7 @@
                 <div class="flex items-start">
                     <!-- Dynamic Text Flow -->
                     <div class="mt-0.5 min-w-0">
-                        <h2 class="inline text-lg font-extrabold text-slate-800 dark:text-slate-200 leading-tight mr-2">${escapeHtml(locationName)}</h2>
+                        <h2 class="inline text-lg font-extrabold text-black dark:text-slate-200 leading-tight mr-2">${escapeHtml(locationName)}</h2>
                         <span class="inline-block px-2.5 py-1 text-[9px] font-black uppercase rounded-lg whitespace-nowrap align-middle card-category-badge">
                             ${escapeHtml(formatCategoryLabel(location.category))}
                         </span>
@@ -2090,19 +2081,12 @@
             const translatedDescription = getTranslatedContent(description, currentLang);
 
             return `
-                <li class="card-shell card tap-shrink bg-white rounded-3xl p-5 relative overflow-hidden cursor-pointer focus-within:ring-2 focus-within:ring-red-500 gesture-pan-y flex flex-col min-h-[250px]"
-                    data-location-id="${escapeHtml(locationId)}" data-original-index="${originalIndex}" data-quick-reveal="false"
+                <li class="card-shell card tap-shrink bg-white rounded-3xl p-5 relative overflow-hidden cursor-pointer focus-within:ring-2 focus-within:ring-red-500 flex flex-col min-h-[250px]"
+                    data-location-id="${escapeHtml(locationId)}" data-original-index="${originalIndex}"
                     data-category="${escapeHtml(location.category)}">
 
                     <button class="card-details-trigger absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 text-left" 
                         aria-label="${escapeHtml(t("viewDetails"))} ${escapeHtml(locationName)}"></button>
-
-                    <div class="card-quick-action">
-                        <button class="tap-shrink inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/15 text-white font-black text-xs quick-nav-btn relative z-20" aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}">
-                            <i data-lucide="navigation-2" class="w-4 h-4"></i>
-                            <span>${escapeHtml(t("navigate"))}</span>
-                        </button>
-                    </div>
 
                     <div class="card-main flex-1 flex flex-col justify-between">
                         <div>
@@ -2142,7 +2126,7 @@
         }
 
         /**
-         * Handle opening a card from click or keyboard, while respecting swipe gestures.
+         * Handle opening a card from click or keyboard.
          * @param {Event} event
          * @param {number} index
          * @param {string} locationId
@@ -2155,12 +2139,6 @@
                 event.preventDefault();
             }
 
-            const card = event && event.target instanceof HTMLElement ? event.target.closest(".card-shell") : null;
-            if (card && card.dataset.gestureIgnore === "true") {
-                card.dataset.gestureIgnore = "false";
-                return;
-            }
-
             if (event && event.target instanceof HTMLElement && event.target.closest("button")) {
                 if (!event.target.closest(".card-details-trigger")) {
                     return;
@@ -2168,164 +2146,6 @@
             }
 
             openModal(index);
-        }
-
-        /**
-         * Bind swipe gestures to a rendered card element.
-         * @param {HTMLElement} card
-         * @param {number} index
-         * @returns {void}
-         */
-        function bindCardGesture(card, index) {
-            const state = { active: false, startX: 0, startY: 0, deltaX: 0, deltaY: 0, pointerId: null };
-
-            const resetReveal = () => {
-                card.dataset.quickReveal = "false";
-            };
-
-            card.addEventListener("pointerdown", (event) => {
-                if (event.button !== 0) return;
-                if (event.target instanceof HTMLElement) {
-                    const button = event.target.closest("button");
-                    if (button && !button.classList.contains("card-details-trigger")) {
-                        return;
-                    }
-                }
-                state.active = true;
-                state.pointerId = event.pointerId;
-                state.startX = event.clientX;
-                state.startY = event.clientY;
-                state.deltaX = 0;
-                state.deltaY = 0;
-                card.dataset.gestureIgnore = "false";
-            });
-
-            card.addEventListener("pointermove", (event) => {
-                if (!state.active || event.pointerId !== state.pointerId) return;
-                const deltaX = event.clientX - state.startX;
-                const deltaY = event.clientY - state.startY;
-                state.deltaX = deltaX;
-                state.deltaY = deltaY;
-                if (Math.abs(deltaX) < 8 && Math.abs(deltaY) < 8) return;
-                if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                    if (!card.hasPointerCapture(event.pointerId)) {
-                        card.setPointerCapture(event.pointerId);
-                    }
-                    event.preventDefault();
-                    if (deltaX < -CARD_SWIPE_THRESHOLD) {
-                        card.dataset.quickReveal = "true";
-                        card.dataset.gestureIgnore = "true";
-                    } else if (deltaX > CARD_SWIPE_THRESHOLD) {
-                        resetReveal();
-                        card.dataset.gestureIgnore = "true";
-                    }
-                } else {
-                    state.active = false;
-                    if (card.hasPointerCapture(event.pointerId)) {
-                        try {
-                            card.releasePointerCapture(event.pointerId);
-                        } catch (e) {}
-                    }
-                }
-            });
-
-            const finishGesture = (event) => {
-                if (!state.active || (event && event.pointerId !== state.pointerId)) return;
-                state.active = false;
-                try {
-                    card.releasePointerCapture(state.pointerId);
-                } catch (error) {
-                    // Pointer capture may already be released.
-                }
-
-                const mostlyHorizontal = Math.abs(state.deltaX) > Math.abs(state.deltaY);
-                if (mostlyHorizontal && state.deltaX < -CARD_SWIPE_THRESHOLD) {
-                    card.dataset.quickReveal = "true";
-                    card.dataset.gestureIgnore = "true";
-                } else if (mostlyHorizontal && state.deltaX > CARD_SWIPE_THRESHOLD) {
-                    resetReveal();
-                    card.dataset.gestureIgnore = "true";
-                } else if (Math.abs(state.deltaX) < 10 && Math.abs(state.deltaY) < 10) {
-                    card.dataset.gestureIgnore = "false";
-                }
-            };
-
-            card.addEventListener("pointerup", finishGesture);
-            card.addEventListener("pointercancel", finishGesture);
-        }
-
-        /**
-         * Bind gesture handlers to the modal bottom sheet.
-         * @returns {void}
-         */
-        function bindModalGesture() {
-            const panel = getEl("modalPanel");
-            const body = getEl("modalScrollBody");
-            if (!panel || !body || panel.dataset.gestureBound === "true") return;
-            panel.dataset.gestureBound = "true";
-
-            const state = { active: false, startX: 0, startY: 0, deltaX: 0, deltaY: 0, pointerId: null };
-
-            const resetPanel = () => {
-                panel.style.transform = "";
-                panel.style.transition = "opacity 0.22s ease, transform 0.22s ease";
-            };
-
-            body.addEventListener("pointerdown", (event) => {
-                if (event.button !== 0) return;
-                if (event.target instanceof HTMLElement && event.target.closest("button, a, input, textarea")) return;
-                if (body.scrollTop > 0) return;
-                state.active = true;
-                state.pointerId = event.pointerId;
-                state.startX = event.clientX;
-                state.startY = event.clientY;
-                state.deltaX = 0;
-                state.deltaY = 0;
-                panel.style.transition = "none";
-            });
-
-            body.addEventListener("pointermove", (event) => {
-                if (!state.active || event.pointerId !== state.pointerId) return;
-                const deltaX = event.clientX - state.startX;
-                const deltaY = event.clientY - state.startY;
-                state.deltaX = deltaX;
-                state.deltaY = deltaY;
-                if (Math.abs(deltaX) < 6 && Math.abs(deltaY) < 6) return;
-                if (deltaY > 0 && Math.abs(deltaY) > Math.abs(deltaX)) {
-                    if (!body.hasPointerCapture(event.pointerId)) {
-                        body.setPointerCapture(event.pointerId);
-                    }
-                    event.preventDefault();
-                    panel.style.transform = `translateY(${Math.min(deltaY, 180)}px)`;
-                } else if (deltaY < 0) {
-                    state.active = false;
-                    if (body.hasPointerCapture(event.pointerId)) {
-                        try {
-                            body.releasePointerCapture(event.pointerId);
-                        } catch (e) {}
-                    }
-                    resetPanel();
-                }
-            });
-
-            const finishModalGesture = (event) => {
-                if (!state.active || (event && event.pointerId !== state.pointerId)) return;
-                state.active = false;
-                try {
-                    body.releasePointerCapture(state.pointerId);
-                } catch (error) {
-                    // Pointer capture may already be released.
-                }
-                const swipeDown = state.deltaY > MODAL_SWIPE_THRESHOLD && state.deltaY > Math.abs(state.deltaX);
-                if (swipeDown) {
-                    closeModal();
-                    return;
-                }
-                resetPanel();
-            };
-
-            body.addEventListener("pointerup", finishModalGesture);
-            body.addEventListener("pointercancel", finishModalGesture);
         }
 
         /**
@@ -2549,13 +2369,6 @@
 
             list.innerHTML = displayIndexes.slice(start, end).map((originalIndex) => renderCard(allLocations[originalIndex], originalIndex)).join("");
             initIconsForRoot(list);
-            list.querySelectorAll(".card-shell").forEach((card, localIndex) => {
-                const originalIndex = displayIndexes[start + localIndex];
-                if (card instanceof HTMLElement && !card.dataset.gestureBound) {
-                    card.dataset.gestureBound = "true";
-                    bindCardGesture(card, originalIndex);
-                }
-            });
             refineVirtualEstimate();
             initIconsForRoot(getEl("aboutPanel"));
         }
@@ -2585,7 +2398,7 @@
                             <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
                                 <i data-lucide="${icon}" class="w-5 h-5 text-red-600"></i>
                             </div>
-                            <h2 class="text-xl font-extrabold text-slate-800 break-words leading-tight">${escapeHtml(translatedName)}</h2>
+                            <h2 class="text-xl font-extrabold text-black dark:text-slate-200 break-words leading-tight">${escapeHtml(translatedName)}</h2>
                         </div>
                         <span class="inline-block bg-red-50 text-red-700 text-[10px] font-black px-2.5 py-1 rounded-lg uppercase tracking-tight">
                             ${escapeHtml(formatCategoryLabel(location.category))}
@@ -2664,7 +2477,6 @@
             DOMUtils.show(modal);
             modal.classList.add("flex");
             initIconsForRoot(modalContent);
-            bindModalGesture();
 
             const scrollBody = getEl("modalScrollBody");
             if (scrollBody) scrollBody.scrollTop = 0;

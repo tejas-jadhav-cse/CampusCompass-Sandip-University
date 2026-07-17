@@ -58,14 +58,6 @@ html[lang="hi"] body,
             -webkit-overflow-scrolling: touch;
         }
 
-        .gesture-scroll-none {
-            overscroll-behavior: none;
-        }
-
-        .gesture-pan-y {
-            touch-action: pan-y;
-        }
-
         .card-shell {
             position: relative;
             overflow: hidden;
@@ -2211,7 +2203,7 @@ html[lang="hi"] body,
             border: 1px solid var(--cc-border-subtle) !important;
             border-radius: 24px !important;
             padding: 20px !important;
-            margin-bottom: 16px !important;
+            margin-bottom: 12px !important;
             transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
                         box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
                         border-color 0.3s ease !important;
