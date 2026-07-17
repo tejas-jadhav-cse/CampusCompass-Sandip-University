@@ -187,10 +187,10 @@
                 unnamedLocation: "Unnamed Location",
                 emptyStateText: "No matching locations found",
                 offlineBannerText: "You're offline - showing saved data",
-                installBannerTitle: "Install CampusCompass",
+                installBannerTitle: "Save to Mobile Screen (Works Offline)",
                 installBannerSubtitle: "Add to your home screen for quick, offline access.",
-                installBannerBtn: "Install",
-                iosInstallTipTitle: "Install this app",
+                installBannerBtn: "Add to Screen",
+                iosInstallTipTitle: "Save to Mobile Screen (Works Offline)",
                 iosInstallTipSubtitle: 'Tap the Share icon, then "Add to Home Screen".',
                 langPickerTitle: "Choose your language",
                 langPickerSubtitle: "भाषा चुनें · भाषा निवडा",
@@ -270,10 +270,10 @@
                 unnamedLocation: "अज्ञात स्थान",
                 emptyStateText: "कोई मिलान स्थान नहीं मिला",
                 offlineBannerText: "आप ऑफ़लाइन हैं - सहेजा गया डेटा दिखाया जा रहा है",
-                installBannerTitle: "CampusCompass इंस्टॉल करें",
+                installBannerTitle: "मोबाइल स्क्रीन पर सहेजें (ऑफ़लाइन कार्य करता है)",
                 installBannerSubtitle: "त्वरित, ऑफ़लाइन एक्सेस के लिए होम स्क्रीन पर जोड़ें।",
-                installBannerBtn: "इंस्टॉल करें",
-                iosInstallTipTitle: "यह ऐप इंस्टॉल करें",
+                installBannerBtn: "स्क्रीन पर जोड़ें",
+                iosInstallTipTitle: "मोबाइल स्क्रीन पर सहेजें (ऑफ़लाइन कार्य करता है)",
                 iosInstallTipSubtitle: 'शेयर आइकन टैप करें, फिर "होम स्क्रीन पर जोड़ें" चुनें।',
                 langPickerTitle: "अपनी भाषा चुनें",
                 langPickerSubtitle: "Choose your language · भाषा निवडा",
@@ -353,11 +353,11 @@
                 unnamedLocation: "अनामित स्थान",
                 emptyStateText: "जुळणारी स्थाने आढळली नाहीत",
                 offlineBannerText: "तुम्ही ऑफलाइन आहात - जतन केलेला डेटा दाखवत आहे",
-                installBannerTitle: "CampusCompass इंस्टॉल करा",
+                installBannerTitle: "मोबाईल स्क्रीनवर जतन करा (ऑफलाईन काम करते)",
                 installBannerSubtitle: "जलद, ऑफलाइन प्रवेशासाठी होम स्क्रीनवर जोडा.",
-                installBannerBtn: "इंस्टॉल करा",
-                iosInstallTipTitle: "हे अॅप इंस्टॉल करा",
-                iosInstallTipSubtitle: 'शेअर आयकॉनवर टॅप करा, नंतर "होम स्क्रीनवर जोडा" निवडा.',
+                installBannerBtn: "स्क्रीनवर जोडा",
+                iosInstallTipTitle: "मोबाईल स्क्रीनवर जतन करा (ऑफलाईन काम करते)",
+                iosInstallTipSubtitle: 'शेअर आयकॉनवर टॅप करा, नंतर "होम स्क्रीनवर जोडा" निवडा।',
                 langPickerTitle: "तुमची भाषा निवडा",
                 langPickerSubtitle: "Choose your language · भाषा चुनें",
                 langPickerNote: "तुम्ही ग्लोब आयकॉनवरून कधीही भाषा बदलू शकता।",
@@ -2092,15 +2092,17 @@
                         <div>
                             ${getCardHeader(location, locationName, icon)}
                             <p class="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400 leading-normal line-clamp-3">${escapeHtml(translatedDescription)}</p>
-                        </div>
-                        <div class="flex items-center justify-between pt-4 mt-6 border-t border-slate-100 dark:border-white/5">
+                        <div class="flex flex-col gap-3 pt-4 mt-6 border-t border-slate-100 dark:border-white/5">
                             <div class="flex items-center gap-1.5 card-arrow-link text-slate-400">
                                 <i data-lucide="chevron-right" class="w-3.5 h-3.5 card-chevron"></i>
                                 <span class="text-[10px] font-bold uppercase tracking-wider">${escapeHtml(t("viewDetails"))}</span>
                             </div>
-                            <button aria-label="${escapeHtml(t("navigate"))} ${escapeHtml(locationName)}"
-                                class="navigate-btn-small tap-shrink relative z-20" style="min-height:44px;" ${mapUrl ? "" : "disabled"}>
-                                <i data-lucide="map-pin" class="w-4 h-4"></i> ${escapeHtml(t("navigate"))}
+                            <button aria-label="Show Route on Google Maps"
+                                class="navigate-btn-small tap-shrink relative z-20" 
+                                style="min-height:44px; display: flex; width: 100%; border-radius: 12px; font-size: 12px; justify-content: center; align-items: center; gap: 8px;" 
+                                ${mapUrl ? "" : "disabled"}>
+                                <i data-lucide="navigation" class="w-4 h-4"></i> 
+                                <span>Show Route on Google Maps</span>
                             </button>
                         </div>
                     </div>
