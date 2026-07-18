@@ -66,32 +66,30 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Cache-first: serve the cached response immediately (if any)
-// while kicking off a network request in the background to refresh the
-// cache for next time.
-/**
- * Helper to validate responses before caching them.
- * Ensures we only cache safe content types and do not cache corrupted/unexpected payloads.
- * @param {Response} response
- * @param {Request} request
- * @returns {boolean}
- */
+// Helper to validate responses before caching them.
+// Ensures we only cache safe content types and do not cache corrupted/unexpected payloads.
 function isValidResponseForCache(response, request) {
   if (!response || !response.ok) return false;
-  const contentType = response.headers.get("content-type") || "";
-  const url = new URL(request.url);
 
-  // If caching web pages or assets
-  if (url.pathname.endsWith(".html") || url.pathname.endsWith("/")) {
-    return contentType.includes("text/html");
-  }
+  // Do not cache range requests
+  if (request.headers.has("Range")) return false;
 
-  if (url.pathname.endsWith(".json")) {
-    return contentType.includes("application/json");
-  }
+  // Skip opaque/third-party responses
+  if (response.type === "opaque") return false;
 
-  if (url.pathname.endsWith(".png")) {
-    return contentType.includes("image/png");
+  // Ensure content type matches standard app-shell files
+  const contentType = response.headers.get("Content-Type");
+  if (contentType) {
+    const isHtml = contentType.includes("html");
+    const isCss = contentType.includes("css");
+    const isJs = contentType.includes("javascript");
+    const isJson = contentType.includes("json");
+    const isImage = contentType.includes("image");
+    const isFont = contentType.includes("font") || contentType.includes("application/x-font") || contentType.includes("application/font");
+
+    if (!isHtml && !isCss && !isJs && !isJson && !isImage && !isFont) {
+      return false;
+    }
   }
 
   return true; // Fallback allow for general app shell assets (svg, CSS, JS, etc.)
@@ -119,23 +117,25 @@ async function fetchWithTimeout(request, timeoutMs = 8000) {
   }
 }
 
-// Cache-first: use the cached copy if we have one, otherwise go to the
-// network and store the result for next time. Good for static, rarely
-// changing app-shell assets.
-async function cacheFirst(request) {
+// Network-first: try the network first and store the result in cache.
+// If the network is slow, times out, or is offline, fall back to the cache.
+// This ensures that when the user refreshes/reloads, they always get the latest assets
+// and clear old cache entries immediately.
+async function networkFirst(request) {
   const cache = await caches.open(CACHE_NAME);
-  const cached = await cache.match(request);
-  if (cached) return cached;
-
   try {
-    const response = await fetchWithTimeout(request, 8000);
+    // Try network first (with a short timeout of 3 seconds)
+    const response = await fetchWithTimeout(request, 3000);
     if (isValidResponseForCache(response, request)) {
       cache.put(request, response.clone());
     }
     return response;
   } catch (err) {
-    // Nothing cached and no network -- let the app's own offline
-    // handling (embedded dataset / offline banner) take over.
+    // Network failed or timed out -- fall back to cache
+    const cached = await cache.match(request);
+    if (cached) return cached;
+    
+    // Nothing cached and no network -- let the app's own offline handling take over
     return new Response(null, { status: 504 });
   }
 }
@@ -154,5 +154,5 @@ self.addEventListener("fetch", (event) => {
   }
   if (url.origin !== self.location.origin) return;
 
-  event.respondWith(cacheFirst(request));
+  event.respondWith(networkFirst(request));
 });
