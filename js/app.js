@@ -2179,37 +2179,40 @@
         }
 
         function getCardHeader(location, locationName, icon) {
-            const parentName = getTranslatedContent(location.parent, currentLang);
-            const parentLine = parentName
-                ? `
-                <div class="flex items-center gap-2 mt-2">
-                    <i data-lucide="map-pin" class="w-3.5 h-3.5 card-parent-icon"></i>
-                    <span class="text-xs font-semibold card-parent-text">${escapeHtml(parentName)}</span>
-                </div>`
-                : "";
-            return `
-                <div class="flex items-start">
-                    <!-- Dynamic Text Flow -->
-                    <div class="mt-0.5 min-w-0">
-                        <h2 class="inline text-lg font-extrabold text-black dark:text-slate-200 leading-tight mr-2">${escapeHtml(locationName)}</h2>
-                        <span class="inline-block px-2.5 py-1 text-[9px] font-black uppercase rounded-lg whitespace-nowrap align-middle card-category-badge">
-                            ${escapeHtml(formatCategoryLabel(location.category))}
-                        </span>
-                    </div>
-                </div>
-                ${parentLine}
-            `;
+            // Deprecated helper: card header is now rendered inline inside renderCard to support flex layouts
+            return "";
         }
 
         function renderCard(location, originalIndex) {
             const locationId = getLocationStorageKey(location);
-            const icon = CATEGORY_ICONS[location.category] || DEFAULT_ICON;
             const description = location.description && location.description.trim() !== "" ? location.description : t("noDescription");
             const mapUrl = getMapUrl(location);
             
             // Apply language translations
             const locationName = getTranslatedContent(location.name || t("unnamedLocation"), currentLang);
             const translatedDescription = getTranslatedContent(description, currentLang);
+            const parentName = getTranslatedContent(location.parent, currentLang);
+
+            const buildingText = parentName || "Campus Grounds";
+            const categoryIcon = CATEGORY_ICONS[location.category] || DEFAULT_ICON;
+            const categoryLabel = formatCategoryLabel(location.category);
+
+            // Keyword Service Chips (compact, elegant, rounded-lg, wrap naturally)
+            let keywordChipsHtml = "";
+            if (location.keywords && location.keywords.length > 0) {
+                const chips = location.keywords.slice(0, 4).map(kw => `
+                    <span class="card-keyword-chip inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold text-slate-650 dark:text-slate-400 border border-slate-200/60 dark:border-white/5 bg-slate-50/20 dark:bg-slate-900/10 rounded-lg transition-all duration-200">
+                        <i data-lucide="check-circle" class="w-3 h-3 text-red-655 dark:text-red-500 flex-shrink-0"></i>
+                        <span>${escapeHtml(kw)}</span>
+                    </span>
+                `).join("");
+                
+                keywordChipsHtml = `
+                <div class="flex flex-wrap gap-1.5 mt-4 w-full">
+                    ${chips}
+                </div>
+                `;
+            }
 
             return `
                 <li class="card-shell card tap-shrink bg-white rounded-3xl p-5 relative overflow-hidden cursor-pointer focus-within:ring-2 focus-within:ring-red-500 flex flex-col min-h-[250px]"
@@ -2221,19 +2224,77 @@
 
                     <div class="card-main flex-1 flex flex-col justify-between">
                         <div>
-                            ${getCardHeader(location, locationName, icon)}
-                            <p class="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400 leading-normal line-clamp-3">${escapeHtml(translatedDescription)}</p>
-                        <div class="flex flex-col gap-3 pt-4 mt-6 border-t border-slate-100 dark:border-white/5">
-                            <div class="flex items-center gap-1.5 card-arrow-link text-slate-400">
-                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 card-chevron"></i>
-                                <span class="text-[10px] font-bold uppercase tracking-wider">${escapeHtml(t("viewDetails"))}</span>
+                            <!-- Header Row (Title + Badge) -->
+                            <div class="flex items-start justify-between gap-4 w-full">
+                                <div class="min-w-0">
+                                    <h2 class="card-title text-lg font-black text-slate-900 dark:text-white leading-tight">${escapeHtml(locationName)}</h2>
+                                </div>
+                                <span class="card-category-badge inline-block px-2.5 py-1 text-[9px] font-black uppercase rounded-lg border border-red-500/20 text-red-600 dark:text-red-400 bg-red-50/50 dark:bg-red-955/20 whitespace-nowrap self-start">
+                                    ${escapeHtml(formatCategoryLabel(location.category))}
+                                </span>
                             </div>
-                            <button aria-label="Show Route on Google Maps"
-                                class="navigate-btn-small tap-shrink relative z-20" 
-                                style="min-height:44px; display: flex; width: 100%; border-radius: 12px; font-size: 12px; justify-content: center; align-items: center; gap: 8px;" 
-                                ${mapUrl ? "" : "disabled"}>
-                                <i data-lucide="navigation" class="w-4 h-4"></i> 
-                                <span>Show Route on Google Maps</span>
+
+                            <!-- Sub-header Parent Row -->
+                            <div class="flex items-center gap-2 mt-2 text-slate-500 dark:text-slate-400">
+                                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-red-600 dark:text-red-500"></i>
+                                <span class="text-xs font-semibold">${escapeHtml(buildingText)}</span>
+                                <span class="text-xs text-slate-300 dark:text-slate-700">|</span>
+                                <span class="text-xs font-bold text-slate-400 dark:text-slate-500">SU</span>
+                            </div>
+
+                            <!-- Info Bar -->
+                            <div class="card-info-bar mt-4 flex items-center justify-between border border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/10 rounded-2xl p-3 text-xs w-full gap-2">
+                                <!-- Location Column -->
+                                <div class="flex items-center gap-2 min-w-0 flex-1">
+                                    <div class="w-7 h-7 rounded-full bg-red-100 dark:bg-red-950/40 flex items-center justify-center flex-shrink-0">
+                                        <i data-lucide="map-pin" class="w-3.5 h-3.5 text-red-655 dark:text-red-500"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-slate-800 dark:text-slate-200 truncate leading-tight">${escapeHtml(buildingText)}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="w-px h-6 bg-slate-200/60 dark:bg-white/5 flex-shrink-0"></div>
+                                
+                                <!-- Category Column -->
+                                <div class="flex items-center gap-1.5 flex-1 min-w-0 justify-end">
+                                    <i data-lucide="${categoryIcon}" class="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 flex-shrink-0"></i>
+                                    <span class="font-semibold text-slate-650 dark:text-slate-400 text-[11px] truncate">${escapeHtml(categoryLabel)}</span>
+                                </div>
+                            </div>
+
+                            <!-- Description (Up to 4 lines) -->
+                            <p class="card-description mt-3.5 text-xs font-medium text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-4">
+                                ${escapeHtml(translatedDescription)}
+                            </p>
+
+                            <!-- Keyword Chips -->
+                            ${keywordChipsHtml}
+                        </div>
+
+                        <!-- Action Bar -->
+                        <div class="card-action-bar flex items-center gap-3 pt-4 mt-6 border-t border-slate-100 dark:border-white/5 w-full">
+                            <!-- View Details button -->
+                            <button class="card-action-btn-outline tap-shrink flex-1 flex items-center justify-between px-4 py-3 rounded-2xl border border-slate-200 dark:border-slate-850 text-slate-700 dark:text-slate-300 font-black text-xs relative z-20"
+                                    style="min-height:44px;"
+                                    aria-label="${escapeHtml(t("viewDetails"))} ${escapeHtml(locationName)}">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="info" class="w-4 h-4"></i>
+                                    <span>${escapeHtml(t("viewDetails"))}</span>
+                                </div>
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                            </button>
+                            
+                            <!-- Navigate button -->
+                            <button class="card-action-btn-primary tap-shrink flex-1 flex items-center justify-between px-4 py-3 rounded-2xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-black text-xs relative z-20"
+                                    style="min-height:44px;"
+                                    ${mapUrl ? "" : "disabled"}
+                                    data-map-url="${escapeHtml(mapUrl || '')}">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="navigation" class="w-4 h-4"></i>
+                                    <span>${escapeHtml(t("navigate"))}</span>
+                                </div>
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
                             </button>
                         </div>
                     </div>
@@ -2701,6 +2762,102 @@
         }
 
         /**
+         * Opens the contact admission cell modal.
+         * @returns {void}
+         */
+        function openContactPopup() {
+            const modal = getEl("contactModal");
+            if (!modal) return;
+            document.documentElement.classList.add("no-scroll");
+            DOMUtils.show(modal);
+            modal.classList.add("flex");
+            initIconsForRoot(modal);
+            
+            const scrollBody = getEl("contactScrollBody");
+            if (scrollBody) scrollBody.scrollTop = 0;
+
+            requestAnimationFrame(() => {
+                modal.classList.add("modal-visible", "modal-overlay-active");
+            });
+
+            const closeBtn = getEl("contactCloseBtn");
+            if (closeBtn) closeBtn.focus();
+        }
+
+        /**
+         * Close the contact admission cell modal.
+         * @returns {void}
+         */
+        function closeContactPopup() {
+            const modal = getEl("contactModal");
+            if (!modal) return;
+            hapticTap();
+            const finish = () => {
+                DOMUtils.hide(modal);
+                modal.classList.remove("flex");
+                document.documentElement.classList.remove("no-scroll");
+                const searchInput = getEl("searchInput");
+                if (searchInput) searchInput.focus();
+            };
+            modal.classList.remove("modal-visible", "modal-overlay-active");
+            if (prefersReducedMotion()) {
+                finish();
+            } else {
+                setTimeout(finish, 220);
+            }
+        }
+
+        /**
+         * Initialize contact modal events.
+         * @returns {void}
+         */
+        function initContact() {
+            const modal = getEl("contactModal");
+            if (!modal) return;
+
+            const closeBtn = getEl("contactCloseBtn");
+            if (closeBtn) closeBtn.addEventListener("click", closeContactPopup);
+
+            const toggleBtn = getEl("contactToggleBtn");
+            if (toggleBtn) {
+                toggleBtn.addEventListener("click", openContactPopup);
+            }
+
+            // Collapsible SIEM branches toggle
+            const siemToggleBtn = getEl("siemBranchesToggleBtn");
+            const siemList = getEl("siemBranchesList");
+            if (siemToggleBtn && siemList) {
+                siemToggleBtn.addEventListener("click", () => {
+                    hapticTap();
+                    const isCollapsed = siemList.classList.contains("hidden");
+                    if (isCollapsed) {
+                        siemList.classList.remove("hidden");
+                        siemToggleBtn.textContent = "Collapse branches";
+                        siemToggleBtn.setAttribute("aria-expanded", "true");
+                    } else {
+                        siemList.classList.add("hidden");
+                        siemToggleBtn.textContent = "View all branches";
+                        siemToggleBtn.setAttribute("aria-expanded", "false");
+                    }
+                });
+            }
+
+            // Backdrop click close
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) {
+                    closeContactPopup();
+                }
+            });
+
+            // Escape key dismiss
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+                    closeContactPopup();
+                }
+            });
+        }
+
+        /**
          * Initialize onboarding modal events.
          * @returns {void}
          */
@@ -3114,6 +3271,7 @@
         function handleGlobalKeydown(event) {
             const detailModal = getEl("detailModal");
             const langOverlay = getEl("langPickerOverlay");
+            const contactModal = getEl("contactModal");
             
             let activeModal = null;
             let activePanel = null;
@@ -3121,6 +3279,9 @@
             if (detailModal && !detailModal.classList.contains("hidden")) {
                 activeModal = detailModal;
                 activePanel = getEl("modalPanel");
+            } else if (contactModal && !contactModal.classList.contains("hidden")) {
+                activeModal = contactModal;
+                activePanel = getEl("contactPanel");
             } else if (langOverlay && langOverlay.classList.contains("picker-shown")) {
                 activeModal = langOverlay;
                 activePanel = langOverlay.querySelector(".lang-picker-inner");
@@ -3131,6 +3292,7 @@
             if (event.key === "Escape") {
                 event.preventDefault();
                 if (activeModal === detailModal) closeModal();
+                if (activeModal === contactModal) closeContactPopup();
                 if (activeModal === langOverlay) closeLangPicker();
                 return;
             }
@@ -3419,6 +3581,7 @@
             initUI();
             wireInteractiveHandlers();
             initOnboarding();
+            initContact();
             debouncedApplyAll = debounce(debouncedApplyAllHandler, SEARCH_DEBOUNCE_MS);
             if (firstLaunchPending) {
                 openLangPicker(true);
@@ -3448,6 +3611,8 @@
         window.copyMapLink = copyMapLink;
         window.openModal = openModal;
         window.closeModal = closeModal;
+        window.openContactPopup = openContactPopup;
+        window.closeContactPopup = closeContactPopup;
         window.setFilter = setFilter;
         window.handleInstallClick = handleInstallClick;
         window.dismissInstallBanner = dismissInstallBanner;
