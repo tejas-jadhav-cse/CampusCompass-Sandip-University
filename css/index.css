@@ -1239,7 +1239,7 @@ html[lang="hi"] body,
             #installBanner,
             #iosInstallTip {
                 flex-wrap: wrap;
-                padding: 12px;
+                padding: 12px 48px 12px 12px;
                 gap: 8px;
                 border-radius: 16px;
             }
