@@ -1,7 +1,7 @@
 // CampusCompass Service Worker
 // Bump CACHE_VERSION whenever app-shell files change so clients pick up
 // the new versions instead of serving stale cached copies forever.
-const CACHE_VERSION = "v30";
+const CACHE_VERSION = "v33";
 const CACHE_NAME = `campuscompass-shell-${CACHE_VERSION}`;
 
 // The app shell: everything needed for the app to boot and run fully

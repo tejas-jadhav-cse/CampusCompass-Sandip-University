@@ -221,7 +221,25 @@
                 resetData: "Reset app data",
                 resetDataConfirm: "Reset app data? This will clear saved preferences and local statistics.",
                 resetDataDone: "App data cleared",
-                privacyNote: "Privacy: location, searches and view counts stay only on this device."
+                privacyNote: "Privacy: location, searches and view counts stay only on this device.",
+                onboardingTitle: "Welcome to CampusCompass!",
+                onboardingSubtitle: "Your Easy Campus Guide",
+                howToUseTitle: "How to Use the App:",
+                step1Title: "Search or Browse Venues",
+                step1Desc: "Type any room, lab, office name, or tap a category icon (like Washrooms or Canteen) to filter lists instantly.",
+                step2Title: "Get Direct Route Directions",
+                step2Desc: "Tap the red <strong>\"Show Route on Google Maps\"</strong> button on any card to navigate directly to that spot.",
+                step3Title: "Works Offline Automatically",
+                step3Desc: "This campus directory is stored on your device. You can look up locations even when you have poor network coverage.",
+                faqSectionTitle: "Frequently Asked Questions (FAQs):",
+                faq1Q: "Does it work without internet?",
+                faq1A: "Yes! The search and directory details are fully offline. Active internet is only needed when checking live routes on external Google Maps.",
+                faq2Q: "How do I search for washrooms/canteens?",
+                faq2A: "Simply scroll down to the bottom categories panel and tap the icon matching what you need. Or type words like \"washroom\" in the search box.",
+                faq3Q: "How do I add this app to my phone screen?",
+                faq3A: "Tap the \"Add to Screen\" button that pops up at the bottom of the screen. On iPhone, tap the \"Share\" icon in Safari, scroll down and tap \"Add to Home Screen\".",
+                onboardingStartBtn: "Let's Explore the Campus! 🚀",
+                closeOnboarding: "Close user guide"
             },
             hi: {
                 appTitle: "संदीप विश्वविद्यालय",
@@ -304,7 +322,25 @@
                 resetData: "ऐप डेटा रीसेट करें",
                 resetDataConfirm: "ऐप डेटा रीसेट करें? इससे सहेजी गई प्राथमिकताएँ और स्थानीय आँकड़े हट जाएंगे।",
                 resetDataDone: "ऐप डेटा साफ़ किया गया",
-                privacyNote: "गोपनीयता: स्थान, खोजें और दृश्य गिनती केवल इस डिवाइस पर रहती हैं।"
+                privacyNote: "गोपनीयता: स्थान, खोजें और दृश्य गिनती केवल इस डिवाइस पर रहती हैं।",
+                onboardingTitle: "कैंपसकंपास में आपका स्वागत है!",
+                onboardingSubtitle: "आपका आसान कैंपस गाइड",
+                howToUseTitle: "ऐप का उपयोग कैसे करें:",
+                step1Title: "स्थान खोजें या ब्राउज़ करें",
+                step1Desc: "किसी भी कमरे, लैब, कार्यालय का नाम टाइप करें, या सूचियों को तुरंत फ़िल्टर करने के लिए श्रेणी आइकन (जैसे शौचालय या कैंटीन) पर टैप करें।",
+                step2Title: "सीधा मार्ग निर्देश प्राप्त करें",
+                step2Desc: "उस स्थान पर सीधे नेविगेट करने के लिए किसी भी कार्ड पर लाल <strong>\"गूगल मैप्स पर मार्ग दिखाएं\"</strong> बटन पर टैप करें।",
+                step3Title: "ऑफ़लाइन स्वचालित रूप से कार्य करता है",
+                step3Desc: "यह परिसर निर्देशिका आपके डिवाइस पर सहेजी गई है। खराब नेटवर्क कवरेज होने पर भी आप स्थानों को देख सकते हैं।",
+                faqSectionTitle: "अक्सर पूछे जाने वाले प्रश्न (FAQs):",
+                faq1Q: "क्या यह बिना इंटरनेट के काम करता है?",
+                faq1A: "हाँ! खोज और निर्देशिका विवरण पूरी तरह से ऑफ़लाइन हैं। लाइव रूट देखने के लिए केवल बाहरी गूगल मैप्स का उपयोग करते समय सक्रिय इंटरनेट की आवश्यकता होती है।",
+                faq2Q: "मैं शौचालय/कैंटीन कैसे खोजूं?",
+                faq2A: "बस नीचे दिए गए श्रेणी पैनल पर स्क्रॉल करें और अपनी आवश्यकता से मेल खाने वाले आइकन पर टैप करें। या खोज बॉक्स में \"शौचालय\" जैसे शब्द टाइप करें।",
+                faq3Q: "मैं इस ऐप को अपने फोन स्क्रीन पर कैसे जोड़ूं?",
+                faq3A: "नेविगेट कर स्क्रीन के नीचे दिखाई देने वाले \"स्क्रीन पर जोड़ें\" बटन पर टैप करें। आईफोन पर, सफारी में \"शेयर\" आइकन पर टैप करें, नीचे स्क्रॉल करें और \"होम स्क्रीन पर जोड़ें\" पर टैप करें।",
+                onboardingStartBtn: "आइए कैंपस का चक्कर लगाएं! 🚀",
+                closeOnboarding: "मार्गदर्शিকা बंद करें"
             },
             mr: {
                 appTitle: "संदीप विद्यापीठ",
@@ -387,7 +423,25 @@
                 resetData: "अॅप डेटा रीसेट करा",
                 resetDataConfirm: "अॅप डेटा रीसेट करायचा? यामुळे साठवलेल्या प्राधान्ये आणि स्थानिक आकडे हटतील.",
                 resetDataDone: "अॅप डेटा साफ केले",
-                privacyNote: "गोपनीयता: स्थान, शोध आणि दृश्यमान मोजमाप फक्त या उपकरणावर राहतात."
+                privacyNote: "गोपनीयता: स्थान, शोध आणि दृश्यमान मोजमाप फक्त या उपकरणावर राहतात.",
+                onboardingTitle: "कॅम्पसकंपासमध्ये आपले स्वागत आहे!",
+                onboardingSubtitle: "तुमचा सोपा कॅम्पस मार्गदर्शक",
+                howToUseTitle: "अॅप कसे वापरावे:",
+                step1Title: "स्थान शोधा किंवा ब्राउझ करा",
+                step1Desc: "कोणत्याही खोलीचे, लॅबचे, कार्यालयाचे नाव टाईप करा किंवा यादी त्वरित फिल्टर करण्यासाठी श्रेणी आयकॉनवर (जसे की शौचालय किंवा कॅन्टीन) टॅप करा.",
+                step2Title: "थेट मार्ग दिशा मिळवा",
+                step2Desc: "त्या जागेवर थेट नेव्हिगेट करण्यासाठी कोणत्याही कार्डवरील लाल <strong>\"Google नकाशे वर मार्ग दाखवा\"</strong> बटणावर टॅप करा.",
+                step3Title: "ऑफलाईन स्वयंचलितपणे काम करते",
+                step3Desc: "ही कॅम्पस निर्देशिका तुमच्या डिव्हाइसवर साठवली आहे. खराब नेटवर्क कव्हरेज असतानाही तुम्ही स्थाने शोधू शकता.",
+                faqSectionTitle: "वारंवार विचारले जाणारे प्रश्न (FAQs):",
+                faq1Q: "हे इंटरनेटशिवाय काम करते का?",
+                faq1A: "होय! शोध आणि निर्देशिका तपशील पूर्णपणे ऑफलाइन आहेत. केवळ बाह्य Google नकाशे वर थेट मार्ग तपासताना सक्रिय इंटरनेट आवश्यक आहे.",
+                faq2Q: "मी शौचालय/कॅन्टीन कसे शोधू?",
+                faq2A: "फक्त खाली दिलेल्या श्रेणी पॅनेलवर स्क्रॉल करा आणि तुम्हाला हव्या असलेल्या आयकॉनवर टॅप करा. किंवा शोध बॉक्समध्ये \"शौचालय\" सारखे शब्द टाईप करा.",
+                faq3Q: "मी हे अॅप माझ्या फोन स्क्रीनवर कसे जोडू?",
+                faq3A: "स्क्रीनच्या तळाशी पॉप अप होणाऱ्या \"स्क्रीनवर जोडा\" बटणावर टॅप करा. आयफोनवर, सफारी मधील \"शेअर\" आयकॉनवर टॅप करा, खाली स्क्रॉल करा आणि \"होम स्क्रीनवर जोडा\" टॅप करा.",
+                onboardingStartBtn: "चला कॅम्पस फिरूया! 🚀",
+                closeOnboarding: "मार्गदर्शक बंद करा"
             },
             mai: {
                 appTitle: "संदीप विश्वविद्यालय",
@@ -468,7 +522,25 @@
                 resetData: "ऐप डेटा रीसेट करू",
                 resetDataConfirm: "ऐप डेटा रीसेट करू? अहि सँ सहेजल गेल पसंद आ स्थानीय आंकड़े साफ़ भ जायत।",
                 resetDataDone: "ऐप डेटा साफ भेल",
-                privacyNote: "गोपनीयता: स्थान, खोज आ दृश्य गणना केवल एहि डिवाइस पर रहैत अछि।"
+                privacyNote: "गोपनीयता: स्थान, खोज आ दृश्य गणना केवल एहि डिवाइस पर रहैत अछि।",
+                onboardingTitle: "कैंपसकंपास में अपन स्वागत अछि!",
+                onboardingSubtitle: "अपन सुलभ कैंपस गाइड",
+                howToUseTitle: "ऐप क उपयोग कोना करी:",
+                step1Title: "स्थान खोजू या ब्राउज़ करू",
+                step1Desc: "कोनो कोठरी, लैब, कार्यालयक नाम टाइप करू, या सूची के तुरंत फ़िल्टर करबाक लेल श्रेणी आइकन (जेना शौचालय या कैंटीन) पर टैप करू।",
+                step2Title: "सीधा रास्ताक निर्देश पाबू",
+                step2Desc: "ओहि स्थान पर सोझे जेबाक लेल कोनो कार्ड पर लाल <strong>\"गूगल मैप्स पर रास्ता देखाउ\"</strong> बटन पर टैप करू।",
+                step3Title: "ऑफ़लाइन स्वचालित रूप सं काज करैत अछि",
+                step3Desc: "ई परिसर निर्देशिका अपन डिवाइस पर सहेजल गेल अछि। खराब नेटवर्क रहला पर सेहो अहाँ स्थान सभ देख सकैत छी।",
+                faqSectionTitle: "अक्सर पुछल जाए वाला प्रश्न (FAQs):",
+                faq1Q: "की ई बिना इंटरनेट के काज करैत अछि?",
+                faq1A: "हाँ! खोज आ निर्देशिका विवरण पूर्ण रूप सं ऑफ़लाइन अछि। लाइव रूट देखबाक लेल केवल बाहरी गूगल मैप्सक उपयोग करबाक समय इंटरनेटक आवश्यकता होइत अछि।",
+                faq2Q: "हम शौचालय/कैंटीन कोना खोजी?",
+                faq2A: "बस नीचां देल गेल श्रेणी पैनल पर स्क्रॉल करू आ अपन आवश्यकताक आइकन पर टैप करू। या खोज बॉक्स में \"शौचालय\" जेहन शब्द टाइप करू।",
+                faq3Q: "हम एहि ऐप के अपन phone screen पर कोना जोड़ी?",
+                faq3A: "स्क्रीन के नीचां देखाबय वाला \"स्क्रीन पर जोड़ू\" बटन पर टैप करू। आईफोन पर, सफारी में \"शेयर\" आइकन पर टैप करू, नीचां स्क्रॉल करू आ \"होम स्क्रीन पर जोड़ू\" पर टैप करू।",
+                onboardingStartBtn: "आउ कैंपसक चक्कर लगाई! 🚀",
+                closeOnboarding: "मार्गदर्शिका बंद करू"
             },
             te: {
                 appTitle: "సందీప్ యూనివర్సిటీ",
@@ -547,9 +619,27 @@
                 openDatasetDetails: "డేటాసెట్ వివరాలను తెరవండి",
                 closeDatasetDetails: "డేటాసెట్ వివరాలను మూసివేయండి",
                 resetData: "యాప్ డేటాను రీసెట్ చేయండి",
-                resetDataConfirm: "యాప్ డేటాను రీసెట్ చేయాలా? ఇది సేవ్ చేయబడిన ప్రాధాన్యతలు మరియు స్థానిక గణాంకాలను క్లియర్ చేస్తుంది.",
+                resetDataConfirm: "యాప్ డేటాను రీసెట్ చేయాలా? ఇది సేవ్ చేసిన ప్రాధాన్యతలు మరియు స్థానిక గణాంకాలను క్లియర్ చేస్తుంది.",
                 resetDataDone: "యాప్ డేటా క్లియర్ చేయబడింది",
-                privacyNote: "గోప్యత: ప్రదేశం, శోధనలు మరియు వీక్షణల సంఖ్య ఈ పరికరంలో మాత్రమే ఉంటాయి."
+                privacyNote: "గోప్యత: స్థానాలు, శోధనలు మరియు వీక్షణల గణనలు ఈ పరికరంలో మాత్రమే ఉంటాయి.",
+                onboardingTitle: "క్యాంపస్‌కంపాస్‌కు స్వాగతం!",
+                onboardingSubtitle: "మీ సులభమైన క్యాంపస్ గైడ్",
+                howToUseTitle: "యాప్‌ను ఎలా ఉపయోగించాలి:",
+                step1Title: "స్థానాలను వెతకండి లేదా బ్రౌజ్ చేయండి",
+                step1Desc: "ఏదైనా గది, ల్యాబ్ లేదా కార్యాలయం పేరు టైప్ చేయండి, లేదా కేటగిరీ ఐకాన్ (టాయిలెట్లు లేదా క్యాంటీన్ వంటివి) పై నొక్కి జాబితాను ఫిల్టర్ చేయండి.",
+                step2Title: "నేరుగా రూట్ దిశలను పొందండి",
+                step2Desc: "ఆ స్థానానికి నేరుగా వెళ్లడానికి ఏదైనా కార్డ్‌పై ఉన్న ఎర్రటి <strong>\"Google మ్యాప్స్‌లో రూట్ చూపించు\"</strong> బటన్ పై నొక్కండి.",
+                step3Title: "ఆఫ్‌లైన్‌లో స్వయంచాలకంగా పనిచేస్తుంది",
+                step3Desc: "ఈ క్యాంపస్ డైరెక్టరీ మీ పరికరంలోనే సేవ్ చేయబడుతుంది. మొబైల్ నెట్‌వర్క్ సరిగ్గా లేకపోయినా మీరు స్థానాలను వెతకవచ్చు.",
+                faqSectionTitle: "తరచుగా అడిగే ప్రశ్నలు (FAQs):",
+                faq1Q: "ఇది ఇంటర్నెట్ లేకుండా పనిచేస్తుందా?",
+                faq1A: "అవును! శోధన మరియు డైరెక్టరీ వివరాలు పూర్తిగా ఆఫ్‌లైన్‌లో లభిస్తాయి. కేవలం Google మ్యాప్స్ ద్వారా లైవ్ రూట్లను చూడటానికి మాత్రమే ఇంటర్నెట్ అవసరం.",
+                faq2Q: "నేను టాయిలెట్లు/క్యాంటీన్లను ఎలా వెతకాలి?",
+                faq2A: "స్క్రీన్ కింద ఉన్న కేటగిరీల ప్యానెల్ కు స్క్రోல் చేసి, మీకు కావలసిన ఐకాన్‌ను నొక్కండి లేదా సెర్చ్ బాక్స్‌లో \"washroom\" అని టైప్ చేయండి.",
+                faq3Q: "ఈ యాప్‌ను నా ఫోన్ స్క్రీన్‌కు ఎలా జోడించాలి?",
+                faq3A: "స్క్రీన్ కింద కనిపించే \"Add to Screen\" బటన్‌ను నొక్కండి. ఐఫోన్‌లో అయితే, సఫారీ బ్రౌజర్‌లోని \"Share\" ఐకాన్‌ను నొక్కి, కిందకు స్క్రోల్ చేసి \"Add to Home Screen\" ఎంచుకోండి.",
+                onboardingStartBtn: "క్యాంపస్‌ను అన్వేషిద్దాం! 🚀",
+                closeOnboarding: "యూజర్ గైడ్‌ను మూసివేయి"
             },
             ta: {
                 appTitle: "சந்திப் பல்கலைக்கழகம்",
@@ -630,7 +720,25 @@
                 resetData: "பயன்பாட்டுத் தரவை மீட்டமை",
                 resetDataConfirm: "பயன்பாட்டுத் தரவை மீட்டமைக்கவா? இது சேமிக்கப்பட்ட விருப்பத்தேர்வுகள் மற்றும் உள்ளூர் புள்ளிவிவரங்களை அழிக்கும்.",
                 resetDataDone: "பயன்பாட்டுத் தரவு அழிக்கப்பட்டது",
-                privacyNote: "தனியுரிமை: இருப்பிடம், தேடல்கள் மற்றும் பார்வை எண்ணிக்கைகள் இந்தச் சாதனத்தில் மட்டுமே இருக்கும்."
+                privacyNote: "தனியுரிமை: இருப்பிடம், தேடல்கள் மற்றும் பார்வை எண்ணிக்கைகள் இந்தச் சாதனத்தில் மட்டுமே இருக்கும்.",
+                onboardingTitle: "கேம்பஸ்காம்பஸ்-க்கு உங்களை வரவேற்கிறோம்!",
+                onboardingSubtitle: "உங்களது எளிய கேம்பஸ் வழிகாட்டி",
+                howToUseTitle: "செயலியை எவ்வாறு பயன்படுத்துவது:",
+                step1Title: "இடங்களைத் தேடவும் அல்லது உலாவவும்",
+                step1Desc: "ஏதேனும் அறை, ஆய்வகம் அல்லது அலுவலகப் பெயரை தட்டச்சு செய்யவும், அல்லது வகைகளின் ஐகான்களை (கழிப்பறைகள் அல்லது உணவகம்) தட்டி வடிகட்டவும்.",
+                step2Title: "நேரடி வழித் திசைகளைப் பெறுக",
+                step2Desc: "அந்த இடத்திற்குச் செல்ல ஏதேனும் கார்டில் உள்ள சிவப்பு நிற <strong>\"கூகுள் மேப்பில் வழியைக் காட்டு\"</strong> பொத்தானைத் தட்டவும்.",
+                step3Title: "ஆஃப்லைனில் தானாகவே இயங்கும்",
+                step3Desc: "இந்தத் தகவல்கள் அனைத்தும் உங்கள் சாதனத்திலேயே சேமிக்கப்படும். மொபைல் சிக்னல் இல்லாத போதும் நீங்கள் இடங்களைத் தேடலாம்.",
+                faqSectionTitle: "அடிக்கடி கேட்கப்படும் கேள்விகள் (FAQs):",
+                faq1Q: "இது இணையம் இல்லாமல் வேலை செய்யுமா?",
+                faq1A: "ஆம்! தேடல் மற்றும் இருப்பிட விபரங்கள் அனைத்தும் முழுமையாக ஆஃப்லைனில் இயங்கும். கூகுள் மேப்பில் நேரடி வழியைக் காண மட்டுமே இணையம் தேவை.",
+                faq2Q: "கழிப்பறைகள்/உணவகங்களை நான் எப்படித் தேடுவது?",
+                faq2A: "கீழே உள்ள பிரிவுகள் பேனலுக்குச் சென்று உங்களுக்குத் தேவையான ஐகானைத் தட்டவும் அல்லது தேடல் பெட்டியில் \"washroom\" என்று தட்டச்சு செய்யவும்.",
+                faq3Q: "இந்த செயலியை எனது மொபைல் திரையில் எவ்வாறு சேர்ப்பது?",
+                faq3A: "திரையின் கீழே தோன்றும் \"Add to Screen\" பொத்தானைத் தட்டவும். ஐபோனில், சஃபாரி உலாவியின் \"Share\" ஐகானைத் தட்டி, கீழே நகர்த்தி \"Add to Home Screen\" என்பதைத் தேர்ந்தெடுக்கவும்.",
+                onboardingStartBtn: "கேம்பஸை சுற்றிப் பார்ப்போம்! 🚀",
+                closeOnboarding: "வழிகாட்டியை மூடு"
             },
             pt: {
                 appTitle: "UNIVERSIDADE SANDIP",
@@ -711,7 +819,25 @@
                 resetData: "Redefinir dados do aplicativo",
                 resetDataConfirm: "Redefinir dados do aplicativo? Isso limpará as preferências salvas e as estatísticas locais.",
                 resetDataDone: "Dados do aplicativo limpos",
-                privacyNote: "Privacidade: localização, pesquisas e contagens de visualizações permanecem apenas neste dispositivo."
+                privacyNote: "Privacidade: localização, pesquisas e contagens de visualizações permanecem apenas neste dispositivo.",
+                onboardingTitle: "Bem-vindo ao CampusCompass!",
+                onboardingSubtitle: "Seu Guia Rápido de Campus",
+                howToUseTitle: "Como usar o aplicativo:",
+                step1Title: "Pesquisar ou Explorar Locais",
+                step1Desc: "Digite o nome de qualquer sala, laboratório ou escritório, ou toque em um ícone de categoria (como banheiros ou refeitório) para filtrar instantaneamente.",
+                step2Title: "Obter Direções de Rota Direta",
+                step2Desc: "Toque no botão vermelho <strong>\"Mostrar rota no Google Maps\"</strong> em qualquer cartão para navegar diretamente para o local.",
+                step3Title: "Funciona Offline Automaticamente",
+                step3Desc: "Este diretório de campus é armazenado no seu dispositivo. Você pode pesquisar locais mesmo sem cobertura de rede móvel.",
+                faqSectionTitle: "Perguntas Frequentes (FAQs):",
+                faq1Q: "Funciona sem internet?",
+                faq1A: "Sim! A pesquisa e os detalhes do diretório são totalmente offline. A internet ativa só é necessária ao verificar rotas ao vivo no Google Maps externo.",
+                faq2Q: "Como pesquiso banheiros/refeitório?",
+                faq2A: "Basta rolar até o painel de categorias na parte inferior e tocar no ícone desejado. Ou digite palavras como \"banheiro\" na caixa de pesquisa.",
+                faq3Q: "Como adiciono este aplicativo à tela do meu celular?",
+                faq3A: "Toque no botão \"Adicionar à tela\" que aparece na parte inferior da tela. No iPhone, toque no ícone \"Compartilhar\" no Safari, role para baixo e toque em \"Adicionar à Tela Inicial\".",
+                onboardingStartBtn: "Vamos Explorar o Campus! 🚀",
+                closeOnboarding: "Fechar guia do usuário"
             }
         };
 
@@ -1455,7 +1581,7 @@
         function applyLanguageToStaticText() {
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (key) el.textContent = t(key);
+                if (key) el.innerHTML = t(key);
             });
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
@@ -1564,6 +1690,11 @@
             const modal = getEl("detailModal");
             if (modal && !modal.classList.contains("hidden")) closeModal();
             closeLangPicker();
+
+            if (firstLaunchPending) {
+                firstLaunchPending = false;
+                openOnboarding();
+            }
         }
 
         /**
@@ -2524,6 +2655,108 @@
         }
 
         /**
+         * Opens the onboarding and FAQ modal.
+         * @returns {void}
+         */
+        function openOnboarding() {
+            const modal = getEl("onboardingModal");
+            if (!modal) return;
+            document.documentElement.classList.add("no-scroll");
+            DOMUtils.show(modal);
+            modal.classList.add("flex");
+            
+            const scrollBody = getEl("onboardingScrollBody");
+            if (scrollBody) scrollBody.scrollTop = 0;
+
+            requestAnimationFrame(() => {
+                modal.classList.add("modal-visible", "modal-overlay-active");
+            });
+
+            // Set focus to start button
+            const startBtn = getEl("onboardingStartBtn");
+            if (startBtn) startBtn.focus();
+        }
+
+        /**
+         * Close the onboarding and FAQ modal.
+         * @returns {void}
+         */
+        function closeOnboarding() {
+            const modal = getEl("onboardingModal");
+            if (!modal) return;
+            hapticTap();
+            const finish = () => {
+                DOMUtils.hide(modal);
+                modal.classList.remove("flex");
+                document.documentElement.classList.remove("no-scroll");
+                const searchInput = getEl("searchInput");
+                if (searchInput) searchInput.focus();
+            };
+            modal.classList.remove("modal-visible", "modal-overlay-active");
+            if (prefersReducedMotion()) {
+                finish();
+            } else {
+                setTimeout(finish, 220);
+            }
+        }
+
+        /**
+         * Initialize onboarding modal events.
+         * @returns {void}
+         */
+        function initOnboarding() {
+            const modal = getEl("onboardingModal");
+            if (!modal) return;
+
+            const closeBtn = getEl("onboardingCloseBtn");
+            if (closeBtn) closeBtn.addEventListener("click", closeOnboarding);
+
+            const startBtn = getEl("onboardingStartBtn");
+            if (startBtn) startBtn.addEventListener("click", closeOnboarding);
+
+            // FAQ toggle click handlers
+            const faqItems = modal.querySelectorAll(".faq-item");
+            faqItems.forEach((item, index) => {
+                const header = item.querySelector("h4");
+                if (header) {
+                    header.setAttribute("tabindex", "0");
+                    header.setAttribute("role", "button");
+                    
+                    const toggleFaq = () => {
+                        hapticTap();
+                        const isOpen = item.classList.contains("faq-open");
+                        faqItems.forEach(i => i.classList.remove("faq-open"));
+                        if (!isOpen) {
+                            item.classList.add("faq-open");
+                        }
+                    };
+
+                    header.addEventListener("click", toggleFaq);
+                    header.addEventListener("keydown", (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            toggleFaq();
+                        }
+                    });
+                }
+            });
+
+            // Backdrop click close
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) {
+                    closeOnboarding();
+                }
+            });
+
+            // Escape key dismiss
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+                    closeOnboarding();
+                }
+            });
+        }
+
+        /**
          * Show a short toast message.
          * DOM-coupled helper: mutates the toast banner.
          * @param {string} message
@@ -3185,9 +3418,12 @@
             recentSearches = getRecentSearches();
             initUI();
             wireInteractiveHandlers();
+            initOnboarding();
             debouncedApplyAll = debounce(debouncedApplyAllHandler, SEARCH_DEBOUNCE_MS);
             if (firstLaunchPending) {
                 openLangPicker(true);
+            } else {
+                openOnboarding();
             }
         }
 

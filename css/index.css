@@ -49,7 +49,8 @@ html[lang="hi"] body,
             backdrop-filter: blur(2px);
         }
 
-        #detailModal {
+        #detailModal,
+        #onboardingModal {
             overscroll-behavior: none;
         }
 
@@ -505,7 +506,8 @@ html[lang="hi"] body,
             transition: opacity 0.22s ease, transform 0.22s ease;
         }
 
-        #detailModal.modal-visible .modal-panel {
+        #detailModal.modal-visible .modal-panel,
+        #onboardingModal.modal-visible .modal-panel {
             opacity: 1;
             transform: translateY(0);
         }
@@ -515,7 +517,8 @@ html[lang="hi"] body,
             transition: opacity 0.22s ease;
         }
 
-        #detailModal.modal-visible.modal-overlay-active {
+        #detailModal.modal-visible.modal-overlay-active,
+        #onboardingModal.modal-visible.modal-overlay-active {
             opacity: 1;
         }
 
@@ -1517,7 +1520,8 @@ html[lang="hi"] body,
                 margin: auto;
             }
 
-            #detailModal {
+            #detailModal,
+            #onboardingModal {
                 align-items: center !important;
             }
 
@@ -2073,10 +2077,12 @@ html[lang="hi"] body,
         }
 
         /* 5. Dialog animations */
-        #detailModal {
+        #detailModal,
+        #onboardingModal {
             transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
         }
-        #detailModal:not(.hidden) .modal-panel {
+        #detailModal:not(.hidden) .modal-panel,
+        #onboardingModal:not(.hidden) .modal-panel {
             animation: modalSlideUpBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
         @keyframes modalSlideUpBounce {
@@ -2350,24 +2356,7 @@ html[lang="hi"] body,
             transform: translateY(0) scale(0.985) !important;
         }
 
-        /* Card accent bar */
-        .card-shell.card::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 20px;
-            bottom: 20px;
-            width: 4px;
-            background: linear-gradient(to bottom, rgb(var(--cat-color-primary)), rgba(var(--cat-color-primary), 0.4)) !important;
-            border-radius: 0 4px 4px 0;
-            opacity: 0;
-            transition: opacity 0.25s ease;
-            z-index: 5;
-        }
-        .card-shell.card:focus-within::after,
-        .card-shell.card:hover::after {
-            opacity: 1;
-        }
+        /* Card accent bar removed */
 
         /* Card Elements */
         .card-icon-container {
@@ -2430,11 +2419,13 @@ html[lang="hi"] body,
         .animate-entrance #locationList .card-shell.card:nth-child(n+7) { animation-delay: 0.3s; }
 
         /* ---------- Bottom Sheet Modal ---------- */
-        #detailModal {
+        #detailModal,
+        #onboardingModal {
             align-items: flex-end !important;
             transition: opacity 0.35s ease, visibility 0.35s !important;
         }
-        #detailModal.modal-overlay {
+        #detailModal.modal-overlay,
+        #onboardingModal.modal-overlay {
             background: var(--cc-surface-overlay) !important;
             backdrop-filter: blur(6px) !important;
             -webkit-backdrop-filter: blur(6px) !important;
@@ -2450,11 +2441,14 @@ html[lang="hi"] body,
             opacity: 1 !important;
         }
         #detailModal.modal-visible .modal-panel,
-        #detailModal:not(.hidden) .modal-panel {
+        #detailModal:not(.hidden) .modal-panel,
+        #onboardingModal.modal-visible .modal-panel,
+        #onboardingModal:not(.hidden) .modal-panel {
             transform: translateY(0) !important;
             animation: none !important;
         }
-        #detailModal.hidden .modal-panel {
+        #detailModal.hidden .modal-panel,
+        #onboardingModal.hidden .modal-panel {
             transform: translateY(100%) !important;
         }
         /* Drag handle */
@@ -2700,7 +2694,8 @@ html[lang="hi"] body,
 
         /* ---------- Modal Responsive Override ---------- */
         @media (min-width: 600px) {
-            #detailModal { align-items: center !important; }
+            #detailModal,
+            #onboardingModal { align-items: center !important; }
             .modal-panel {
                 border-radius: 24px !important;
                 max-height: 85vh !important;
@@ -3047,4 +3042,44 @@ html[lang="hi"] body,
             .glass-nav {
                 padding: 24px !important;
             }
+        }
+
+        /* ---------- Onboarding FAQ Accordion Styling ---------- */
+        .faq-item h4 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            padding: 2px 0;
+        }
+        .faq-item h4::after {
+            content: "";
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+        html.dark .faq-item h4::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f87171' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        }
+        .faq-item.faq-open h4::after {
+            transform: rotate(-180deg);
+        }
+        .faq-item p {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, margin-top 0.25s ease;
+            margin-top: 0 !important;
+        }
+        .faq-item.faq-open p {
+            max-height: 140px;
+            opacity: 1;
+            margin-top: 10px !important;
         }
