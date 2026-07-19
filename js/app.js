@@ -2178,10 +2178,6 @@
             `;
         }
 
-        function getCardHeader(location, locationName, icon) {
-            // Deprecated helper: card header is now rendered inline inside renderCard to support flex layouts
-            return "";
-        }
 
         function renderCard(location, originalIndex) {
             const locationId = getLocationStorageKey(location);
