@@ -1866,20 +1866,18 @@ html[lang="hi"] body,
                 grid-row: 1;
                 grid-column: 1 / -1;
                 grid-area: header;
-                position: sticky;
-                top: 0;
-                z-index: 10;
+                position: relative !important;
                 height: 200px;
                 width: 100%;
             }
 
-            .sticky-search-wrap {
+            body .sticky-search-wrap {
                 grid-area: sidebar;
                 align-self: start;
                 position: sticky !important;
                 top: 24px !important;
-                margin-top: 0;
-                padding: 0;
+                margin-top: 0 !important;
+                padding: 0 !important;
             }
 
             .glass-nav {
@@ -1919,6 +1917,7 @@ html[lang="hi"] body,
             }
 
             #mainContent {
+                grid-area: main;
                 max-width: 100%;
                 margin-top: 0;
                 margin-left: 0;
@@ -1928,8 +1927,16 @@ html[lang="hi"] body,
             }
 
             #locationList, #loader {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr) !important;
                 gap: 24px;
+            }
+
+            #detailModal,
+            #onboardingModal,
+            #contactModal,
+            #langPickerOverlay {
+                grid-column: 1 / -1;
+                grid-row: 1 / -1;
             }
 
             /* About panel */
@@ -1988,7 +1995,7 @@ html[lang="hi"] body,
             #appTitle { font-size: 3.5rem; }
 
             #locationList, #loader {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(3, 1fr) !important;
             }
             
             .modal-panel {
