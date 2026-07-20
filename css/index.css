@@ -29,13 +29,15 @@ html[lang="hi"] body,
             border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
         }
 
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
+        /* Hide scrollbars globally across all elements for a clean, native-app feel */
+        ::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
         }
-
-        .no-scrollbar {
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE / Edge */
+        * {
+            scrollbar-width: none !important; /* Firefox */
+            -ms-overflow-style: none !important; /* IE / Edge */
         }
 
         html.no-scroll,
@@ -501,31 +503,7 @@ html[lang="hi"] body,
             }
         }
 
-        /* ---------- Modal open/close animation ---------- */
-        .modal-panel {
-            background-color: #fff;
-            opacity: 0;
-            transform: translateY(24px);
-            transition: opacity 0.22s ease, transform 0.22s ease;
-        }
 
-        #detailModal.modal-visible .modal-panel,
-        #onboardingModal.modal-visible .modal-panel,
-        #contactModal.modal-visible .modal-panel {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .modal-overlay {
-            opacity: 0;
-            transition: opacity 0.22s ease;
-        }
-
-        #detailModal.modal-visible.modal-overlay-active,
-        #onboardingModal.modal-visible.modal-overlay-active,
-        #contactModal.modal-visible.modal-overlay-active {
-            opacity: 1;
-        }
 
         /* ---------- Tappable active states ---------- */
         .tap-shrink {
@@ -2240,6 +2218,7 @@ html[lang="hi"] body,
             -moz-osx-font-smoothing: grayscale;
             background-color: var(--cc-surface) !important;
             color: var(--cc-text-1) !important;
+            transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
         html.dark body {
             background-color: var(--cc-surface) !important;
@@ -2492,6 +2471,17 @@ html[lang="hi"] body,
         #onboardingModal.modal-overlay,
         #contactModal.modal-overlay {
             background: var(--cc-surface-overlay) !important;
+            backdrop-filter: blur(0px);
+            -webkit-backdrop-filter: blur(0px);
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        backdrop-filter 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        -webkit-backdrop-filter 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        #detailModal.modal-visible.modal-overlay-active,
+        #onboardingModal.modal-visible.modal-overlay-active,
+        #contactModal.modal-visible.modal-overlay-active {
+            opacity: 1 !important;
             backdrop-filter: blur(6px) !important;
             -webkit-backdrop-filter: blur(6px) !important;
         }
@@ -2501,23 +2491,22 @@ html[lang="hi"] body,
             max-height: 92dvh !important;
             background: var(--cc-surface-raised) !important;
             box-shadow: var(--cc-shadow-sheet) !important;
-            transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.16,1,0.3,1) !important;
-            opacity: 1 !important;
+            transform: translateY(100%) !important;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            opacity: 0;
         }
         #detailModal.modal-visible .modal-panel,
-        #detailModal:not(.hidden) .modal-panel,
         #onboardingModal.modal-visible .modal-panel,
-        #onboardingModal:not(.hidden) .modal-panel,
-        #contactModal.modal-visible .modal-panel,
-        #contactModal:not(.hidden) .modal-panel {
+        #contactModal.modal-visible .modal-panel {
             transform: translateY(0) !important;
+            opacity: 1 !important;
             animation: none !important;
         }
         #detailModal.hidden .modal-panel,
         #onboardingModal.hidden .modal-panel,
         #contactModal.hidden .modal-panel {
             transform: translateY(100%) !important;
+            opacity: 0 !important;
         }
         /* Drag handle */
         .modal-panel::before {
